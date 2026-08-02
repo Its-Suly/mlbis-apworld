@@ -131,3 +131,11 @@ a dependency, which its licence permits.
 
 If you believe anything here reproduces your code rather than restating
 a fact learned from it, open an issue and it will be removed.
+
+## Licence
+
+[MIT](LICENSE) for the original work here — the tools, the documentation
+and the tables they generate. It cannot cover the underlying game: the
+names and identifiers under `data/` are extracted from a commercial ROM
+and remain the property of their rights holders. Third-party projects
+keep their own licences, listed in [SOURCES.md](SOURCES.md).

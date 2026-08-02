@@ -137,3 +137,12 @@ licence autorise.
 Si vous estimez qu'une partie de ce dépôt reproduit votre code au lieu
 de reformuler un fait qui en a été appris, ouvrez une issue et elle
 sera retirée.
+
+## Licence
+
+[MIT](LICENSE) pour le travail original de ce dépôt — les outils, la
+documentation et les tables qu'ils produisent. Elle ne peut pas couvrir
+le jeu lui-même : les noms et identifiants de `data/` sont extraits
+d'une ROM commerciale et restent la propriété de leurs ayants droit.
+Les projets tiers gardent leurs propres licences, recensées dans
+[SOURCES.md](SOURCES.md).
