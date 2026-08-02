@@ -1,0 +1,686 @@
+index,salle,identifiant,type_tresor,type_tresor_brut,type_item,item_brut,id_item,nom_item,montant,max_hits,quantity,x,y,z,exploitable
+0,0,0,bloc ?,1,consommable,0x2000,0,Mushroom,3,1,2,248,560,392,1
+1,0,1,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,480,560,456,1
+2,0,2,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,816,560,88,1
+3,0,3,bloc ?,1,consommable,0x2010,16,Heart Bean,1,1,0,560,560,88,1
+4,0,4,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,640,560,88,1
+5,1,248,bloc ?,1,consommable,0x2000,0,Mushroom,1,1,0,108,368,168,1
+6,1,249,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,108,368,80,1
+7,2,621,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,424,352,280,1
+8,3,5,bloc ?,1,consommable,0x2001,1,Super Mushroom,2,1,1,368,368,288,1
+9,4,622,bloc ?,1,consommable,0x2011,17,Special Bean,3,1,2,1816,312,208,1
+10,5,7,bloc ?,1,equipement,0x4004,4,Heart Wear,1,1,0,156,368,312,1
+11,5,614,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,480,368,76,1
+12,6,9,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,712,368,312,1
+13,7,10,bloc ?,1,consommable,0x200B,11,Star Candy,1,1,0,88,544,440,1
+14,8,12,bloc ?,1,consommable,0x2000,0,Mushroom,1,1,0,272,368,272,1
+15,8,13,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,408,368,272,1
+16,9,14,bloc ?,1,consommable,0x2007,7,Supersyrup Jar,1,1,0,216,560,224,1
+17,9,15,bloc ?,1,equipement,0x4002,2,Leisure Wear,1,1,0,696,560,40,1
+18,10,197,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,1168,344,200,1
+19,10,198,bloc ?,1,equipement,0x4023,35,POW Gloves,1,1,0,1216,344,200,1
+20,11,637,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,2,1,1,124,300,0,1
+21,12,16,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,72,543,88,1
+22,12,17,bloc ?,1,consommable,0x200D,13,Super Nut,1,1,0,376,376,104,1
+23,12,18,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,424,376,104,1
+24,12,19,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,616,192,104,1
+25,12,638,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,464,106,0,1
+26,13,20,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,52,416,152,1
+27,13,21,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,448,504,128,1
+28,13,261,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,160,320,88,1
+29,13,262,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,160,504,88,1
+30,13,263,haricot,0,consommable,0x2016,22,Hot Drumstick,2,2,0,448,544,8,1
+31,14,592,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,96,376,0,1
+32,14,593,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,64,512,0,1
+33,14,704,bloc ?,1,consommable,0x2002,2,Ultra Mushroom,1,1,0,544,384,96,1
+34,14,705,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,608,384,96,1
+35,15,34,bloc ?,1,equipement,0x403B,59,Happy Charm,1,1,0,152,504,328,1
+36,15,35,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,320,768,144,1
+37,15,36,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,368,768,144,1
+38,15,31,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,728,536,384,1
+39,15,256,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,440,536,184,1
+40,15,257,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,640,576,136,1
+41,15,258,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,729,568,40,1
+42,15,260,haricot,0,consommable,0x2015,21,Retry Clock,5,5,0,368,848,0,1
+43,16,37,bloc ?,1,consommable,0x2002,2,Ultra Mushroom,1,1,0,112,144,88,1
+44,16,38,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,64,422,88,1
+45,16,135,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,768,408,0,1
+46,16,639,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,3,1,2,424,104,0,1
+47,17,452,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,160,336,0,1
+48,18,22,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,212,560,104,1
+49,18,23,bloc ?,1,consommable,0x2012,18,Power Bean,1,1,0,306,560,104,1
+50,18,24,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,416,480,104,1
+51,18,25,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,102,480,104,1
+52,18,26,bloc ?,1,equipement,0x4005,5,Brawny Wear,1,1,0,316,428,104,1
+53,18,27,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,196,428,104,1
+54,18,28,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,24,256,168,1
+55,19,264,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,32,128,40,1
+56,19,640,bloc brique,4,pieces,0xFFFE,,pieces,5,1,1,242,528,0,1
+57,19,641,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,1,1,0,416,528,0,1
+58,20,473,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,344,160,80,1
+59,20,745,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,152,256,120,1
+60,21,265,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,440,556,104,1
+61,21,642,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,1,1,0,232,248,0,1
+62,22,477,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,72,344,0,1
+63,22,478,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,520,112,80,1
+64,22,479,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,696,112,40,1
+65,23,29,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,96,336,160,1
+66,23,30,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,936,256,96,1
+67,23,32,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,1,1,0,872,256,96,1
+68,24,304,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,176,844,608,1
+69,24,305,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,432,906,216,1
+70,24,351,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,32,824,0,1
+71,25,306,bloc ?,1,equipement,0x402A,42,Bye-Bye Gloves,1,1,0,280,490,176,1
+72,25,307,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,384,496,0,1
+73,26,302,bloc ?,1,pieces,0xFFFC,,pieces,250,5,3,672,896,328,1
+74,27,303,bloc ?,1,equipement,0x4026,38,Special Gloves,1,1,0,288,234,64,1
+75,28,746,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,880,472,352,1
+76,29,76,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,2,1,1,86,216,0,1
+77,29,77,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,86,480,0,1
+78,30,67,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,160,408,168,1
+79,30,70,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,280,430,0,1
+80,30,598,touffe d'herbe,5,pieces,0xFFFD,,pieces,10,1,2,336,430,0,1
+81,30,599,haricot,0,consommable,0x2014,20,DUMMY,4,4,0,136,431,104,1
+82,31,39,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,704,144,0,1
+83,31,283,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,640,328,0,1
+84,31,667,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,552,208,0,1
+85,31,700,touffe d'herbe,5,vide,0x0000,,,,1,0,584,168,0,0
+86,31,702,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,676,184,0,1
+87,31,703,touffe d'herbe,5,vide,0x0000,,,,1,0,704,216,0,0
+88,32,0,touffe d'herbe,5,vide,0x0000,,,,1,0,400,224,0,0
+89,32,0,touffe d'herbe,5,vide,0x0000,,,,1,0,312,208,0,0
+90,32,0,touffe d'herbe,5,vide,0x0000,,,,1,0,336,232,0,0
+91,32,601,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,456,280,64,1
+92,33,339,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,280,144,40,1
+93,33,620,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,596,216,104,1
+94,33,661,touffe d'herbe,5,vide,0x0000,,,,1,0,104,424,40,0
+95,33,662,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,144,412,40,1
+96,33,663,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,96,384,40,1
+97,34,606,touffe d'herbe,5,pieces,0xFFFE,,pieces,5,1,1,296,216,0,1
+98,34,78,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,112,380,0,1
+99,35,650,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,728,248,0,1
+100,35,652,touffe d'herbe,5,vide,0x0000,,,,1,0,712,304,0,0
+101,35,653,touffe d'herbe,5,vide,0x0000,,,,1,0,752,344,0,0
+102,35,655,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,784,336,0,1
+103,36,73,touffe d'herbe,5,pieces,0xFFFD,,pieces,10,1,2,350,192,64,1
+104,37,617,bloc ?,1,consommable,0x2003,3,Max Mushroom,1,1,0,168,424,104,1
+105,37,618,bloc ?,1,pieces,0xFFFC,,pieces,250,5,3,449,192,104,1
+106,37,0,touffe d'herbe,5,vide,0x0000,,,,1,0,224,144,40,0
+107,37,0,touffe d'herbe,5,vide,0x0000,,,,1,0,196,204,40,0
+108,37,0,touffe d'herbe,5,vide,0x0000,,,,1,0,68,294,40,0
+109,37,0,touffe d'herbe,5,vide,0x0000,,,,1,0,216,256,40,0
+110,38,74,touffe d'herbe,5,pieces,0xFFFD,,pieces,10,1,2,340,300,0,1
+111,38,79,bloc brique,4,equipement,0x407F,127,Fill-up Ring,1,1,0,584,304,0,1
+112,38,80,bloc brique,4,consommable,0x200B,11,Star Candy,1,1,0,122,187,0,1
+113,38,644,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,320,128,0,1
+114,38,648,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,256,328,0,1
+115,39,285,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,648,488,0,1
+116,40,43,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,360,416,160,1
+117,40,44,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,328,264,136,1
+118,40,45,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,400,264,136,1
+119,40,299,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,433,410,48,1
+120,41,75,touffe d'herbe,5,pieces,0xFFFD,,pieces,10,1,2,82,300,0,1
+121,41,286,haricot,0,consommable,0x2015,21,Retry Clock,14,14,0,664,104,0,1
+122,42,46,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,352,232,168,1
+123,42,0,touffe d'herbe,5,vide,0x0000,,,,1,0,680,128,0,0
+124,42,0,touffe d'herbe,5,vide,0x0000,,,,1,0,488,240,0,0
+125,42,0,touffe d'herbe,5,vide,0x0000,,,,1,0,528,264,0,0
+126,43,83,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,488,360,0,1
+127,43,0,touffe d'herbe,5,vide,0x0000,,,,1,0,464,128,0,0
+128,44,41,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,354,506,0,1
+129,45,300,haricot,0,consommable,0x2016,22,Hot Drumstick,1,1,0,208,160,72,1
+130,45,301,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,360,192,72,1
+131,46,288,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,224,89,0,1
+132,47,289,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,168,352,0,1
+133,48,290,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,152,256,0,1
+134,49,291,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,240,280,48,1
+135,49,0,touffe d'herbe,5,vide,0x0000,,,,1,0,96,320,0,0
+136,49,0,touffe d'herbe,5,vide,0x0000,,,,1,0,120,356,0,0
+137,49,0,touffe d'herbe,5,vide,0x0000,,,,1,0,176,344,0,0
+138,49,0,touffe d'herbe,5,vide,0x0000,,,,1,0,136,304,0,0
+139,50,727,touffe d'herbe,5,vide,0x0000,,,,0,0,852,277,0,0
+140,50,728,touffe d'herbe,5,vide,0x0000,,,,0,0,900,294,0,0
+141,50,729,touffe d'herbe,5,vide,0x0000,,,,0,0,959,286,0,0
+142,50,730,touffe d'herbe,5,vide,0x0000,,,,0,0,910,335,0,0
+143,50,731,touffe d'herbe,5,vide,0x0000,,,,0,0,991,349,0,0
+144,50,732,touffe d'herbe,5,vide,0x0000,,,,0,0,942,360,0,0
+145,50,733,touffe d'herbe,5,vide,0x0000,,,,0,0,864,346,0,0
+146,51,292,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,104,304,0,1
+147,52,293,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,480,160,0,1
+148,52,150,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,396,176,120,1
+149,53,294,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,216,104,0,1
+150,53,726,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,565,328,160,1
+151,54,295,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,280,216,0,1
+152,54,615,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,196,344,64,1
+153,54,616,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,352,344,64,1
+154,55,296,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,200,152,0,1
+155,55,619,bloc ?,1,equipement,0x4015,21,Hustle Socks,1,1,0,160,128,64,1
+156,56,297,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,440,88,0,1
+157,56,71,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,440,214,0,1
+158,57,0,touffe d'herbe,5,vide,0x0000,,,,1,0,136,184,0,0
+159,57,0,touffe d'herbe,5,vide,0x0000,,,,1,0,136,304,0,0
+160,57,0,touffe d'herbe,5,vide,0x0000,,,,1,0,156,320,0,0
+161,58,298,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,240,320,112,1
+162,59,325,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,296,176,104,1
+163,59,326,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,86,320,32,1
+164,60,82,haricot,0,consommable,0x2014,20,DUMMY,12,12,0,80,304,0,1
+165,61,340,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,688,208,24,1
+166,62,341,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,160,368,48,1
+167,62,724,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,176,176,48,1
+168,63,40,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,64,232,168,1
+169,64,343,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,72,352,40,1
+170,64,725,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,744,312,40,1
+171,65,47,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,88,560,496,1
+172,66,48,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,304,272,144,1
+173,66,49,bloc ?,1,consommable,0x2001,1,Super Mushroom,1,1,0,800,272,144,1
+174,67,50,bloc ?,1,consommable,0x2001,1,Super Mushroom,1,1,0,156,336,224,1
+175,67,51,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,348,336,224,1
+176,68,52,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,348,336,224,1
+177,68,200,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,156,336,224,1
+178,69,53,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,1,1,0,312,336,224,1
+179,69,54,bloc ?,1,equipement,0x4030,48,DX POW Boots,1,1,0,408,336,224,1
+180,69,55,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,584,336,248,1
+181,70,56,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,314,256,216,1
+182,70,57,bloc ?,1,consommable,0x200B,11,Star Candy,1,1,0,484,256,216,1
+183,71,58,bloc ?,1,consommable,0x2010,16,Heart Bean,1,1,0,776,344,224,1
+184,71,59,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,868,344,192,1
+185,72,60,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,320,320,192,1
+186,72,61,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,524,320,80,1
+187,72,62,bloc ?,1,pieces,0xFFFE,,pieces,25,5,1,740,320,80,1
+188,73,63,bloc ?,1,consommable,0x2001,1,Super Mushroom,2,1,1,360,368,120,1
+189,73,201,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,200,368,120,1
+190,74,64,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,308,352,248,1
+191,75,202,bloc ?,1,consommable,0x2009,9,Max Syrup Jar,1,1,0,96,176,80,1
+192,75,203,bloc ?,1,equipement,0x401D,29,No-touch Socks,1,1,0,168,176,80,1
+193,76,84,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,416,664,0,1
+194,76,706,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,296,200,32,1
+195,76,707,touffe d'herbe,5,vide,0x0000,,,,1,0,344,176,32,0
+196,76,708,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,384,200,32,1
+197,76,709,touffe d'herbe,5,pieces,0xFFFE,,pieces,5,1,1,432,192,32,1
+198,76,0,touffe d'herbe,5,vide,0x0000,,,,1,0,400,384,0,0
+199,76,0,touffe d'herbe,5,vide,0x0000,,,,1,0,424,360,0,0
+200,77,86,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,368,307,176,1
+201,77,87,bloc ?,1,pieces,0xFFFC,,pieces,250,5,3,808,112,64,1
+202,78,91,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,426,170,64,1
+203,78,92,bloc brique,4,equipement,0x407E,126,Peace Ring,1,1,0,607,560,0,1
+204,78,481,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,56,184,64,1
+205,78,711,touffe d'herbe,5,pieces,0xFFFE,,pieces,5,1,1,216,536,32,1
+206,78,712,touffe d'herbe,5,vide,0x0000,,,,1,0,320,488,32,0
+207,78,713,touffe d'herbe,5,vide,0x0000,,,,1,0,392,328,32,0
+208,78,714,touffe d'herbe,5,pieces,0xFFFF,,pieces,1,1,0,560,330,32,1
+209,79,93,bloc brique,4,equipement,0x405F,95,Ironclad Shell,1,1,0,448,348,64,1
+210,79,482,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,480,392,0,1
+211,80,94,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,472,228,0,1
+212,80,483,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,80,184,72,1
+213,80,747,bloc ?,1,equipement,0x4043,67,Small Shell,1,1,0,242,199,136,1
+214,81,720,touffe d'herbe,5,vide,0x0000,,,,1,0,640,184,40,0
+215,81,721,touffe d'herbe,5,vide,0x0000,,,,1,0,672,196,40,0
+216,81,722,touffe d'herbe,5,pieces,0xFFFD,,pieces,10,1,2,704,412,40,1
+217,81,723,touffe d'herbe,5,vide,0x0000,,,,1,0,720,448,40,0
+218,82,484,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,408,328,0,1
+219,82,81,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,408,176,96,1
+220,83,743,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,152,284,104,1
+221,84,474,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,452,740,0,1
+222,84,475,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,580,740,0,1
+223,84,591,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,64,720,152,1
+224,85,95,bloc brique,4,equipement,0x405D,93,Dream Shell,1,1,0,924,382,32,1
+225,86,480,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,72,129,32,1
+226,87,66,bloc ?,1,equipement,0x404C,76,DEF Mush Jam,1,1,0,176,160,32,1
+227,87,607,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,586,160,64,1
+228,88,486,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,72,232,0,1
+229,88,487,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,688,280,0,1
+230,89,609,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,400,200,24,1
+231,90,96,bloc ?,1,equipement,0x402B,43,Softener Gloves,1,1,0,192,128,96,1
+232,91,336,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,36,108,48,1
+233,91,337,bloc ?,1,pieces,0xFFFB,,pieces,300,3,4,250,205,88,1
+234,91,338,bloc ?,1,equipement,0x4046,70,KO Shell,1,1,0,424,250,88,1
+235,92,476,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,32,344,0,1
+236,92,612,bloc ?,1,equipement,0x402B,43,Softener Gloves,1,1,0,48,200,160,1
+237,93,370,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,320,513,0,1
+238,93,371,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,176,354,0,1
+239,93,372,haricot,0,consommable,0x2015,21,Retry Clock,3,3,0,224,272,0,1
+240,93,373,haricot,0,consommable,0x2014,20,DUMMY,4,4,0,448,233,0,1
+241,93,374,haricot,0,consommable,0x2014,20,DUMMY,5,5,0,688,513,0,1
+242,94,379,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,144,313,0,1
+243,94,380,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,480,473,0,1
+244,95,375,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,96,488,0,1
+245,95,376,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,432,240,0,1
+246,96,125,bloc brique,4,consommable,0x2005,5,1-Up Deluxe,2,1,1,121,400,0,1
+247,96,98,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,647,352,0,1
+248,96,377,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,40,145,0,1
+249,96,378,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,136,385,0,1
+250,96,383,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,536,337,0,1
+251,97,266,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,56,545,0,1
+252,97,267,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,104,545,0,1
+253,97,268,haricot,0,consommable,0x2015,21,Retry Clock,4,4,0,152,545,0,1
+254,97,269,haricot,0,consommable,0x2014,20,DUMMY,5,5,0,56,585,0,1
+255,97,270,haricot,0,consommable,0x2014,20,DUMMY,6,6,0,104,585,0,1
+256,97,271,haricot,0,consommable,0x2015,21,Retry Clock,7,7,0,152,585,0,1
+257,97,272,haricot,0,consommable,0x2014,20,DUMMY,8,8,0,248,705,0,1
+258,97,273,haricot,0,consommable,0x2014,20,DUMMY,9,9,0,440,865,0,1
+259,98,384,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,264,241,0,1
+260,98,385,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,360,161,0,1
+261,99,386,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,96,208,0,1
+262,99,387,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,696,232,0,1
+263,99,388,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,400,464,0,1
+264,99,389,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,376,792,0,1
+265,100,97,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,72,328,96,1
+266,100,352,bloc brique,4,consommable,0x2006,6,Syrup Jar,1,1,0,72,400,96,1
+267,101,488,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,427,102,0,1
+268,102,353,bloc brique,4,equipement,0x406D,109,Power Fangs,1,1,0,97,336,0,1
+269,103,354,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,97,336,0,1
+270,104,489,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,127,268,0,1
+271,104,490,bloc brique,4,equipement,0x4072,114,Burning Fangs,1,1,0,641,268,0,1
+272,105,369,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,241,184,48,1
+273,106,344,haricot,0,consommable,0x2016,22,Hot Drumstick,10,10,0,528,721,0,1
+274,106,355,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,81,732,352,1
+275,107,345,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,336,210,24,1
+276,107,346,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,560,234,72,1
+277,107,347,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,624,402,24,1
+278,107,356,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,80,632,24,1
+279,107,357,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,80,568,24,1
+280,108,381,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,64,218,24,1
+281,108,382,haricot,0,consommable,0x2016,22,Hot Drumstick,1,1,0,224,283,24,1
+282,109,358,bloc brique,4,consommable,0x2006,6,Syrup Jar,1,1,0,112,488,24,1
+283,109,89,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,484,424,112,1
+284,110,359,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,96,96,24,1
+285,110,360,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,96,160,24,1
+286,110,390,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,716,496,120,1
+287,110,88,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,272,520,104,1
+288,111,608,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,40,152,0,1
+289,111,613,haricot,0,consommable,0x2016,22,Hot Drumstick,1,1,0,456,472,0,1
+290,112,361,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,234,176,32,1
+291,112,362,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,234,240,32,1
+292,112,605,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,94,240,56,1
+293,113,348,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,120,146,0,1
+294,113,349,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,344,338,0,1
+295,113,350,haricot,0,consommable,0x2016,22,Hot Drumstick,2,2,0,760,146,0,1
+296,113,363,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,393,128,0,1
+297,113,739,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,796,344,0,1
+298,113,740,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,870,108,0,1
+299,114,365,bloc brique,4,consommable,0x2006,6,Syrup Jar,1,1,0,444,904,492,1
+300,114,366,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,63,880,268,1
+301,114,367,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,63,880,492,1
+302,115,368,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,193,160,0,1
+303,116,277,bloc ?,1,consommable,0x2003,3,Max Mushroom,1,1,0,448,120,88,1
+304,116,278,bloc ?,1,equipement,0x403F,63,Tight Belt,1,1,0,496,120,88,1
+305,117,274,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,72,352,0,1
+306,117,275,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,104,352,0,1
+307,118,107,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,1,1,0,418,262,64,1
+308,118,108,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,462,262,64,1
+309,118,231,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,48,177,64,1
+310,118,232,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,48,385,64,1
+311,118,233,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,240,321,32,1
+312,118,276,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,464,345,0,1
+313,119,109,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,164,240,16,1
+314,119,110,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,40,160,96,1
+315,120,748,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,640,300,232,1
+316,121,111,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,396,258,192,1
+317,121,112,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,440,258,192,1
+318,122,113,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,718,200,96,1
+319,122,114,bloc ?,1,consommable,0x2001,1,Super Mushroom,2,1,1,172,194,64,1
+320,122,234,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,512,185,32,1
+321,122,235,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,576,113,32,1
+322,122,236,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,584,265,32,1
+323,122,237,haricot,0,consommable,0x2015,21,Retry Clock,3,3,0,736,177,32,1
+324,123,115,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,480,176,128,1
+325,123,116,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,320,176,128,1
+326,123,117,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,48,224,128,1
+327,123,118,bloc ?,1,equipement,0x4017,23,Starched Socks,1,1,0,48,320,128,1
+328,123,119,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,718,212,128,1
+329,123,120,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,562,332,96,1
+330,124,121,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,432,288,96,1
+331,124,122,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,468,330,96,1
+332,125,238,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,88,145,32,1
+333,125,239,haricot,0,consommable,0x2016,22,Hot Drumstick,1,1,0,40,424,16,1
+334,126,749,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,192,208,128,1
+335,127,196,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,424,168,0,1
+336,128,240,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,72,209,64,1
+337,128,241,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,352,504,0,1
+338,128,750,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,128,272,128,1
+339,128,751,bloc ?,1,consommable,0x2009,9,Max Syrup Jar,1,1,0,128,384,128,1
+340,129,242,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,384,224,16,1
+341,129,243,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,304,344,16,1
+342,129,734,bloc ?,1,equipement,0x403E,62,Budget Charm,1,1,0,36,366,64,1
+343,130,123,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,358,236,48,1
+344,130,124,bloc ?,1,equipement,0x404B,75,POW Mush Jam,1,1,0,408,236,48,1
+345,130,244,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,48,472,67,1
+346,130,245,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,448,96,32,1
+347,130,246,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,680,336,0,1
+348,130,247,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,102,504,0,1
+349,131,735,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,40,496,136,1
+350,132,127,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,56,248,80,1
+351,132,128,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,208,248,80,1
+352,133,129,bloc ?,1,pieces,0xFFFB,,pieces,500,5,4,216,310,112,1
+353,134,279,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,72,366,184,1
+354,134,280,bloc ?,1,pieces,0xFFFB,,pieces,500,5,4,144,366,48,1
+355,134,281,bloc ?,1,equipement,0x4047,71,Gold Ring,1,1,0,120,366,184,1
+356,134,282,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,448,366,48,1
+357,135,130,bloc ?,1,consommable,0x2002,2,Ultra Mushroom,3,1,2,124,264,192,1
+358,136,131,bloc ?,1,equipement,0x400B,11,Master Wear,1,1,0,84,264,192,1
+359,137,132,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,54,236,64,1
+360,137,133,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,122,236,64,1
+361,137,134,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,160,178,64,1
+362,138,466,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,676,170,64,1
+363,138,199,bloc ?,1,equipement,0x4025,37,Mushroom Gloves,1,1,0,676,286,64,1
+364,139,603,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,104,136,0,1
+365,139,604,haricot,0,consommable,0x2016,22,Hot Drumstick,1,1,0,128,128,0,1
+366,139,710,haricot,0,consommable,0x2016,22,Hot Drumstick,2,2,0,152,136,0,1
+367,140,391,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,64,552,0,1
+368,140,392,bloc brique,4,equipement,0x406A,106,Lucky Band,1,1,0,88,200,40,1
+369,140,393,bloc brique,4,pieces,0xFFFE,,pieces,5,1,1,328,160,40,1
+370,141,396,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,360,272,144,1
+371,141,397,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,480,272,144,1
+372,141,398,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,488,464,104,1
+373,142,399,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,712,368,0,1
+374,143,136,bloc brique,4,equipement,0x4055,85,DUMMY,1,1,0,72,128,0,1
+375,143,137,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,216,128,0,1
+376,144,400,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,64,296,0,1
+377,144,401,bloc brique,4,equipement,0x4073,115,Fury Fangs,1,1,0,974,160,0,1
+378,145,138,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,1,1,0,232,352,296,1
+379,146,628,bloc ?,1,consommable,0x2012,18,Power Bean,2,1,1,272,752,692,1
+380,147,139,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,40,560,376,1
+381,148,140,bloc ?,1,consommable,0x2001,1,Super Mushroom,1,1,0,336,368,320,1
+382,149,141,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,708,368,80,1
+383,149,630,bloc ?,1,consommable,0x2001,1,Super Mushroom,2,1,1,64,368,304,1
+384,150,142,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,168,176,80,1
+385,150,143,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,224,176,80,1
+386,150,144,bloc ?,1,equipement,0x4033,51,Heavy Boots,1,1,0,384,176,136,1
+387,150,207,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,360,180,56,1
+388,150,208,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,416,180,56,1
+389,150,209,haricot,0,consommable,0x2015,21,Retry Clock,4,4,0,448,180,56,1
+390,151,146,bloc ?,1,consommable,0x2001,1,Super Mushroom,1,1,0,336,368,320,1
+391,152,629,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,916,536,376,1
+392,153,147,bloc ?,1,equipement,0x401F,31,Doctor Socks,1,1,0,336,368,320,1
+393,154,148,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,72,368,304,1
+394,154,149,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,212,368,304,1
+395,155,151,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,336,368,320,1
+396,156,222,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,247,364,240,1
+397,156,223,haricot,0,consommable,0x2014,20,DUMMY,4,4,0,384,364,240,1
+398,156,224,haricot,0,consommable,0x2015,21,Retry Clock,5,5,0,448,364,240,1
+399,156,225,haricot,0,consommable,0x2014,20,DUMMY,6,6,0,576,364,240,1
+400,156,226,haricot,0,consommable,0x2014,20,DUMMY,7,7,0,640,364,240,1
+401,156,227,haricot,0,consommable,0x2015,21,Retry Clock,8,8,0,504,364,72,1
+402,156,228,haricot,0,consommable,0x2014,20,DUMMY,9,9,0,536,364,72,1
+403,156,229,haricot,0,consommable,0x2014,20,DUMMY,10,10,0,568,364,72,1
+404,156,230,haricot,0,consommable,0x2015,21,Retry Clock,11,11,0,600,364,72,1
+405,157,152,bloc ?,1,consommable,0x2001,1,Super Mushroom,2,1,1,904,368,328,1
+406,158,153,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,336,368,320,1
+407,159,154,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,400,336,296,1
+408,159,155,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,592,336,296,1
+409,159,156,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,768,336,296,1
+410,159,157,bloc ?,1,equipement,0x4009,9,Balm Wear,1,1,0,1144,336,112,1
+411,160,158,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,276,368,128,1
+412,160,250,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,152,368,240,1
+413,160,251,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,192,368,240,1
+414,160,252,haricot,0,consommable,0x2015,21,Retry Clock,4,4,0,248,368,240,1
+415,160,253,haricot,0,consommable,0x2014,20,DUMMY,5,5,0,296,368,240,1
+416,160,254,haricot,0,consommable,0x2014,20,DUMMY,6,6,0,328,368,240,1
+417,161,159,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,408,176,128,1
+418,161,631,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,1,1,0,36,176,128,1
+419,162,160,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,40,560,496,1
+420,162,161,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,656,560,368,1
+421,162,162,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,936,560,368,1
+422,163,164,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,304,176,80,1
+423,163,165,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,392,176,80,1
+424,164,166,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,56,752,416,1
+425,164,167,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,1,1,0,424,752,672,1
+426,164,168,bloc ?,1,equipement,0x4029,41,Flower Gloves,1,1,0,56,752,80,1
+427,164,212,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,56,752,224,1
+428,165,169,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,464,368,80,1
+429,165,170,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,2,1,1,208,368,296,1
+430,166,210,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,152,368,304,1
+431,166,211,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,208,368,304,1
+432,167,171,bloc ?,1,consommable,0x2008,8,Ultrasyrup Jar,1,1,0,80,152,96,1
+433,167,172,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,422,736,0,1
+434,168,173,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,56,168,120,1
+435,168,174,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,390,134,0,1
+436,169,175,bloc brique,4,consommable,0x2005,5,1-Up Deluxe,1,1,0,78,240,32,1
+437,169,213,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,472,440,32,1
+438,170,176,bloc ?,1,equipement,0x4006,6,Grown-up Wear,1,1,0,104,280,144,1
+439,171,177,bloc ?,1,pieces,0xFFFC,,pieces,250,5,3,93,512,96,1
+440,171,178,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,251,512,0,1
+441,171,180,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,720,328,128,1
+442,172,181,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,200,136,64,1
+443,172,182,bloc ?,1,consommable,0x2001,1,Super Mushroom,2,1,1,72,136,64,1
+444,172,215,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,144,96,0,1
+445,173,183,bloc brique,4,equipement,0x4057,87,Special Shell,1,1,0,472,216,0,1
+446,173,184,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,696,704,0,1
+447,174,185,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,160,52,0,1
+448,174,186,bloc brique,4,equipement,0x406E,110,Power Fangs X,1,1,0,672,52,0,1
+449,175,255,haricot,0,consommable,0x2014,20,DUMMY,5,5,0,80,88,0,1
+450,176,216,haricot,0,consommable,0x2014,20,DUMMY,4,4,0,216,136,0,1
+451,176,217,haricot,0,consommable,0x2015,21,Retry Clock,5,5,0,216,304,0,1
+452,176,218,haricot,0,consommable,0x2016,22,Hot Drumstick,3,3,0,40,304,0,1
+453,176,219,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,40,136,0,1
+454,177,99,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,304,120,0,1
+455,177,100,haricot,0,consommable,0x2014,20,DUMMY,4,4,0,400,160,0,1
+456,177,101,haricot,0,consommable,0x2016,22,Hot Drumstick,2,2,0,160,170,0,1
+457,177,102,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,296,232,0,1
+458,177,103,haricot,0,consommable,0x2014,20,DUMMY,5,5,0,408,224,0,1
+459,177,104,haricot,0,consommable,0x2014,20,DUMMY,7,7,0,424,232,0,1
+460,177,105,haricot,0,consommable,0x2016,22,Hot Drumstick,6,6,0,408,256,0,1
+461,177,106,haricot,0,consommable,0x2014,20,DUMMY,3,3,0,344,280,0,1
+462,177,188,bloc brique,4,consommable,0x200C,12,Nut,2,1,1,352,248,0,1
+463,177,189,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,352,120,0,1
+464,178,623,bloc brique variante,7,pieces,0xFFFD,,pieces,10,1,2,424,168,32,1
+465,179,624,bloc brique variante,7,pieces,0xFFFB,,pieces,100,1,4,460,192,80,1
+466,179,625,bloc brique variante,7,consommable,0x2004,4,1-Up Mushroom,4,1,3,96,704,0,1
+467,179,626,bloc brique variante,7,pieces,0xFFFC,,pieces,50,1,3,194,704,0,1
+468,180,627,bloc brique variante,7,consommable,0x200C,12,Nut,1,1,0,400,200,0,1
+469,181,737,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,348,312,0,1
+470,181,738,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,630,140,0,1
+471,182,190,bloc ?,1,equipement,0x4042,66,Heroic Patch,1,1,0,172,228,96,1
+472,182,191,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,440,304,0,1
+473,182,204,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,384,320,0,1
+474,182,205,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,408,264,0,1
+475,182,206,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,472,280,0,1
+476,183,220,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,288,136,0,1
+477,183,90,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,62,136,0,1
+478,184,192,bloc ?,1,equipement,0x4013,19,SP Socks,1,1,0,208,200,120,1
+479,184,193,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,460,532,128,1
+480,184,195,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,128,424,64,1
+481,184,221,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,208,368,64,1
+482,185,312,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,280,324,114,1
+483,185,314,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,624,324,114,1
+484,186,315,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,592,364,80,1
+485,187,316,bloc ?,1,consommable,0x2002,2,Ultra Mushroom,2,1,1,104,284,80,1
+486,187,317,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,80,284,208,1
+487,187,318,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,176,284,208,1
+488,188,319,bloc ?,1,consommable,0x200C,12,Nut,2,1,1,128,364,288,1
+489,188,320,bloc ?,1,pieces,0xFFFC,,pieces,500,10,3,288,364,80,1
+490,188,321,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,552,364,80,1
+491,189,322,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,78,300,208,1
+492,190,323,bloc ?,1,consommable,0x2009,9,Max Syrup Jar,2,1,1,710,340,292,1
+493,191,324,bloc ?,1,pieces,0xFFFC,,pieces,500,10,3,172,364,192,1
+494,191,327,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,598,364,192,1
+495,191,328,bloc ?,1,equipement,0x400D,13,Star Wear,1,1,0,686,364,288,1
+496,192,310,haricot,0,consommable,0x2015,21,Retry Clock,9,9,0,88,556,184,1
+497,192,311,haricot,0,consommable,0x2014,20,DUMMY,10,10,0,136,556,184,1
+498,192,329,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,220,556,60,1
+499,192,330,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,270,556,60,1
+500,192,331,bloc ?,1,pieces,0xFFFC,,pieces,250,5,3,726,556,60,1
+501,192,332,bloc ?,1,equipement,0x4023,35,POW Gloves,1,1,0,720,556,508,1
+502,193,333,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,126,172,80,1
+503,193,334,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,414,172,80,1
+504,193,335,bloc ?,1,consommable,0x2002,2,Ultra Mushroom,2,1,1,538,172,80,1
+505,194,513,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,148,724,480,1
+506,194,514,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,722,724,536,1
+507,194,515,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,660,724,536,1
+508,195,516,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,80,748,120,1
+509,195,517,haricot,0,consommable,0x2015,21,Retry Clock,3,3,0,136,748,72,1
+510,195,518,haricot,0,consommable,0x2014,20,DUMMY,5,5,0,544,748,40,1
+511,195,519,haricot,0,consommable,0x2016,22,Hot Drumstick,4,4,0,736,748,184,1
+512,196,520,bloc ?,1,pieces,0xFFFC,,pieces,500,10,3,68,556,272,1
+513,196,521,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,932,556,424,1
+514,196,522,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,796,556,424,1
+515,197,523,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,300,556,80,1
+516,197,524,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,412,556,144,1
+517,197,525,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,236,556,400,1
+518,197,526,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,300,556,512,1
+519,197,527,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,348,556,512,1
+520,197,528,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,44,556,512,1
+521,198,529,bloc ?,1,pieces,0xFFFC,,pieces,500,10,3,92,364,96,1
+522,198,530,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,156,364,96,1
+523,198,531,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,612,364,312,1
+524,198,532,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,772,364,312,1
+525,198,533,bloc ?,1,equipement,0x401C,28,EXP Socks,1,1,0,1172,364,312,1
+526,199,534,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,676,532,96,1
+527,199,539,haricot,0,consommable,0x2015,21,Retry Clock,8,8,0,144,532,16,1
+528,199,540,haricot,0,consommable,0x2015,21,Retry Clock,9,9,0,224,532,16,1
+529,200,535,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,60,364,80,1
+530,200,536,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,244,364,80,1
+531,200,537,bloc ?,1,consommable,0x200C,12,Nut,2,1,1,388,364,224,1
+532,200,538,bloc ?,1,equipement,0x400E,14,D-Star Wear,1,1,0,260,364,288,1
+533,201,287,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,224,348,0,1
+534,201,435,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,615,246,144,1
+535,202,436,bloc brique,4,consommable,0x2006,6,Syrup Jar,3,1,2,83,404,0,1
+536,202,437,bloc brique,4,consommable,0x200D,13,Super Nut,1,1,0,151,404,0,1
+537,203,438,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,50,160,24,1
+538,203,587,bloc brique,4,consommable,0x200D,13,Super Nut,1,1,0,50,374,24,1
+539,203,588,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,472,156,24,1
+540,204,570,bloc brique,4,equipement,0x406B,107,Block Band,1,1,0,344,408,40,1
+541,204,572,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,92,192,16,1
+542,204,573,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,420,192,16,1
+543,205,574,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,104,328,0,1
+544,205,575,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,680,216,0,1
+545,206,576,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,76,264,0,1
+546,207,578,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,49,386,120,1
+547,207,579,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,128,238,64,1
+548,207,643,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,72,184,0,1
+549,208,580,bloc ?,1,pieces,0xFFFC,,pieces,500,10,3,412,228,64,1
+550,208,581,bloc ?,1,consommable,0x200E,14,Ultra Nut,1,1,0,292,304,120,1
+551,208,582,bloc ?,1,consommable,0x2003,3,Max Mushroom,2,1,1,124,290,88,1
+552,208,583,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,182,160,64,1
+553,208,600,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,375,273,0,1
+554,208,610,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,383,200,0,1
+555,208,611,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,431,240,0,1
+556,209,584,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,52,380,88,1
+557,209,585,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,220,258,112,1
+558,210,586,bloc ?,1,equipement,0x400F,15,A-OK Wear,1,1,0,39,344,256,1
+559,211,402,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,61,402,0,1
+560,211,403,bloc brique,4,consommable,0x2006,6,Syrup Jar,2,1,1,459,192,72,1
+561,212,404,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,65,294,0,1
+562,212,405,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,200,216,0,1
+563,213,406,bloc brique,4,consommable,0x200D,13,Super Nut,1,1,0,256,416,24,1
+564,214,407,bloc brique,4,consommable,0x2006,6,Syrup Jar,2,1,1,89,120,0,1
+565,214,408,bloc brique,4,equipement,0x4074,116,Bone Fangs,1,1,0,441,302,0,1
+566,215,409,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,161,496,160,1
+567,216,410,bloc brique,4,consommable,0x200C,12,Nut,1,1,0,201,186,0,1
+568,217,411,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,73,300,176,1
+569,218,412,bloc brique,4,equipement,0x4059,89,Judge Shell,1,1,0,463,544,392,1
+570,219,414,bloc brique,4,equipement,0x405E,94,Wicked Shell,1,1,0,425,464,312,1
+571,220,415,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,73,152,0,1
+572,220,416,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,123,152,0,1
+573,220,417,bloc brique,4,consommable,0x200E,14,Ultra Nut,1,1,0,173,152,0,1
+574,221,418,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,169,344,0,1
+575,222,419,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,72,392,0,1
+576,223,741,bloc brique,4,consommable,0x200D,13,Super Nut,1,1,0,90,266,0,1
+577,224,420,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,57,392,16,1
+578,224,421,bloc brique,4,consommable,0x2006,6,Syrup Jar,2,1,1,411,226,104,1
+579,225,422,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,429,300,160,1
+580,226,423,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,264,408,0,1
+581,227,424,bloc brique,4,equipement,0x4063,99,Power Band +,1,1,0,407,156,0,1
+582,228,425,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,57,300,192,1
+583,229,426,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,64,296,0,1
+584,230,427,bloc brique,4,consommable,0x200E,14,Ultra Nut,1,1,0,53,294,192,1
+585,231,428,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,120,494,0,1
+586,231,429,bloc brique,4,equipement,0x407B,123,Glutton Ring,1,1,0,209,480,328,1
+587,232,430,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,55,294,192,1
+588,232,754,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,105,294,192,1
+589,232,755,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,155,294,192,1
+590,233,431,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,431,152,0,1
+591,234,757,bloc brique,4,pieces,0xFFFC,,pieces,50,1,3,408,172,0,1
+592,235,432,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,207,184,0,1
+593,236,433,bloc brique,4,consommable,0x2006,6,Syrup Jar,1,1,0,416,288,0,1
+594,236,434,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,416,176,0,1
+595,237,33,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,251,358,64,1
+596,237,308,bloc ?,1,consommable,0x2002,2,Ultra Mushroom,2,1,1,425,438,136,1
+597,237,309,bloc ?,1,pieces,0xFFFD,,pieces,100,10,2,153,486,120,1
+598,237,442,bloc ?,1,consommable,0x200C,12,Nut,1,1,0,453,164,120,1
+599,237,463,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,304,697,0,1
+600,237,464,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,392,200,0,1
+601,238,445,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,160,531,200,1
+602,238,465,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,72,480,24,1
+603,239,446,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,272,256,88,1
+604,239,447,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,112,504,0,1
+605,239,742,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,304,448,0,1
+606,239,752,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,468,286,64,1
+607,240,456,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,80,624,0,1
+608,240,457,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,128,624,0,1
+609,240,458,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,224,184,0,1
+610,240,753,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,680,320,216,1
+611,241,448,bloc ?,1,consommable,0x200A,10,Refreshing Herb,1,1,0,457,340,268,1
+612,241,449,bloc ?,1,consommable,0x2002,2,Ultra Mushroom,4,1,3,405,340,268,1
+613,241,450,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,353,340,268,1
+614,241,451,bloc ?,1,consommable,0x2011,17,Special Bean,1,1,0,114,340,236,1
+615,241,467,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,160,584,16,1
+616,241,468,haricot,0,consommable,0x2014,20,DUMMY,2,2,0,336,632,16,1
+617,242,459,bloc ?,1,pieces,0xFFFC,,pieces,500,10,3,553,278,120,1
+618,243,453,bloc ?,1,pieces,0xFFFE,,pieces,50,10,1,72,228,64,1
+619,243,454,bloc ?,1,equipement,0x4025,37,Mushroom Gloves,1,1,0,636,392,168,1
+620,243,455,bloc ?,1,consommable,0x200E,14,Ultra Nut,1,1,0,691,465,168,1
+621,243,470,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,544,519,104,1
+622,243,214,haricot,0,consommable,0x2016,22,Hot Drumstick,1,1,0,544,543,104,1
+623,244,506,bloc ?,1,pieces,0xFFFC,,pieces,500,10,3,96,160,48,1
+624,244,507,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,416,160,48,1
+625,244,508,bloc ?,1,pieces,0xFFFC,,pieces,50,1,3,128,512,80,1
+626,244,509,bloc ?,1,consommable,0x200E,14,Ultra Nut,1,1,0,460,496,128,1
+627,245,460,bloc ?,1,equipement,0x4022,34,Guardian Socks,1,1,0,59,240,48,1
+628,245,461,bloc ?,1,consommable,0x200F,15,Max Nut,1,1,0,49,328,48,1
+629,245,462,bloc ?,1,pieces,0xFFFB,,pieces,100,1,4,533,188,64,1
+630,246,443,bloc ?,1,consommable,0x2017,23,Fiery Drumstick,1,1,0,767,160,120,1
+631,246,444,bloc ?,1,pieces,0xFFFD,,pieces,10,1,2,911,150,64,1
+632,247,469,haricot,0,consommable,0x2015,21,Retry Clock,2,2,0,272,328,48,1
+633,248,126,bloc brique,4,equipement,0x4078,120,Cheap Ring,1,1,0,169,349,136,1
+634,248,471,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,548,646,136,1
+635,248,472,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,642,646,136,1
+636,249,496,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,400,240,0,1
+637,250,756,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,3,1,2,1164,362,120,1
+638,251,491,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,454,272,0,1
+639,251,492,bloc brique,4,equipement,0x405A,90,Rock Shell,1,1,0,949,396,176,1
+640,251,497,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,560,248,0,1
+641,251,505,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,952,440,112,1
+642,251,632,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,2,1,1,146,448,0,1
+643,252,493,bloc brique,4,consommable,0x2004,4,1-Up Mushroom,1,1,0,673,394,48,1
+644,252,498,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,160,376,152,1
+645,252,499,haricot,0,consommable,0x2015,21,Retry Clock,1,1,0,64,728,0,1
+646,252,633,bloc brique,4,pieces,0xFFFE,,pieces,5,1,1,140,596,96,1
+647,253,500,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,72,216,96,1
+648,254,501,haricot,0,consommable,0x2015,21,Retry Clock,0,0,0,88,328,208,1
+649,255,502,haricot,0,consommable,0x2016,22,Hot Drumstick,0,0,0,64,336,24,1
+650,255,503,haricot,0,consommable,0x2014,20,DUMMY,1,1,0,304,696,32,1
+651,255,634,bloc brique,4,pieces,0xFFFE,,pieces,5,1,1,280,600,0,1
+652,255,635,bloc brique,4,pieces,0xFFFD,,pieces,10,1,2,724,672,0,1
+653,256,543,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,54,316,152,1
+654,257,494,bloc brique,4,equipement,0x406C,108,Fury Band,1,1,0,137,220,0,1
+655,257,495,bloc brique,4,equipement,0x4054,84,DUMMY,1,1,0,189,288,0,1
+656,257,504,haricot,0,consommable,0x2014,20,DUMMY,0,0,0,96,192,0,1
+657,258,544,bloc ?,1,pieces,0xFFFF,,pieces,1,1,0,168,408,104,1
+658,258,545,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,468,440,88,1
+659,258,546,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,472,192,104,1
+660,258,547,bloc ?,1,pieces,0xFFFF,,pieces,1,1,0,40,192,104,1
+661,259,548,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,144,312,64,1
+662,260,549,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,384,328,240,1
+663,260,550,bloc ?,1,consommable,0x2000,0,Mushroom,3,1,2,688,328,96,1
+664,261,551,bloc ?,1,pieces,0xFFFF,,pieces,10,10,0,412,368,272,1
+665,261,552,bloc ?,1,pieces,0xFFFE,,pieces,5,1,1,552,368,298,1
+666,262,553,bloc ?,1,pieces,0xFFFF,,pieces,5,5,0,280,560,264,1
+667,262,554,bloc ?,1,consommable,0x2000,0,Mushroom,1,1,0,104,560,80,1
+668,263,555,bloc ?,1,consommable,0x2010,16,Heart Bean,3,1,2,696,176,80,1
+669,264,556,bloc ?,1,consommable,0x2000,0,Mushroom,3,1,2,184,352,288,1
+670,265,557,bloc ?,1,consommable,0x200B,11,Star Candy,3,1,2,440,160,96,1
+671,266,541,bloc ?,1,pieces,0xFFFE,,pieces,25,5,1,80,176,112,1
+672,266,542,bloc ?,1,consommable,0x200B,11,Star Candy,3,1,2,928,176,112,1
+673,267,558,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,144,446,0,1
+674,267,559,bloc brique,4,consommable,0x2006,6,Syrup Jar,1,1,0,116,360,16,1
+675,267,560,bloc brique,4,consommable,0x2012,18,Power Bean,3,1,2,396,288,32,1
+676,267,561,bloc brique,4,consommable,0x200E,14,Ultra Nut,1,1,0,116,200,48,1
+677,268,562,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,204,1604,344,1
+678,268,563,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,204,1604,920,1
+679,269,564,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,58,1604,344,1
+680,269,565,bloc brique,4,consommable,0x200E,14,Ultra Nut,1,1,0,58,1604,920,1
+681,270,566,bloc brique,4,pieces,0xFFFB,,pieces,100,1,4,176,480,0,1
+682,270,567,bloc brique,4,consommable,0x2006,6,Syrup Jar,3,1,2,360,664,0,1
+683,270,568,bloc brique,4,consommable,0x2017,23,Fiery Drumstick,1,1,0,180,276,0,1
+684,270,569,bloc brique,4,consommable,0x200F,15,Max Nut,1,1,0,332,276,0,1

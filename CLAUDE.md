@@ -10,8 +10,8 @@ Ne jamais raisonner sur une autre version.
 
 - Mario & Luigi Bowser's Inside Story, NDS, région NA, révision pre-DSi
 - SHA-256 `9126963d6c6b6f81a9a666ba766e223781ff286634486e2a56d07a4c82eef4f1`
-- Vérifiée le 27 juillet 2026 contre les références de
-  `randoglobin/main.py` lignes 189 à 196
+- Référence issue de `randoglobin/main.py` lignes 189 à 196. Le `.nds`
+  présent dans ce dossier a été rehashé le 2 août 2026 et correspond
 - Non moddée
 
 Tout offset, adresse ou structure se rapporte à cette révision. Si une
@@ -58,16 +58,9 @@ s'inspirer.
 
 ## Contraintes d'empaquetage APWorld
 
-Erreurs classiques dont le message ne pointe pas vers la vraie cause.
-
-- Le fichier `.apworld` doit être entièrement en minuscules
-- Le zip doit contenir un dossier au nom exactement identique au zip
-- Imports internes au monde en relatif (`from .options import ...`)
-- Imports vers le cœur d'Archipelago en absolu
-  (`from worlds.AutoWorld import World`)
-- L'empaquetage passe par le composant Build APWorlds du launcher, qui
-  ajoute lui-même `version` et `compatible_version`. Ne jamais les
-  écrire à la main
+Cinq pièges dont le message d'erreur ne pointe pas vers la vraie cause,
+détaillés dans `empaquetage-apworld.md`. À relire avant le premier
+empaquetage, pas avant.
 
 ## Piège de logique connu
 
@@ -139,15 +132,20 @@ de continuer à ajouter.
 
 ## Sources, du plus fiable au moins fiable
 
-1. Doc Archipelago : `world api.md`, `apworld specification.md`,
+1. **`vendor/Archipelago/worlds/mlss`**, l'APWorld Superstar Saga,
+   livré dans le cœur d'Archipelago. Même série, même studio, BIS en
+   est la suite directe. C'est le modèle de référence pour
+   l'architecture, la logique et les conventions. Voir
+   `reference-mlss.md`
+2. Doc Archipelago : `world api.md`, `apworld specification.md`,
    `apworld_dev_faq.md`, `network protocol.md`
-2. Code d'un APWorld NDS existant, par exemple Pokémon Mystery Dungeon
+3. Code d'un APWorld NDS existant, par exemple Pokémon Mystery Dungeon
    Explorers of Sky ou Pokémon Black and White
-3. Écosystème MnL-Modding : Randoglobin pour les tables d'objets,
+4. Écosystème MnL-Modding : Randoglobin pour les tables d'objets,
    Cheatoglobin pour la structure de sauvegarde, mnllib et mnlscript
    pour les formats internes
-4. Documentation MnL-Modding, https://mnl-modding.github.io/BIS-docs/
-5. Discussions communautaires, à traiter comme des pistes
+5. Documentation MnL-Modding, https://mnl-modding.github.io/BIS-docs/
+6. Discussions communautaires, à traiter comme des pistes
 
 ## Acquis à ne pas redécouvrir
 
@@ -167,8 +165,55 @@ de continuer à ajouter.
   MnL-Modding date de septembre 2024 et est périmée. Régénérer depuis
   `cutscene_code/bisdocs.py` du dépôt BIS-docs
 
+### Structures confirmées, détail dans `formats-bis.md`
+
+- **Sauvegarde** : magie `MLRPG3`, deux slots à `0x0010` et `0x0FE8`.
+  Le slot porte un checksum sur ses `0x5F2` premiers octets et une
+  copie de secours à `slot + 0x7EC`. **Toute écriture doit recalculer
+  le checksum et répliquer la copie**, sinon le slot est rejeté
+- **Locations candidates** : `Treasure/TreasureInfo.dat`, entrées de
+  12 octets, **647 exploitables** dont 281 blocs `?` et 197 haricots.
+  Les octets 4-5 de chaque entrée portent un identifiant unique de 0 à
+  757, jamais lu par Randoglobin. Meilleur candidat au numéro de
+  `location`
+- **Flags** : les progressions sont des variables de script.
+  `Variables[0x200E]` vaut 0 tant que le Bloc Aspirateur n'est pas
+  acquis. Les `0x2xxx` sont probablement des bits dans les 8 octets à
+  `slot + 0x0124`
+- **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
+  pas d'état de sauvegarde
+- **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
+  l'anglais. Index 1 à 12 dehors, 13 à 30 dans Bowser, 31 `Challenge
+  Node`. Base naturelle du découpage en `region`
+
+### Tables déjà extraites, dans `data/`
+
+Régénérables par `tools/extract_names.py` puis
+`tools/build_location_table.py`, dans le venv `venv/` de la racine.
+
+- `locations_bis.csv` : les 685 entrées de trésor décodées, avec
+  identifiant, type, objet nommé, quantité, salle et coordonnées
+- `noms_items.csv` : 204 objets nommés, tous types confondus
+- `noms_zones.csv` : les 32 zones
+
 ## Non résolu
 
-Comment le jeu retient qu'un bloc a déjà été frappé. Aucune source
-consultée à ce jour ne documente les flags de progression ni la
-structure de sauvegarde. C'est le point bloquant de la faisabilité.
+**Le point bloquant est levé, et vérifié.** Les trésors ramassés sont
+suivis par un champ de bits dans `Main RAM` :
+
+```
+bit du trésor d'identifiant N  ->  octet 0x0560C8 + N // 8, bit N % 8
+```
+
+Confirmé le 3 août 2026 par cinq dumps sur les quatre blocs de la salle
+258. Les bits suivent les identifiants de `TreasureInfo.dat` et non
+l'ordre des ramassages. Protocole et preuve dans `formats-bis.md`.
+
+Restent ouverts, plus rien de bloquant :
+
+- Sur un bloc à `max_hits` supérieur à 1, le bit monte-t-il au premier
+  coup ou à l'épuisement ? Détermine quand une `location` est validée
+- Comment le champ est recopié dans la sauvegarde. `SRAM` n'a pas bougé
+  de l'expérience, le jeu n'y écrit qu'à une sauvegarde explicite
+- Où sont les flags des trésors hors `TreasureInfo.dat` : coffres de
+  quête, récompenses de PNJ, boutiques

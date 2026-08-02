@@ -1,0 +1,205 @@
+item_brut,type_item_brut,type_item,id_item,nom
+0x1000,1,attaque,0,DUMMY
+0x1001,1,attaque,1,DUMMY
+0x1002,1,attaque,2,DUMMY
+0x1003,1,attaque,3,Spin Pipe
+0x1004,1,attaque,4,Yoo Who Cannon
+0x1005,1,attaque,5,Bob-omb Blitz
+0x1006,1,attaque,6,Goomba Storm
+0x1007,1,attaque,7,Shy Guy Squad
+0x1008,1,attaque,8,Green Shell
+0x1009,1,attaque,9,DUMMY
+0x100A,1,attaque,10,Koopa Corps
+0x100B,1,attaque,11,DUMMY
+0x100C,1,attaque,12,DUMMY
+0x100D,1,attaque,13,Jump Helmet
+0x100E,1,attaque,14,Super Bouncer
+0x100F,1,attaque,15,DUMMY
+0x1010,1,attaque,16,Mighty Meteor
+0x1011,1,attaque,17,Fire Flower
+0x1012,1,attaque,18,DUMMY
+0x1013,1,attaque,19,Magic Window
+0x1014,1,attaque,20,Magikoopa Mob
+0x1015,1,attaque,21,Snack Basket
+0x1016,1,attaque,22,DUMMY
+0x1017,1,attaque,23,Broggy Bonker
+0x1018,1,attaque,24,Falling Star
+0x1019,1,attaque,25,DUMMY
+0x101A,1,attaque,26,DUMMY
+0x101B,1,attaque,27,DUMMY
+0x101C,1,attaque,28,DUMMY
+0x2000,2,consommable,0,Mushroom
+0x2001,2,consommable,1,Super Mushroom
+0x2002,2,consommable,2,Ultra Mushroom
+0x2003,2,consommable,3,Max Mushroom
+0x2004,2,consommable,4,1-Up Mushroom
+0x2005,2,consommable,5,1-Up Deluxe
+0x2006,2,consommable,6,Syrup Jar
+0x2007,2,consommable,7,Supersyrup Jar
+0x2008,2,consommable,8,Ultrasyrup Jar
+0x2009,2,consommable,9,Max Syrup Jar
+0x200A,2,consommable,10,Refreshing Herb
+0x200B,2,consommable,11,Star Candy
+0x200C,2,consommable,12,Nut
+0x200D,2,consommable,13,Super Nut
+0x200E,2,consommable,14,Ultra Nut
+0x200F,2,consommable,15,Max Nut
+0x2010,2,consommable,16,Heart Bean
+0x2011,2,consommable,17,Special Bean
+0x2012,2,consommable,18,Power Bean
+0x2013,2,consommable,19,DUMMY
+0x2014,2,consommable,20,DUMMY
+0x2015,2,consommable,21,Retry Clock
+0x2016,2,consommable,22,Hot Drumstick
+0x2017,2,consommable,23,Fiery Drumstick
+0x2018,2,consommable,24,TNT Drumstick
+0x2019,2,consommable,25,DUMMY
+0x3000,3,badge,0,Mushroom Badge
+0x3001,3,badge,1,Powerful Badge
+0x3002,3,badge,2,Bonus Badge
+0x3003,3,badge,3,Bro Badge
+0x3004,3,badge,4,Good Badge
+0x3005,3,badge,5,Great Badge
+0x3006,3,badge,6,Excellent! Badge
+0x3007,3,badge,7,Excellent!! Badge
+0x3008,3,badge,8,DUMMY
+0x4000,4,equipement,0,Thin Wear
+0x4001,4,equipement,1,Picnic Wear
+0x4002,4,equipement,2,Leisure Wear
+0x4003,4,equipement,3,Fighter Wear
+0x4004,4,equipement,4,Heart Wear
+0x4005,4,equipement,5,Brawny Wear
+0x4006,4,equipement,6,Grown-up Wear
+0x4007,4,equipement,7,Koopa Wear
+0x4008,4,equipement,8,Hero Wear
+0x4009,4,equipement,9,Balm Wear
+0x400A,4,equipement,10,Muscle Wear
+0x400B,4,equipement,11,Master Wear
+0x400C,4,equipement,12,King Wear
+0x400D,4,equipement,13,Star Wear
+0x400E,4,equipement,14,D-Star Wear
+0x400F,4,equipement,15,A-OK Wear
+0x4010,4,equipement,16,Rental Wear
+0x4011,4,equipement,17,HP Socks
+0x4012,4,equipement,18,Deluxe HP Socks
+0x4013,4,equipement,19,SP Socks
+0x4014,4,equipement,20,DX SP Socks
+0x4015,4,equipement,21,Hustle Socks
+0x4016,4,equipement,22,Coin Socks
+0x4017,4,equipement,23,Starched Socks
+0x4018,4,equipement,24,Gumption Socks
+0x4019,4,equipement,25,Bro Socks
+0x401A,4,equipement,26,Gall Socks
+0x401B,4,equipement,27,Rugged Socks
+0x401C,4,equipement,28,EXP Socks
+0x401D,4,equipement,29,No-touch Socks
+0x401E,4,equipement,30,Nurse Socks
+0x401F,4,equipement,31,Doctor Socks
+0x4020,4,equipement,32,Special Socks
+0x4021,4,equipement,33,Surprising Socks
+0x4022,4,equipement,34,Guardian Socks
+0x4023,4,equipement,35,POW Gloves
+0x4024,4,equipement,36,DX POW Gloves
+0x4025,4,equipement,37,Mushroom Gloves
+0x4026,4,equipement,38,Special Gloves
+0x4027,4,equipement,39,Heavy Gloves
+0x4028,4,equipement,40,Delicious Gloves
+0x4029,4,equipement,41,Flower Gloves
+0x402A,4,equipement,42,Bye-Bye Gloves
+0x402B,4,equipement,43,Softener Gloves
+0x402C,4,equipement,44,Item Gloves
+0x402D,4,equipement,45,Siphon Gloves
+0x402E,4,equipement,46,Dent Gloves
+0x402F,4,equipement,47,POW Boots
+0x4030,4,equipement,48,DX POW Boots
+0x4031,4,equipement,49,Tip-Top Boots
+0x4032,4,equipement,50,Special Boots
+0x4033,4,equipement,51,Heavy Boots
+0x4034,4,equipement,52,Daredevil Boots
+0x4035,4,equipement,53,Shell Boots
+0x4036,4,equipement,54,Dizzy Boots
+0x4037,4,equipement,55,Shroob Boots
+0x4038,4,equipement,56,Coin Boots
+0x4039,4,equipement,57,Siphon Boots
+0x403A,4,equipement,58,Big Stomp Boots
+0x403B,4,equipement,59,Happy Charm
+0x403C,4,equipement,60,Luck Charm
+0x403D,4,equipement,61,Thrift Charm
+0x403E,4,equipement,62,Budget Charm
+0x403F,4,equipement,63,Tight Belt
+0x4040,4,equipement,64,Advice Patch
+0x4041,4,equipement,65,Luxury Patch
+0x4042,4,equipement,66,Heroic Patch
+0x4043,4,equipement,67,Small Shell
+0x4044,4,equipement,68,Big Shell
+0x4045,4,equipement,69,Giant Shell
+0x4046,4,equipement,70,KO Shell
+0x4047,4,equipement,71,Gold Ring
+0x4048,4,equipement,72,Gold Crown
+0x4049,4,equipement,73,Lazy Scarf
+0x404A,4,equipement,74,Mushroom Stone
+0x404B,4,equipement,75,POW Mush Jam
+0x404C,4,equipement,76,DEF Mush Jam
+0x404D,4,equipement,77,Treasure Specs
+0x404E,4,equipement,78,Vengeance Cape
+0x404F,4,equipement,79,Challenge Medal
+0x4050,4,equipement,80,DUMMY
+0x4051,4,equipement,81,DUMMY
+0x4052,4,equipement,82,DUMMY
+0x4053,4,equipement,83,DUMMY
+0x4054,4,equipement,84,DUMMY
+0x4055,4,equipement,85,DUMMY
+0x4056,4,equipement,86,Shabby Shell
+0x4057,4,equipement,87,Special Shell
+0x4058,4,equipement,88,Safety Shell
+0x4059,4,equipement,89,Judge Shell
+0x405A,4,equipement,90,Rock Shell
+0x405B,4,equipement,91,Armored Shell
+0x405C,4,equipement,92,Rampage Shell
+0x405D,4,equipement,93,Dream Shell
+0x405E,4,equipement,94,Wicked Shell
+0x405F,4,equipement,95,Ironclad Shell
+0x4060,4,equipement,96,Rental Shell
+0x4061,4,equipement,97,King Shell
+0x4062,4,equipement,98,Power Band
+0x4063,4,equipement,99,Power Band +
+0x4064,4,equipement,100,Minion Band
+0x4065,4,equipement,101,Minion Band SP
+0x4066,4,equipement,102,Iron Fist Band
+0x4067,4,equipement,103,Vampire Band
+0x4068,4,equipement,104,Stamina Band
+0x4069,4,equipement,105,Hunter Band
+0x406A,4,equipement,106,Lucky Band
+0x406B,4,equipement,107,Block Band
+0x406C,4,equipement,108,Fury Band
+0x406D,4,equipement,109,Power Fangs
+0x406E,4,equipement,110,Power Fangs X
+0x406F,4,equipement,111,Special Fangs
+0x4070,4,equipement,112,Special Fangs X
+0x4071,4,equipement,113,Red-hot Fangs
+0x4072,4,equipement,114,Burning Fangs
+0x4073,4,equipement,115,Fury Fangs
+0x4074,4,equipement,116,Bone Fangs
+0x4075,4,equipement,117,Intruder Fangs
+0x4076,4,equipement,118,Block Fangs
+0x4077,4,equipement,119,Flashy Fangs
+0x4078,4,equipement,120,Cheap Ring
+0x4079,4,equipement,121,Economy Ring
+0x407A,4,equipement,122,Heroic Ring
+0x407B,4,equipement,123,Glutton Ring
+0x407C,4,equipement,124,Excellent Ring
+0x407D,4,equipement,125,Drumstick Ring
+0x407E,4,equipement,126,Peace Ring
+0x407F,4,equipement,127,Fill-up Ring
+0x4080,4,equipement,128,Restore Ring
+0x4081,4,equipement,129,Fast Cash Ring
+0x4082,4,equipement,130,Treasure Ring
+0x4083,4,equipement,131,Safety Ring
+0x4084,4,equipement,132,Hard Ring
+0x4085,4,equipement,133,Block Ring
+0x4086,4,equipement,134,DUMMY
+0x4087,4,equipement,135,DUMMY
+0x4088,4,equipement,136,DUMMY
+0x4089,4,equipement,137,DUMMY
+0x408A,4,equipement,138,DUMMY
+0x408B,4,equipement,139,No gear
