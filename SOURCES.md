@@ -151,6 +151,22 @@ from a ROM you supply yourself. If a rights holder objects to the
 presence of these name tables, open an issue and they will be removed;
 the tools that regenerate them are enough to keep the project working.
 
+## Scope of this repository's own licence
+
+The MIT licence in `LICENSE` covers the **original work here**: the
+tools under `tools/`, the documentation, and the data tables those
+tools generate.
+
+It does not and cannot cover the underlying game. Item names, zone
+names and structural identifiers under `data/` are extracted from a
+commercial ROM and remain the property of their rights holders.
+
+Third-party projects listed above keep their own licences.
+
+*(This note lived inside `LICENSE` at first, which prevented GitHub from
+recognising the file as MIT. Keeping `LICENSE` to the bare MIT text and
+the clarifications here fixes the detection without losing anything.)*
+
 ## Verification
 
 `data/preuve_champ_bits.txt` holds the 95 bytes of the treasure
