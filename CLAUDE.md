@@ -157,21 +157,10 @@ Ordre de fiabilité à respecter :
 
 ## Acquis à ne pas redécouvrir
 
-- La table des commandes de script vit dans `overlay_0006.bin` à
-  l'offset `0x014b08` une fois décompressé. Source : commentaire dans
-  `cutscene_code/bisdocs.py` du dépôt MnL-Modding/BIS-docs
-- Les commandes `0x0000` à `0x0046` incluses sont communes à tous les
-  dialectes de script. Source : BIS-docs, page Getting started
-- `0x0043 Get Item Amount` prend un item ID et retourne la quantité
-  possédée. `0x0044 Add Items` prend un item ID et une quantité, et
-  retourne le nombre réellement ajouté. Source : sortie de
-  `bisdocs.py`, entrées 0043 et 0044
-- Randoglobin injecte du code ARM custom, il embarque `bis.asm` et un
-  binaire pour la cible `armv5te-none-eabi` dans
-  `randoglobin/files/bis.zip`
-- La copie de la doc des commandes présente sur le Google Drive de
-  MnL-Modding date de septembre 2024 et est périmée. Régénérer depuis
-  `cutscene_code/bisdocs.py` du dépôt BIS-docs
+- **Commandes de script** : table dans `overlay_0006.bin`, plage
+  commune, commandes d'objets `0x0043` et `0x0044`, injection ARM.
+  Détail dans `formats-bis.md`. La doc du Google Drive de MnL-Modding
+  est périmée, régénérer depuis `bisdocs.py`
 
 ### Structures confirmées, détail dans `formats-bis.md`
 

@@ -78,6 +78,31 @@ Ce qui fonde l'hypothèse coordonnées sur les octets 6 à 11 : plages
 troisième champ n'a que 71 valeurs distinctes, ce qui ressemble à une
 hauteur.
 
+## Commandes de script
+
+Sorti de `CLAUDE.md` le 3 août 2026 pour le maintenir sous son seuil de
+220 lignes. Rien de tout ceci ne sert avant qu'on touche aux scripts.
+
+**Vérifié** :
+
+- La table des commandes de script vit dans `overlay_0006.bin` à
+  l'offset `0x014b08` une fois décompressé. Source : commentaire dans
+  `cutscene_code/bisdocs.py` du dépôt MnL-Modding/BIS-docs
+- Les commandes `0x0000` à `0x0046` incluses sont communes à tous les
+  dialectes de script. Source : BIS-docs, page Getting started
+- `0x0043 Get Item Amount` prend un item ID et retourne la quantité
+  possédée. `0x0044 Add Items` prend un item ID et une quantité, et
+  retourne le nombre réellement ajouté. Source : sortie de
+  `bisdocs.py`, entrées 0043 et 0044
+- Randoglobin injecte du code ARM custom, il embarque `bis.asm` et un
+  binaire pour la cible `armv5te-none-eabi` dans
+  `randoglobin/files/bis.zip`, ce qui prouve que ce chemin est
+  praticable sur BIS
+
+**Périmé, ne pas s'y fier** : la copie de la doc des commandes présente
+sur le Google Drive de MnL-Modding date de septembre 2024. Régénérer
+depuis `cutscene_code/bisdocs.py` du dépôt BIS-docs.
+
 ## Domaines mémoire BizHawk pour le NDS
 
 **Vérifié** le 3 août 2026, relevé dans la console Lua de BizHawk 2.10
