@@ -51,10 +51,19 @@ comment l'obtenir.
 
 ## Licences
 
-Randoglobin est sous GPL-3.0-or-later. Le lire pour comprendre est
-libre. En recopier du code imposerait la GPL à l'APWorld. Signaler
-l'implication dès qu'il est question de réutiliser plutôt que de
-s'inspirer.
+**Vérifié** dans les fichiers `LICENSE` des dépôts, le 3 août 2026.
+Détail et attributions dans `SOURCES.md`.
+
+- Randoglobin et Cheatoglobin : **GPL-3.0-or-later**. Les lire est
+  libre, en recopier du code imposerait la GPL à l'APWorld
+- `mnllib.py` : **LGPL-3.0**, donc utilisable comme dépendance sans
+  contaminer l'APWorld. C'est déjà le cas dans `tools/extract_names.py`
+- BIS-docs : **GPL-3.0** pour le code, **CC BY-SA 4.0** pour la
+  documentation, qui impose l'attribution
+- Archipelago : **MIT**
+
+Signaler l'implication dès qu'il est question de réutiliser plutôt que
+de s'inspirer.
 
 ## Contraintes d'empaquetage APWorld
 
@@ -132,20 +141,19 @@ de continuer à ajouter.
 
 ## Sources, du plus fiable au moins fiable
 
+URL, commits consultés, licences et attributions : `SOURCES.md`.
+Ordre de fiabilité à respecter :
+
 1. **`vendor/Archipelago/worlds/mlss`**, l'APWorld Superstar Saga,
    livré dans le cœur d'Archipelago. Même série, même studio, BIS en
-   est la suite directe. C'est le modèle de référence pour
-   l'architecture, la logique et les conventions. Voir
-   `reference-mlss.md`
+   est la suite directe. Modèle de référence pour l'architecture, la
+   logique et les conventions. Dépouillé dans `reference-mlss.md`
 2. Doc Archipelago : `world api.md`, `apworld specification.md`,
    `apworld_dev_faq.md`, `network protocol.md`
-3. Code d'un APWorld NDS existant, par exemple Pokémon Mystery Dungeon
-   Explorers of Sky ou Pokémon Black and White
-4. Écosystème MnL-Modding : Randoglobin pour les tables d'objets,
-   Cheatoglobin pour la structure de sauvegarde, mnllib et mnlscript
-   pour les formats internes
-5. Documentation MnL-Modding, https://mnl-modding.github.io/BIS-docs/
-6. Discussions communautaires, à traiter comme des pistes
+3. Code d'un APWorld NDS existant, Pokémon Mystery Dungeon Explorers of
+   Sky ou Pokémon Black and White
+4. Écosystème MnL-Modding, puis sa documentation
+5. Discussions communautaires, à traiter comme des pistes
 
 ## Acquis à ne pas redécouvrir
 

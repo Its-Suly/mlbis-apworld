@@ -112,15 +112,17 @@ Le `.gitignore` exclut les `.nds`, `.7z`, `.zip` et les fichiers de
 sauvegarde. Toutes les tables de `data/` sont régénérées depuis une ROM
 locale que vous fournissez vous-même, rien n'est saisi à la main.
 
-## Remerciements
+## Remerciements et sources
 
 Ce travail repose entièrement sur la recherche communautaire
-antérieure :
+antérieure. **[SOURCES.md](SOURCES.md) recense chaque source avec son
+URL, le commit exact consulté, sa licence, et ce qui en a été tiré.**
 
-- L'écosystème [MnL-Modding](https://github.com/MnL-Modding) —
-  Randoglobin pour les tables de trésors et d'objets, Cheatoglobin pour
-  la structure de sauvegarde, `mnllib` pour les formats internes,
-  BIS-docs pour les commandes de script
+- La communauté [MnL-Modding](https://github.com/MnL-Modding) et son
+  [Discord](https://discord.gg/rhJ6HGyymJ) — Randoglobin pour les
+  tables de trésors et d'objets, Cheatoglobin pour la structure de
+  sauvegarde, `mnllib` pour les formats internes, BIS-docs pour les
+  commandes de script
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago), et en
   particulier son `worlds/mlss` intégré, le monde Superstar Saga, qui
   avait déjà résolu ce type de problème pour le premier jeu de la série
@@ -129,3 +131,9 @@ Randoglobin et Cheatoglobin sont sous GPL-3.0-or-later. Ils ont été
 **lus pour comprendre**, et des faits en ont été tirés — offsets,
 formats de fichiers, dispositions de champs. **Aucun code n'a été
 recopié.** En réutiliser le code imposerait la GPL à l'APWorld obtenu.
+`mnllib` est en LGPL-3.0 et *est* utilisé comme dépendance, ce que sa
+licence autorise.
+
+Si vous estimez qu'une partie de ce dépôt reproduit votre code au lieu
+de reformuler un fait qui en a été appris, ouvrez une issue et elle
+sera retirée.

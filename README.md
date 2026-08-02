@@ -108,14 +108,16 @@ The `.gitignore` excludes `.nds`, `.7z`, `.zip` and save files. Every
 table under `data/` is regenerated from a local ROM you supply
 yourself; nothing was entered by hand.
 
-## Credits
+## Credits and sources
 
-This work stands entirely on prior community research:
+This work stands entirely on prior community research. **[SOURCES.md](SOURCES.md)
+lists every source with its URL, the exact commit consulted, its
+licence, and what was taken from it.**
 
-- The [MnL-Modding](https://github.com/MnL-Modding) ecosystem —
-  Randoglobin for the treasure and item tables, Cheatoglobin for the
-  save structure, `mnllib` for the internal formats, BIS-docs for the
-  script commands
+- The [MnL-Modding](https://github.com/MnL-Modding) community and its
+  [Discord](https://discord.gg/rhJ6HGyymJ) — Randoglobin for the
+  treasure and item tables, Cheatoglobin for the save structure,
+  `mnllib` for the internal formats, BIS-docs for the script commands
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago), and in
   particular its bundled `worlds/mlss`, the Superstar Saga world, which
   had already solved this class of problem for the first game in the
@@ -124,4 +126,8 @@ This work stands entirely on prior community research:
 Randoglobin and Cheatoglobin are GPL-3.0-or-later. They were **read to
 understand**, and facts were drawn from them — offsets, file formats,
 field layouts. **No code was copied.** Reusing their code would impose
-the GPL on the resulting APWorld.
+the GPL on the resulting APWorld. `mnllib` is LGPL-3.0 and *is* used as
+a dependency, which its licence permits.
+
+If you believe anything here reproduces your code rather than restating
+a fact learned from it, open an issue and it will be removed.
