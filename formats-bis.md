@@ -751,6 +751,133 @@ Observation faite avant que la réponse de Marc n'arrive, ce qui lui donne
 la valeur d'une prédiction rencontrée après coup plutôt que d'une lecture
 orientée. Elle porte sur un seul dump, elle ne remplace pas une preuve.
 
+## Trésors hors `TreasureInfo.dat`
+
+Coffres de quête, récompenses de PNJ, achats en boutique. Établi le
+4 août 2026 par balayage complet de `FEvent.dat`, chunks 0 et 1 des 681
+triples, overlays 3 et 6 chargés : **538 508 commandes**, zéro warning,
+zéro octet non parsé. L'index 2 du triple est une `LanguageTable`
+(`vendor/mnllib.py/mnllib/bis/managers.py:34`), pas un script.
+
+### Le résultat est négatif, et c'est ce qui oriente la suite
+
+**Vérifié** : aucune commande de script ne référence jamais une variable
+de `0xE000` à `0xE3FF`, ni en `result_variable` ni en argument. Or c'est
+la plage des trésors. Les seules variables `Exxx` écrites le sont
+exclusivement par la commande `0x0008 Set`
+(`vendor/BIS-docs/cutscene_code/bis_docs_commands.yml:80-86`) : 338
+valeurs distinctes entre `0xE400` et `0xE552`, 1072 entre `0xE700` et
+`0xEDB4`, sur 53 622 écritures.
+
+**Les scripts ne posent donc pas les flags de trésor par variable.**
+
+Ce que ça ne prouve pas : qu'ils ne déclenchent jamais l'acquisition d'un
+trésor. Une commande passant un identifiant littéral à un handler ARM qui
+ferait `bitfield[id/8] |= 1<<(id%8)` serait invisible à cette méthode. Ça
+colle avec le fait que Randoglobin patche l'overlay 4 pour les trésors.
+
+**Conséquence pratique** : étendre le balayage de `FEvent` ne donnera
+rien de plus. Ce qui trancherait est un **breakpoint d'écriture BizHawk
+sur `020560C8`**, puis la remontée au code appelant.
+
+Non couvert par le balayage : les scripts de combat
+(`BattleScriptManager`, `managers.py:228`), les MAI et SAI non
+chargeables par mnllib, et les tables de données que sont les boutiques
+et `TreasureInfo.dat`.
+
+### Ce qui est énumérable par programme, et ce qui ne l'est pas
+
+**Vérifié.** Randoglobin connaît trois familles d'emplacements :
+
+| Famille | Mécanisme | Volume |
+|---|---|---|
+| `TreasureInfo.dat` | table de données, parcourue en entier, `treasure.py:308-339` | 647 exploitables |
+| Boutiques | **fichier de données** `MData/MDataShopBuyList.dat`, `data_classes.py:99-126`, versé au même pool par `treasure.py:341-355` | 64 emplacements, 8 boutiques |
+| Récompenses de quête | **quatre couples salle / sous-routine écrits en dur**, `treasure.py:357-390` | 32 checks |
+
+Les boutiques sont donc énumérables sans travail manuel. Les récompenses
+de quête ne le sont pas : `mnlscript_sidequests.py` code en dur `0x028D`,
+`0x0128`, `0x0129`, `0x0287`, et 21 `room_id` en dur au total sur les
+modules `mnlscript_*.py`. **Le seul randomizer BIS existant a buté sur le
+même mur et l'a contourné à la main.** Pas d'avance gratuite, mais pas
+non plus de découpage existant auquel se conformer.
+
+Restent hors de son pool : objets clés, soins et capacités, désactivés
+par `setEnabled(False)` (`treasure.py:760-783`) ; Challenge Node,
+Cholesteroad, Broque Madame, Final Rank et Birdley, commentés
+(`treasure.py:556-578`, `604-608`).
+
+### Les commandes de don, recensées
+
+**Vérifié** dans `FEvent.dat` : 318 × `0x0044 Add Items`, 131 ×
+`0x0041 Add Coins`, 5 × `0x0043 Get Item Amount`. Noms dans
+`bis_docs_commands.yml:490-507`.
+
+**Aucun des 318 `0x0044` n'a d'identifiant d'objet en variable** : tous
+littéraux, donc résolubles statiquement, sans émulation. C'est le point
+directement exploitable.
+
+Mais 349 de ces commandes se concentrent dans les salles `0x0000`,
+`0x0001` et `0x0002`, dont les tables de langue ne contiennent que
+« no need to translate ». Salles de développement selon toute
+vraisemblance — **aucune source ne les nomme ainsi**, c'est une
+inférence. Hors de ces trois salles il reste 105 commandes, réparties sur
+46 sous-routines et 42 salles, et elles arrivent en lots : la salle
+`0x0128` sous-routine 28 en porte 9 d'affilée.
+
+Formulation à retenir : le balayage énumère les commandes de don de façon
+reproductible, ce qui **réduit le travail manuel à une quarantaine de
+sous-routines à qualifier**, mais ne le remplace pas.
+
+### Attribuer un flag à chaque don ne marche pas localement
+
+**Vérifié.** Sur les 100 dons hors salles de développement, chercher
+« une seule variable `Exxx` testée par `0x0002` puis posée par `0x0008`
+dans la même sous-routine » n'attribue un flag certain qu'à **5** dons.
+En relâchant à « une seule `Exxx` posée, sans exiger le test », on monte
+à 25. Les trois quarts restent non résolus dans les deux cas.
+
+Sur les 318 sites `0x0044`, **244 ne contiennent aucune commande `Exxx`**.
+La garde vit chez l'appelant, pas sur place.
+
+Exemple complet, salle `0x028D` chunk 0 sous-routine `0x12`, le seul
+motif propre observé :
+
+```
+cmd[4]  0x0002(0x00, V[0xEAB9], 0x0, 0x00, 0x165)   saute si le flag est deja pose
+cmd[5]  0x0008(0x1) -> V[0xEAB9]                    pose le flag
+cmd[34] 0x0044(0x4066, 0x1)                         donne Block Band
+```
+
+Deux pièges dans ce seul exemple. Les offsets de saut sont relatifs à la
+**fin** de la commande (`bis_docs_commands.yml:34-39`). Et le flux n'est
+pas linéaire : `cmd[19] 0x0049` « Start Thread Here and Jump » fait
+sauter le thread principal par-dessus `cmds[20..32]`, si bien qu'une
+lecture naïve croirait `cmd[34]` inatteignable.
+
+**Le flag est posé avant le don.** Une `location` validée sur ce flag
+sera signalée un peu avant que le joueur voie l'objet.
+
+### Découpage `Exxx` selon mnllib
+
+`vendor/mnllib.py/mnllib/bis/consts.py:96-109` déclare douze plages,
+dont `TREASURE range(0xE000, 0xE400)`, `ENEMY range(0xE400, 0xE700)` et
+`STORY range(0xE700, 0x10000)`. Les entiers simples sont étendus en
+`range(X, (X|0x0FFF)+1)` par `utils.py:22-28`.
+
+À corriger dans nos notes : `STORY` va jusqu'à `0xFFFF` et non `0xEFFF`,
+ce qui est cohérent avec `Exxx` et `Fxxx` traités comme un seul tableau.
+
+**Ne pas promouvoir cette source.** Il serait tentant d'y voir du code
+plutôt qu'une affirmation Discord, donc plus fiable. Trois raisons de ne
+pas le faire : mnllib vient de la même communauté, `VariableType` n'est
+importé ni utilisé nulle part ailleurs dans la bibliothèque donc rien ne
+casserait si les bornes étaient fausses, et le jumeau Dream Team marque
+`TREASURE` et `ENEMY` d'un `# TODO` (`mnllib/dt/consts.py:90-91`).
+Surtout, **aucune occurrence de `560C8` dans mnllib** : rien n'y relie
+ces identifiants de variables au champ de bits de la Main RAM. Ce pont
+reste **à tester**.
+
 ## Écarté
 
 `EObjSave/EObjSave.dat` ne contient aucun état de sauvegarde malgré son

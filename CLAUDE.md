@@ -140,19 +140,13 @@ Prochain candidat : la liste des sources, qui doublonne `SOURCES.md`.
 ## Sources, du plus fiable au moins fiable
 
 URL, commits consultés, licences et attributions : `SOURCES.md`.
-Ordre de fiabilité à respecter :
-
-1. **`vendor/Archipelago/worlds/mlss`**, l'APWorld Superstar Saga,
-   livré dans le cœur d'Archipelago. Même série, même studio, BIS en
-   est la suite directe. Modèle de référence pour l'architecture, la
-   logique et les conventions. Dépouillé dans `reference-mlss.md`
-2. Doc Archipelago : `world api.md`, `apworld specification.md`,
-   `apworld_dev_faq.md`, `network protocol.md`
-3. Code d'un APWorld NDS existant, Pokémon Mystery Dungeon Explorers of
-   Sky ou Pokémon Black and White
-4. Écosystème MnL-Modding, ses outils puis sa documentation, dont
-   `inf.gg/mlbis/manual`, en CC0 donc réutilisable sans contrainte
-5. Discussions communautaires, à traiter comme des pistes
+Ordre de fiabilité à respecter, du plus sûr au moins sûr :
+`vendor/Archipelago/worlds/mlss`, l'APWorld Superstar Saga livré dans le
+cœur d'Archipelago, modèle de référence dépouillé dans
+`reference-mlss.md` ; la doc Archipelago ; un APWorld NDS existant,
+Pokémon Mystery Dungeon ou Black and White ; l'écosystème MnL-Modding,
+ses outils puis sa documentation, dont `inf.gg/mlbis/manual` en CC0 ;
+enfin les discussions communautaires, à traiter comme des pistes.
 
 ## Acquis à ne pas redécouvrir
 
@@ -216,5 +210,6 @@ Restent ouverts, plus rien de bloquant :
 
 - Livrer un objet : les compteurs sont cartographiés, l'écriture reste
   à tester dessus, et le moment sûr pour écrire n'est pas défini
-- Les flags des trésors hors `TreasureInfo.dat` sont des flags de
-  cinématique, à lire via `mnlscript`, ce n'est pas une table à dumper
+- Trésors hors `TreasureInfo.dat` : boutiques énumérables par
+  `MDataShopBuyList.dat`, quêtes à qualifier à la main. **Aucun script ne
+  touche `0xE000-0xE3FF`**, donc trancher par breakpoint sur `020560C8`
