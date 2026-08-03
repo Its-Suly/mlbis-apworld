@@ -8,9 +8,13 @@ Aucun monde n'existe à ce jour pour ce jeu.
 
 ## État : faisabilité, et elle est acquise
 
-**Aucune ligne d'APWorld n'est encore écrite.** Ce dépôt contient de la
-recherche, des tables de données extraites, et les outils qui les
-produisent.
+**Un squelette de monde existe maintenant dans `mlbis/`.** Archipelago
+0.6.8 le charge et génère une seed avec 647 `location` et 86 `item` —
+sans logique, sans client, sans patch de ROM. Reproductible par
+`venv\Scripts\python.exe tools\test_generation.py`.
+
+Le reste du dépôt est de la recherche, des tables de données extraites,
+et les outils qui les produisent.
 
 La question qui bloquait tout le projet s'énonçait simplement et
 n'avait de réponse dans aucune source disponible : **comment le jeu

@@ -8,8 +8,13 @@ world exists yet for this game.
 
 ## Status: feasibility, and it is now established
 
-**No APWorld code has been written yet.** This repository currently
-holds research, extracted data tables, and the tools that produce them.
+**A skeleton world now exists in `mlbis/`.** Archipelago 0.6.8 loads it
+and generates a seed with 647 locations and 86 items — no logic, no
+client, no ROM patching yet. Reproduce with
+`venv\Scripts\python.exe tools\test_generation.py`.
+
+Everything else here is research, extracted data tables, and the tools
+that produce them.
 
 The question that blocked the whole project was simple to state and had
 no answer in any available source: **how does the game record that a

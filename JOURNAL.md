@@ -1,5 +1,44 @@
 # Journal du projet APWorld BIS
 
+## 4 août 2026, le squelette génère
+
+Premier code d'APWorld du projet, dans `mlbis/`. Six fichiers, aucune
+ligne de données saisie à la main : `tools/build_apworld_data.py`
+fabrique `mlbis/data.py` depuis `locations_bis.csv`, lui-même régénéré
+depuis la ROM.
+
+Archipelago 0.6.8 le charge et sort une seed :
+
+```
+Mario & Luigi Bowser's Inside Story  : v0.0.0 | Items: 86 | Locations: 647
+```
+
+Contrôle que la seed n'est pas vide : `Block 0` contenait 100 pièces dans
+le jeu d'origine, il porte autre chose après brassage.
+
+Choix d'identifiants, posé maintenant parce qu'il devient un contrat gelé
+dès la première seed publiée : `BASE_ID = 0xB15000`, et la location d'un
+trésor vaut `BASE_ID + identifiant`. L'identifiant étant aussi le rang du
+bit dans `Exxx`, **un identifiant de location se lit directement comme un
+index de bit**, sans table de correspondance. Les identifiants 758 à 1023
+restent libres, et le hors-table commencera à `BASE_ID + 1024`, ce qui
+reproduit l'espace d'index du tableau `Exxx`.
+
+Trois choses sont volontairement absentes, et il faut savoir pourquoi :
+
+- **Une seule region.** Pas par paresse : `locations_bis.csv` porte un
+  numéro de salle reconstruit dans l'ordre du fichier, et les 32 zones
+  nommées sont une autre numérotation. La correspondance entre les deux
+  n'est pas établie, et l'inventer serait inventer une donnée
+- **Aucun item de progression.** Déclarer une progression sans
+  `access_rule` qui l'utilise ne change rien au placement et donnerait
+  une fausse impression de logique
+- **Aucune option**, pour la même raison
+
+`tools/test_generation.py` rend le test reproductible : il recopie
+`mlbis/` dans `vendor/Archipelago/worlds/`, génère, et vérifie que le
+monde a bien été listé. Vérifié en repartant d'un dossier effacé.
+
 ## 4 août 2026, un workflow trouve une erreur dans notre propre travail
 
 Deux chantiers de bureau lancés en parallèle pendant que l'utilisateur

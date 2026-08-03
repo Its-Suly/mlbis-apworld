@@ -1,8 +1,9 @@
 # Projet APWorld BIS
 
 Développement d'un APWorld Archipelago pour Mario & Luigi : Voyage au
-Centre de Bowser, version NDS de 2009. Phase actuelle : faisabilité.
-Rien n'est encore écrit.
+Centre de Bowser, version NDS de 2009. Faisabilité acquise : lecture des
+checks, écriture d'items et sauvegarde vérifiées. Le monde vit dans
+`mlbis/`, squelette qui génère une seed. Test `tools/test_generation.py`.
 
 ## Version de ROM, figée
 
@@ -173,6 +174,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
   à `02056406 + N`, équipement `M` à `02056427 + M`. `slot + 0x0054 + X`
   correspond à `02056400 + X + 2`. **L'écriture y est effective** : 999
   écrit en jeu, repris à l'écran puis dans la sauvegarde
+- **Identifiants de location**, à figer avant la première seed publiée :
+  `BASE_ID = 0xB15000`, location d'un trésor = `BASE_ID + identifiant`,
+  qui est aussi son rang de bit dans `Exxx`. `BASE_ID + 1024` et au-delà
+  réservés aux locations hors `TreasureInfo.dat`
 - **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
   pas d'état de sauvegarde
 - **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
