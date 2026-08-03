@@ -75,6 +75,19 @@ vierge :
 utile : le bit ne monte pas à l'instant de la frappe mais quelques frames
 plus tard. Il suit l'*attribution* de l'objet, pas le coup porté au bloc.
 
+### Où les flags vivent dans la sauvegarde
+
+Le même tableau est écrit dans la sauvegarde à `slot + 0x01B4`, à côté
+des quatre autres tableaux de registres globaux, à des offsets qu'un
+décompilé de la routine de sauvegarde (overlay 129) prédisait et qu'une
+sauvegarde réelle a ensuite confirmés octet par octet. La copie de
+secours à `slot + 0x7EC` en porte une image identique.
+
+Un octet ne correspond pas : la sauvegarde allume un bit à `Exxx + 0x167`
+que la RAM ne porte jamais. **La sauvegarde n'est pas une copie fidèle de
+la RAM**, donc y recopier l'une effacerait ce bit — un piège pour plus
+tard, au même titre que le checksum et la copie de secours.
+
 ## Contenu
 
 | Chemin | Contenu |

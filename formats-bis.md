@@ -71,15 +71,41 @@ et les cinq offsets se traduisent ainsi :
 **Les flags de trésors sont donc à `slot + 0x01B4 + N // 8`**, bit
 `N % 8`, dans la zone que Cheatoglobin laissait non documentée.
 
-Deux réserves, à lever par notre propre mesure :
+### Confirmé par la mesure, `run11`
 
-- Le décalage de `0x38` entre `param_1` et le début du slot est une
-  déduction à partir d'une seule ancre. Ce qui la rend solide est que
-  les cinq offsets s'alignent avec la **même** constante
-- Nous n'avons pas lancé Ghidra nous-mêmes, c'est une capture d'écran
-  lue sur Discord. Le test qui trancherait est direct : sauvegarder en
-  jeu puis chercher le motif avec `tools/compare_block.py`, qui balaie
-  tout le dump `SRAM` et rapporte l'offset réellement trouvé
+Sauvegarde faite en jeu le 3 août 2026 avec le seul trésor 546 ramassé,
+puis dump. Les cinq tableaux sont aux cinq offsets prédits, avec les
+bonnes tailles :
+
+| Tableau | RAM | Sauvegarde | Résultat |
+|---|---|---|---|
+| `2xxx` | `0x056038` | `slot + 0x0124` | identique |
+| `Dxxx` | `0x056040` | `slot + 0x012C` | identique |
+| `Exxx` | `0x0560C8` | `slot + 0x01B4` | un octet d'écart, voir plus bas |
+| `6xxx` | `0x0562C8` | `slot + 0x03B4` | identique |
+| anonyme | `0x056360` | `slot + 0x044C` | identique |
+
+`tools/compare_block.py` a trouvé l'empreinte à deux endroits, `0x0208`
+et `0x09F4`. Le premier place le tableau à `slot 1 + 0x01B4`. Le second
+tombe sur la **copie de secours**, `slot + 0x7EC + 0x01B4`, identique à
+la principale, ce qui confirme au passage l'offset `0x7EC` de
+Cheatoglobin. Le décalage de `0x38` déduit du décompilé était donc juste.
+
+### La sauvegarde n'est pas une copie fidèle de la RAM
+
+Un seul écart sur les 906 octets, mais il compte. À `Exxx + 0x167`, la
+sauvegarde porte `0x80` là où la RAM est à `0x00`, et l'est restée dans
+les six dumps `run06` à `run11`. Il s'agit de l'index 2879, variable
+`0xEB3F`, dans la plage histoire.
+
+Deux explications tiennent, **non tranchées** : la routine écrit ce bit
+directement dans le tampon de sauvegarde, ou bien le jeu le lève pendant
+la boîte de dialogue et le rabaisse avant notre dump. Un dump pris
+pendant le dialogue de sauvegarde départagerait les deux.
+
+**Piège** : écrire dans la sauvegarde en y recopiant la RAM telle quelle
+effacerait ce bit. À traiter le jour où on touchera au `.sav`, en même
+temps que le checksum et la copie de secours.
 
 À noter, la sérialisation ne copie pas le bloc entier : `5xxx` et `Cxxx`,
 qui précèdent `2xxx` en RAM, ne figurent pas dans ces cinq copies.
@@ -218,10 +244,12 @@ de 0** sur ce cœur, contrairement aux tableaux d'octets renvoyés par
 `for i = 1, #liste` saute silencieusement `Main RAM` et retourne une
 liste plausible mais amputée.
 
-**Hypothèse forte** : le domaine `SRAM` est le fichier de sauvegarde.
-Ses 8192 octets contiennent tout juste les 8136 octets qu'occupe la
-structure décrite plus haut, jusqu'à `0x0FE8 + 0x7EC + 0x5F4`. Si elle
-se confirme, la sauvegarde est lisible en direct sans passer par un
+**Vérifié** le 3 août 2026 : le domaine `SRAM` **est** le fichier de
+sauvegarde. Ses 8192 octets contiennent tout juste les 8136 octets
+qu'occupe la structure décrite plus haut, jusqu'à
+`0x0FE8 + 0x7EC + 0x5F4`. Une sauvegarde faite en jeu au `run11` y a bien
+écrit les cinq tableaux de registres et leur copie de secours. La
+sauvegarde est donc lisible et modifiable en direct, sans passer par un
 fichier `.sav` sur le disque.
 
 ## Tables de texte, noms d'objets et de zones

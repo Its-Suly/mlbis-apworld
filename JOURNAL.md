@@ -439,6 +439,37 @@ visait peut-être une des branches `v0.1` ou `v0.2`.
 Leçon générale : une remarque d'un contributeur mieux informé que nous
 mérite d'être vérifiée, pas gobée ni écartée. Elle coûtait deux commandes.
 
+### H2 vérifiée par la mesure, et un octet qui dépasse
+
+Sauvegarde faite en jeu dans la foulée, avec le seul trésor 546 ramassé,
+puis `run11`. Les cinq tableaux sont aux cinq offsets prédits, tailles
+comprises. `compare_block.py` trouve l'empreinte à `0x0208`, soit
+`slot 1 + 0x01B4`.
+
+Bonus non demandé : l'empreinte apparaît une seconde fois, à `0x09F4`.
+C'est la copie de secours, `slot + 0x7EC + 0x01B4`. L'offset `0x7EC` de
+Cheatoglobin se trouve confirmé sans qu'on l'ait cherché, et la copie est
+identique à la principale.
+
+Le seul écart du bloc est un octet, et il vaut mieux qu'une confirmation
+de plus : à `Exxx + 0x167` la sauvegarde porte `0x80` quand la RAM est à
+`0x00`, dans les six dumps `run06` à `run11`. Index 2879, variable
+`0xEB3F`, plage histoire.
+
+Autrement dit, **la sauvegarde n'est pas une copie fidèle de la RAM**.
+Soit la routine écrit ce bit directement dans le tampon, soit le jeu le
+lève pendant la boîte de dialogue et le rabaisse avant le dump. Non
+tranché ; un dump pris pendant le dialogue départagerait.
+
+Ce que ça change concrètement : recopier la RAM dans la sauvegarde
+effacerait ce bit. Le piège est noté dans `CLAUDE.md` à côté du checksum
+et de la copie de secours, parce qu'il se manifestera au même moment.
+
+Remarque de méthode. Le script avait été écrit le matin avec une
+recherche de motif « au cas où la prédiction serait fausse ». Elle n'a
+pas servi à rattraper une erreur, elle a servi à trouver la copie de
+secours. Une sortie prévue pour un échec a payé sur un succès.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est remonté à 219 lignes, à une du plafond. Trois lignes

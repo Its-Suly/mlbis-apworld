@@ -168,7 +168,9 @@ Ordre de fiabilité à respecter :
 - **Sauvegarde** : magie `MLRPG3`, deux slots à `0x0010` et `0x0FE8`.
   Le slot porte un checksum sur ses `0x5F2` premiers octets et une
   copie de secours à `slot + 0x7EC`. **Toute écriture doit recalculer
-  le checksum et répliquer la copie**, sinon le slot est rejeté
+  le checksum et répliquer la copie**, sinon le slot est rejeté. Le
+  tableau `Exxx` y est copié à `slot + 0x01B4`, mesuré. Ne pas y
+  recopier la RAM telle quelle : la sauvegarde porte un bit de plus
 - **Locations candidates** : `Treasure/TreasureInfo.dat`, entrées de
   12 octets, **647 exploitables** dont 281 blocs `?` et 197 haricots.
   Les octets 4-5 portent un identifiant unique de 0 à 757, qui est le
@@ -212,7 +214,5 @@ Restent ouverts, plus rien de bloquant :
 
 - **Risque principal** : livrer un item dans le jeu qui tourne n'a
   jamais été testé. La détection est acquise, l'écriture non
-- Le champ est recopié à `slot + 0x01B4`, d'après le décompilé de
-  l'overlay 129 montré sur Discord. À confirmer par notre mesure
 - Les flags des trésors hors `TreasureInfo.dat` sont des flags de
   cinématique, à lire via `mnlscript`, ce n'est pas une table à dumper

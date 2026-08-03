@@ -71,6 +71,19 @@ is validated on the first hit. `run07` adds a detail worth knowing: the
 bit is not set at the instant of the hit but a few frames later. It
 follows the item being *awarded*, not the block being struck.
 
+### Where the flags live in the save file
+
+The same array is written into the save at `slot + 0x01B4`, alongside
+the four other global register arrays, at offsets that a decompiled
+listing of the save routine (overlay 129) predicted and that a live save
+then confirmed byte for byte. The backup copy at `slot + 0x7EC` carries
+an identical image.
+
+One byte does not match: the save sets a bit at `Exxx + 0x167` that the
+RAM never shows. **The save is not a faithful copy of RAM**, so writing
+one into the other would clear that bit — a trap for later, alongside
+the checksum and the backup copy.
+
 ## What is in here
 
 | Path | Contents |
