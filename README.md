@@ -103,7 +103,7 @@ writing is safe outside the overworld.
 | Path | Contents |
 |---|---|
 | `data/locations_bis.csv` | 685 decoded treasure entries: identifier, type, named item, amount, room, coordinates |
-| `data/noms_items.csv` | 204 item names extracted from the ROM |
+| `data/noms_items.csv` | 191 item names extracted from the ROM |
 | `data/noms_zones.csv` | The game's 32 named zones |
 | `tools/` | ROM extraction, RAM dumping, diff analysis |
 | `formats-bis.md` | Every confirmed structure, with file and line references |

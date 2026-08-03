@@ -1,5 +1,70 @@
 # Journal du projet APWorld BIS
 
+## 4 août 2026, un workflow trouve une erreur dans notre propre travail
+
+Deux chantiers de bureau lancés en parallèle pendant que l'utilisateur
+jouait : l'écart entre 127 compteurs d'équipement et 140 noms extraits,
+et les flags des trésors hors `TreasureInfo.dat`. Quatre agents
+chercheurs, chaque affirmation ensuite confiée à un agent chargé de la
+démolir plutôt que de la confirmer. 29 agents, 18 affirmations
+survivantes, 6 réfutées.
+
+Le résultat le plus utile n'était pas dans la question posée.
+
+### Nos deux CSV publiés étaient faux
+
+`tools/extract_names.py` faisait `noms[::pas]` et supposait que
+l'identifiant d'un objet valait sa position dans la table de texte
+divisée par le pas des triplets. Faux. L'identifiant indexe une table
+d'enregistrements de l'**arm9 décompressé**, et c'est cet enregistrement
+qui porte le numéro de chaîne.
+
+Vérifié moi-même avant d'agir, dans le code puis sur la ROM, parce que le
+rapport contredisait une affirmation que j'avais faite la veille :
+
+- `treasure.py:137-141` — `item_id = item & 0xFFF`, `seek(pointeur -
+  0x2004000)`, `seek(item_id * [24,24,16,32][type-1])`, `string_id = u16`
+- `main.py:1169` — table de pointeurs à `0x000145C0` pour la base NA
+- `treasure.py:162` — le pluriel est `string_id + 1`, donc la table de
+  texte s'indexe bien par `string_id`
+
+Dégâts : **396 noms sur 685** faux dans `locations_bis.csv`, **129 sur
+129** pour les équipements. Ce qui n'a pas bougé : aucun identifiant,
+aucun type, aucun montant, aucune coordonnée. Le défaut vivait dans la
+seule colonne `nom_item`.
+
+### Ce qui rendait l'erreur invisible
+
+Le 2 août, on avait écrit que les 26 consommables correspondaient
+exactement aux 26 compteurs de la sauvegarde, « ce qui confirme les deux
+lectures l'une par l'autre ». Le compte était juste. L'ordre ne l'était
+pas. **Un décompte qui tombe juste ne valide pas la bijection qui va
+avec**, et c'est exactement le genre de faux positif que la règle du
+projet sur les sources fichier-et-ligne existe pour éviter.
+
+Corollaire personnel : j'ai écrit hier que l'inventaire du `run13`
+contenait « 3 Champignons et 1 Haricot Cœur ». C'était `1-Up Mushroom`.
+Le contrôle restait valide, l'étiquette non.
+
+Corroboration de la correction, non cherchée : les 26 consommables se
+rangent maintenant par familles — Champignons 0 à 3, Pilons 4 à 6, Noix
+7 à 10, Sirops 11 à 14, 1-Up 16 et 17, Haricots 20 à 22. L'ancienne
+lecture les éparpillait. Et l'équipement d'identifiant 0 est `No gear`,
+l'emplacement vide, ce qui explique d'un coup le décalage de 1 sur les
+129 équipements.
+
+### Sur la méthode du workflow
+
+Le passage adversarial a aussi produit une réfutation **fausse** : un
+agent a « corrigé » un nom d'item en s'appuyant sur `noms_items.csv`,
+c'est-à-dire sur le fichier que la même passe venait de prouver faux. La
+relecture ROM a donné raison à l'énoncé d'origine. Un vérificateur qui
+s'appuie sur une source déjà disqualifiée ne vérifie rien.
+
+Trois comptes de Cheatoglobin ont servi de corroboration externe,
+`constants.py` lignes 85, 114 et 264 : `ITEM_DATA` 26, `GEAR_DATA` 129,
+`BADGE_NAMES` 8. Aucun code recopié, seulement des faits sur la ROM.
+
 ## 27 juillet 2026, installation de l'environnement
 
 Exécution des phases 2 à 7 du plan `installation-apworld-bis.md`, en une

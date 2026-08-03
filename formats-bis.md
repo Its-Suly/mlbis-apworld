@@ -169,8 +169,12 @@ Adresses utiles, **la primitive de livraison d'items** :
 
 Contrôle de cohérence au `run13` : deux compteurs non nuls seulement,
 `3` à l'index 0 et `1` à l'index 16, soit trois `Mushroom` et un
-`Heart Bean` d'après `data/noms_items.csv`. Un inventaire de joueur
-plausible, sur les bons noms.
+`1-Up Mushroom`. Un inventaire de début de partie plausible.
+
+Ce contrôle a d'abord été écrit « trois `Mushroom` et un `Heart Bean` »,
+sur la foi d'un `data/noms_items.csv` alors faux. Les offsets, eux, ne
+dépendaient pas du nom : la cartographie tient, seule l'étiquette était
+fausse.
 
 ### Écriture validée, **Vérifié**
 
@@ -399,18 +403,67 @@ Index de langue, **relevés et non devinés** :
 Attention, l'anglais est la table **2** et non 1 comme la valeur de
 langue de `constants.py` le laisse croire.
 
-Pas entre deux objets, différent selon la table :
+### L'identifiant d'un objet n'indexe pas la table de texte
 
-| Type | Fichier | Entrées | Pas | Objets |
+**Vérifié** le 4 août 2026, et **ça invalide une lecture faite le 2 août**.
+
+L'identifiant indexe une table d'enregistrements de l'**arm9 décompressé**,
+et c'est cet enregistrement qui porte le numéro de chaîne. Source
+`vendor/Randoglobin/randoglobin/treasure.py` lignes 135 à 142 :
+
+```
+item      = (type << 12) | id
+pointeurs = 4 mots à l'offset 0x000145C0 de l'arm9 décompressé  (main.py:1169)
+adresse   = pointeur - 0x2004000
+record    = adresse + id * [24, 24, 16, 32][type - 1]
+string_id = u16 en tête du record
+nom       = entrées_de_texte[string_id]     (pluriel à string_id + 1, ligne 162)
+```
+
+**Piège** : l'arm9 doit être décompressé, sinon l'offset `0x145C0`
+n'existe pas. Le brut fait 219 452 octets, le décompressé 341 144.
+Méthode `main.py:391`, `ndspy.codeCompression.decompress`.
+
+| Type | Table arm9 | Pas | Objets | Source du compte |
 |---|---|---|---|---|
-| 1 attaque | `BData/mfset_AItmN.dat` | 29 | 1 | 29 |
-| 2 consommable | `BData/mfset_UItmN.dat` | 78 | 3 | 26 |
-| 3 badge | `BData/mfset_BadgeN.dat` | 26 | 3 | 9 |
-| 4 équipement | `BData/mfset_WearN.dat` | 420 | 3 | 140 |
+| 1 attaque | `0x4EA68` | 24 | 28 | borne `string_id` |
+| 2 consommable | `0x4E7F8` | 24 | 26 | Cheatoglobin `ITEM_DATA` |
+| 3 badge | `0x4E6F8` | 16 | 8 | Cheatoglobin `BADGE_NAMES` |
+| 4 équipement | `0x4FB30` | 32 | 129 | Cheatoglobin `GEAR_DATA` |
 
-Le pas de 3 vient des triplets singulier, pluriel, message « Full! ».
-Les 26 consommables correspondent exactement aux 26 compteurs d'objets
-de la sauvegarde, ce qui confirme les deux lectures l'une par l'autre.
+Les 26 consommables se recoupent trois fois : `constants.py` ligne 85,
+les 26 compteurs de la sauvegarde, et l'écart entre deux tables de
+l'arm9, `(0x4EA68 - 0x4E7F8) / 24 = 26`.
+
+Le pas de 3 des triplets singulier / pluriel / « Full! » est réel dans la
+table de **texte**, mais il ne donne pas l'identifiant. La version
+précédente de ce fichier en tirait `id = position // pas`, ce qui était
+faux : voir « Ce que cette correction a coûté » ci-dessous.
+
+Contrôle de cohérence, corrigé : l'équipement d'identifiant 0 est
+`No gear`, l'emplacement vide, et non le premier vêtement. Les 26
+consommables se rangent par familles — Champignons 0 à 3, Pilons 4 à 6,
+Noix 7 à 10, Sirops 11 à 14, 1-Up 16 et 17, Haricots 20 à 22 — là où
+l'ancienne lecture les éparpillait.
+
+### Ce que cette correction a coûté
+
+**396 noms sur 685** changent dans `data/locations_bis.csv`, et **129 sur
+129** dans les équipements de `data/noms_items.csv`. Le fichier passe de
+204 à 191 objets, les 13 en trop étant des identifiants qui n'existaient
+pas.
+
+Ce qui n'a **pas** bougé, et c'est ce qui limite les dégâts : aucun
+identifiant de trésor, aucun type, aucun montant, aucune coordonnée. Le
+défaut vivait dans la seule colonne `nom_item`, parce que
+`tools/build_location_table.py` ligne 72 calcule `id_item = item & 0xFFF`
+directement depuis la ROM et ne demandait à `noms_items.csv` qu'un
+libellé.
+
+Ce qui a permis de le voir : les 26 compteurs de consommables de la
+sauvegarde correspondaient bien à 26 objets, ce qui donnait l'illusion
+d'une lecture confirmée. Le compte était juste, l'ordre ne l'était pas.
+**Un décompte qui tombe juste ne valide pas la bijection qui va avec.**
 
 `mfset_EMesPlace.dat` table `0x44` donne **32 zones**, index 0 valant
 `----`. Elles se séparent en deux mondes : index 1 à 12 à l'extérieur,

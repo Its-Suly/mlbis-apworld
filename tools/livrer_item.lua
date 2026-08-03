@@ -20,11 +20,18 @@ local BASE_CONSOMMABLES = 0x056406
 local DOMAINE = "Main RAM"
 local MAX_PAR_OBJET = 99   -- prudence : plafond suppose, jamais mesure
 
--- 0 Mushroom, 4 1-Up Mushroom, 6 Syrup Jar, 12 Nut, 16 Heart Bean.
--- Liste complete dans data/noms_items.csv, colonne id_item.
-local INDEX = 4
+-- Index reels, regeneres le 4 aout 2026 depuis la table de l'arm9 :
+--   0-3   Mushroom, Super, Ultra, Max
+--   4-6   Hot / Fiery / TNT Drumstick
+--   7-10  Nut, Super, Ultra, Max
+--   11-14 Syrup Jar, Super, Ultra, Max
+--   15    Star Candy      16-17  1-Up Mushroom, 1-Up Deluxe
+--   18    Refreshing Herb 20-22  Heart / Special / Power Bean
+--   23    Retry Clock     19, 24, 25  DUMMY
+-- Liste faisant foi : data/noms_items.csv, colonne id_item.
+local INDEX = 7
 local QUANTITE = 1
-local NOM = "1-Up Mushroom"
+local NOM = "Nut"
 
 local function lire(adr)
     return memory.read_bytes_as_array(adr, 1, DOMAINE)[1]

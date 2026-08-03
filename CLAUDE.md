@@ -192,7 +192,8 @@ Régénérables par `tools/extract_names.py` puis
 
 - `locations_bis.csv` : les 685 entrées de trésor décodées, avec
   identifiant, type, objet nommé, quantité, salle et coordonnées
-- `noms_items.csv` : 204 objets nommés, tous types confondus
+- `noms_items.csv` : 191 objets. L'identifiant indexe une table de
+  l'arm9 décompressé, pas la table de texte. Corrigé le 4 août 2026
 - `noms_zones.csv` : les 32 zones
 
 ## Non résolu

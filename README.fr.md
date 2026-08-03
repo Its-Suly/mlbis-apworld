@@ -108,7 +108,7 @@ et savoir si écrire hors du terrain est sans risque.
 | Chemin | Contenu |
 |---|---|
 | `data/locations_bis.csv` | 685 entrées de trésor décodées : identifiant, type, objet nommé, quantité, salle, coordonnées |
-| `data/noms_items.csv` | 204 noms d'objets extraits de la ROM |
+| `data/noms_items.csv` | 191 noms d'objets extraits de la ROM |
 | `data/noms_zones.csv` | Les 32 zones nommées du jeu |
 | `tools/` | Extraction ROM, dump de RAM, analyse de diff |
 | `formats-bis.md` | Toutes les structures confirmées, avec fichier et ligne |
