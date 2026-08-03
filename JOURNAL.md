@@ -504,6 +504,41 @@ interprétation.
 `u32` de pièces en tête, mais la suite décalée de 2 octets. La
 correspondance champ par champ reste à faire.
 
+### Ultracode et auto mode rendus permanents pour le projet
+
+Demande de l'utilisateur : que le raccourci du bureau ouvre toujours une
+session en ultracode, c'est-à-dire effort `xhigh` plus orchestration de
+workflows, et en auto mode.
+
+Réglages écrits dans `.claude/settings.local.json`, qui est couvert par
+le gitignore global de la machine, `~/.config/git/ignore` ligne 3, donc
+rien ne part sur GitHub :
+
+```
+effortLevel              xhigh
+ultracode                true
+skipWorkflowUsageWarning true
+permissions.defaultMode  auto
+```
+
+Les 10 règles `allow` existantes ont été conservées, pas remplacées.
+
+Subtilité qui a demandé un détour. Le schéma décrit `ultracode` comme
+*session-scoped*, fourni « typiquement via `--settings` », donc rien ne
+garantit qu'il soit lu depuis un fichier de projet. Plutôt que de créer
+un second fichier, le raccourci passe désormais le fichier du projet
+lui-même en `--settings`, ce qui le charge aussi dans le tier `flag`,
+celui que la doc désigne. Un seul fichier à maintenir, deux tiers
+couverts.
+
+Le raccourci a été modifié en **préfixant** ses arguments existants, sans
+retaper la chaîne accentuée. Relecture : codepoints 249, 233, 234, 233
+intacts.
+
+Un essai d'écrire un fichier de réglages dans `~/.claude/` a été refusé
+par le classifieur d'auto mode, l'écriture sortant du projet. Le refus
+était justifié et la solution retenue est meilleure.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est remonté à 219 lignes, à une du plafond. Trois lignes
