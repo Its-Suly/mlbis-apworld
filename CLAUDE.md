@@ -122,20 +122,13 @@ Comment le faire :
 - Retirer ce que le nouvel acquis rend faux, ne pas empiler
 - Le signaler dans la réponse en montrant la ligne ajoutée
 
-Ne pas écrire ici :
+Ne pas écrire ici, mais dans `JOURNAL.md`, qui n'est pas chargé
+automatiquement : le récit d'une session, les pistes sans conclusion, les
+erreurs de manipulation et leurs corrections, les commandes tapées. Y
+écrire librement, en datant chaque entrée.
 
-- Le récit de ce qui a été fait pendant une session
-- Les pistes explorées sans conclusion
-- Les erreurs de manipulation et leurs corrections
-- Les commandes tapées
-
-Tout ça va dans `JOURNAL.md` à la racine du projet, qui n'est pas
-chargé automatiquement. Y écrire librement, en datant chaque entrée.
-Le créer s'il n'existe pas.
-
-Ce fichier est au plafond de 220 lignes au 3 août 2026. S'il le dépasse,
-le signaler et proposer ce qui peut en sortir plutôt que d'ajouter.
-Prochain candidat : la liste des sources, qui doublonne `SOURCES.md`.
+Plafond de 220 lignes. S'il est dépassé, le signaler et proposer ce qui
+peut en sortir plutôt que d'ajouter.
 
 ## Sources, du plus fiable au moins fiable
 
