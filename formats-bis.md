@@ -209,6 +209,40 @@ Ce que ça n'établit pas :
   Rien ne dit qu'écrire pendant un combat ou une cinématique soit sans
   risque, et `CLAUDE.md` impose de le supposer dangereux
 
+### Comportement pendant un combat, **Vérifié**
+
+Quatorze dumps le 4 août 2026, `run14` à `run27`, couvrant menu de
+commandes, attaque, défense, menus des deux frères, fin de combat et
+retour au terrain.
+
+| Champ | Pendant le combat |
+|---|---|
+| 26 compteurs d'objets, `+0x06` | **partagés et vivants** |
+| Compteur de pièces, `+0x00` | figé, crédité à la sortie seulement |
+| 127 compteurs d'équipement, `+0x27` | inchangés, non sollicités |
+
+**Les objets ne passent pas par une copie de combat.** Un champignon
+consommé pendant le combat fait tomber le compteur `+0x06` de 9 à 8 dans
+la seconde, dans la structure du terrain. Écrire un compteur d'objet
+pendant un combat prend donc effet immédiatement, et l'objet est
+utilisable dans le combat en cours.
+
+Les pièces sont l'exception : 948 pendant six dumps de combat, puis 952
+au retour. Elles sont accumulées ailleurs et appliquées à la sortie, donc
+**une écriture de pièces pendant un combat risque d'être écrasée**. À
+tester avec `tools/ecrire_pieces.lua` lancé en plein combat.
+
+**Hypothèse abandonnée, notée pour ne pas la refaire** : « le combat
+travaille sur sa propre copie de l'inventaire ». Elle venait d'un dump
+où le compteur d'objet n'avait pas bougé — parce qu'aucun objet n'avait
+été consommé. Une prémisse non vérifiée, encore. Le contre-test a
+demandé trois dumps.
+
+**Conséquence pour le client** : pas besoin de témoin d'état de jeu pour
+livrer un objet. Une recherche d'octet discriminant terrain / combat sur
+dix dumps de terrain et huit de combat laissait 38 candidats sans moyen
+de choisir ; elle devient inutile pour les objets.
+
 ### Ce que cette mesure corrige
 
 Le bloc 546 n'a jamais rapporté 10 pièces, il en a rapporté **2**. Les
@@ -806,6 +840,11 @@ la plus spécifique, ce qui est un choix et non une lecture.
 
 `data/locations_bis.csv` porte désormais les colonnes `carte` et `zone`,
 et **les 647 trésors exploitables ont tous une zone**.
+
+**Vérifié en jeu** le 4 août 2026 : les trésors 549 à 555, que la table
+place en `Trash Pit`, ont été ramassés par le joueur alors qu'il se
+trouvait effectivement dans la Fosse à Ordures. La correspondance ne
+repose donc plus seulement sur une lecture d'overlay.
 
 ## Trésors hors `TreasureInfo.dat`
 
