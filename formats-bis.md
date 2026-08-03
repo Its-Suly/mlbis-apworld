@@ -183,7 +183,7 @@ Saga n'existent pas ici.
 
 | Domaine | Taille |
 |---|---|
-| `Main RAM` | 4 Mo attendus, à confirmer |
+| `Main RAM` | 4 194 304, soit 4 Mo, confirmé au `run06` |
 | `Shared WRAM` | 32 768 |
 | `ARM7 WRAM` | 65 536 |
 | `SRAM` | 8 192 |
@@ -333,13 +333,30 @@ Arithmétiquement forcé, mais **aucun script lu ne référence de variable
 `0xE2xx`** : les plages vues dans Randoglobin sont `0xE7xx` à `0xEBxx`.
 La correspondance index / nom de variable reste donc à confirmer.
 
-**À tester** : sur un bloc à `max_hits` supérieur à 1, le bit monte-t-il
-au premier coup ou à l'épuisement du bloc ? L'identifiant 546 porte
-`quantity = 0` et `max_hits = 10`, et le comportement observé en jeu est
-bien une pièce par saut dans une fenêtre de quelques secondes, ce qui
-valide le décodage de `max_hits`. Mais l'instant où le flag tombe reste
-inconnu, et il détermine quand une `location` sera considérée comme
-validée.
+### Instant où le flag tombe, **Vérifié**
+
+Mesuré le 3 août 2026 sur l'identifiant 546, `quantity = 0` et
+`max_hits = 10`, soit une pièce par saut dans une fenêtre de quelques
+secondes. Cinq dumps depuis un savestate vierge :
+
+| Dump | `0x05610C` | État du bloc |
+|---|---|---|
+| `run06` | `0x00` | avant tout, témoins 544, 545 et 547 à zéro |
+| `run07` | `0x00` | bloc frappé, émulateur mis en pause aussitôt |
+| `run08` | `0x04` | première pièce prise, neuf encore disponibles |
+| `run09` | `0x04` | avant-dernière pièce |
+| `run10` | `0x04` | bloc épuisé |
+
+**Le bit monte dès la première pièce, pas à l'épuisement.** Une
+`location` est donc validée au premier coup, et les coups suivants ne
+touchent plus au tableau : aucun autre octet des `0x200` ne change entre
+`run06` et `run10`.
+
+Second acquis, apporté par le `run07` : le bit ne monte pas à l'instant
+du coup mais quelques frames plus tard. **Il suit l'attribution de
+l'objet, pas la frappe du bloc.** Sans conséquence pour un client qui
+interroge la mémoire en boucle, mais ne pas supposer les deux
+simultanés.
 
 **Rappel utile** : le domaine `SRAM` n'a pas bougé d'un octet pendant
 l'expérience. Le jeu n'écrit dans la sauvegarde qu'au moment d'une

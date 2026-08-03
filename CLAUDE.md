@@ -204,15 +204,15 @@ bit du trésor d'identifiant N  ->  octet 020560C8 + N // 8, bit N % 8
 ```
 
 Le tableau vit dans le BSS de l'ARM9, `02055FE0` à `02063B00`, donc à
-adresse fixe quelle que soit la salle chargée. Vérifié par cinq dumps du
-3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans `formats-bis.md`.
+adresse fixe quelle que soit la salle chargée. Sur un bloc multi-coups,
+le bit monte dès la **première** pièce, pas à l'épuisement. Vérifié par
+dix dumps du 3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans
+`formats-bis.md`.
 
 Restent ouverts, plus rien de bloquant :
 
 - **Risque principal** : livrer un item dans le jeu qui tourne n'a
   jamais été testé. La détection est acquise, l'écriture non
-- Sur un bloc à `max_hits` supérieur à 1, le bit monte-t-il au premier
-  coup ou à l'épuisement ? Détermine quand une `location` est validée
 - Comment le champ est recopié dans la sauvegarde. H2 prédit
   `slot + 0x01B4`, à trancher avec `tools/compare_block.py`
 - Où sont les flags des trésors hors `TreasureInfo.dat` : coffres de

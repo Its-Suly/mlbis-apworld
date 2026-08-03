@@ -362,6 +362,36 @@ Les 85 salles éclatées, celles qui portent deux paquets d'identifiants
 éloignés, deviennent les meilleures cibles de falsification : elles
 allument des bits non adjacents sans quitter la pièce.
 
+### Le flag tombe à la première pièce
+
+Séance de mesure enchaînée dans la foulée, sur le bloc 546, celui qui
+donne dix pièces une par une. Cinq dumps, `run06` à `run10`.
+
+Réponse : le bit monte **dès la première pièce**, et plus rien ne bouge
+ensuite, ni à l'avant-dernière ni à l'épuisement. Une `location` sera
+donc validée au premier coup. C'est le cas simple, celui qui évite au
+client d'avoir à gérer un état partiel.
+
+Deux choses valent d'être notées sur la méthode.
+
+La première est que l'utilisateur a pris trois dumps là où j'en avais
+demandé un, en découpant lui-même la fenêtre du bloc : première pièce
+prise, avant-dernière, épuisement. Découpage meilleur que le mien, qui
+n'aurait pas distingué « à la fermeture » de « à l'épuisement ».
+
+La seconde est un acquis tombé du `run07`, pris en pause juste après la
+frappe : le bit y est encore à zéro. Le flag ne suit donc pas le coup
+mais l'attribution de l'objet, quelques frames plus tard. Sans effet sur
+un client qui interroge en boucle, mais l'atomicité aurait été une
+supposition raisonnable et fausse.
+
+Point faible du protocole, à assumer : rien ne contrôle
+automatiquement que le coup a porté. On ne connaît pas encore l'adresse
+du compteur de pièces en `Main RAM`, seulement celle dans la sauvegarde,
+qui ne bouge pas en direct. Un saut manqué aurait produit la même sortie
+qu'un flag qui ne monte pas. Ici la suite des dumps lève le doute, le bit
+finissant par monter, mais il faudra cette adresse tôt ou tard.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est remonté à 219 lignes, à une du plafond. Trois lignes
