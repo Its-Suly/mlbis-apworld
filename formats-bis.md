@@ -115,12 +115,26 @@ moment ne changerait rien à la partie et serait probablement écrasé.
 Son intérêt est ailleurs : c'est là qu'on pourra observer l'écriture du
 bit `0xEB3F` et trancher son origine.
 
-**Non trouvé, à chercher autrement** : l'inventaire vivant, celui que
-lit et écrit le jeu en cours de partie. Une recherche par différence
-entre `run08`, `run09` et `run10`, qui encadrent une récolte de pièces,
-ne donne aucun compteur suivant la récolte, ni en `u16` ni en `u32`
-aligné. Il faudra une valeur connue relevée à l'écran comme point
-d'ancrage, ou l'outil RAM Search de BizHawk.
+**Non trouvé, à ne pas refaire tel quel** : l'inventaire vivant, celui
+que lit et écrit le jeu en cours de partie. Ce qui a été tenté sur les
+dumps `run06` à `run11`, qui encadrent la récolte des dix pièces du bloc
+546, et qui n'a rien donné :
+
+- image de l'inventaire de la sauvegarde cherchée dans `Main RAM` :
+  une seule occurrence, le tampon ci-dessus
+- compteur suivant la récolte pièce par pièce, `+8` puis `+9` entre
+  `run08`, `run09` et `run10`, en `u16` et `u32` alignés : aucun
+- crédit unique de `+10` entre `run07` et `run10`, en `u8`, `u16` et
+  `u32`, dans `Main RAM`, `Shared WRAM` et `ARM7 WRAM` : 44 offsets,
+  tous écartés. Le seul dans le BSS, `0x056810`, vaut `0` à deux dumps
+  et `0xFFFF` en poids fort à d'autres : donnée volatile, pas un
+  compteur
+
+Deux pistes restent, dans l'ordre de coût : relever le nombre de pièces
+à l'écran pour disposer d'une ancre, ou passer par l'outil RAM Search de
+BizHawk, qui filtre sur plusieurs pas successifs là où un diff n'en
+compare que deux. À noter aussi que `Instruction TCM` et `Data TCM` ne
+sont pas dumpés par `tools/dump_ram.lua`.
 
 ### La sauvegarde n'est pas une copie fidèle de la RAM
 
