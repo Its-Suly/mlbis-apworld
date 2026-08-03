@@ -146,6 +146,39 @@ de pièces occupe bien un `u32` en tête, mais la suite est décalée de
 `+0x04` dans la sauvegarde, et le décalage se retrouve sur les 42 octets
 qui diffèrent. La correspondance champ par champ reste **à établir**.
 
+### Écriture validée, **Vérifié**
+
+Premier test d'écriture du projet, le 3 août 2026, `tools/ecrire_pieces.lua`,
+dumps `run12` et `run13`. État de jeu : sur le terrain, en marchant, hors
+combat et hors dialogue.
+
+999 écrit à `02056400` à la place de 9, puis quelques pas, puis
+sauvegarde en jeu.
+
+| Contrôle | Valeur |
+|---|---|
+| RAM `0x056400` | 999 |
+| Affichage à l'écran | 999, vu par le joueur |
+| Sauvegarde `slot + 0x0054` | 999 |
+| Copie de secours `slot + 0x7EC + 0x0054` | 999 |
+| Témoin trésors `0x05610C` | `0x0F`, intact |
+| Reste du tableau `Exxx` | aucun octet modifié |
+
+Ce que ça établit, et c'est le point qui débloque la livraison d'items :
+**le jeu ne subit pas la valeur écrite, il l'adopte.** Il l'affiche, la
+sérialise dans la sauvegarde et dans sa copie de secours, et recalcule
+lui-même le checksum. Aucun effet de bord observé sur les structures
+voisines.
+
+Ce que ça n'établit pas :
+
+- La livraison d'un **objet** au sens d'Archipelago. Seul le compteur de
+  pièces est cartographié ; les 26 compteurs d'objets de l'inventaire
+  vivant ne le sont pas encore
+- La **sûreté selon l'état du jeu**. Le test a eu lieu sur le terrain.
+  Rien ne dit qu'écrire pendant un combat ou une cinématique soit sans
+  risque, et `CLAUDE.md` impose de le supposer dangereux
+
 ### Ce que cette mesure corrige
 
 Le bloc 546 n'a jamais rapporté 10 pièces, il en a rapporté **2**. Les

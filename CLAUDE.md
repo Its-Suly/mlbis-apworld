@@ -177,7 +177,8 @@ Ordre de fiabilité à respecter :
   de `0xE400`, l'histoire de `0xE700`. Les `0x2xxx` sont 64 bits, à
   `02056038` en RAM et à `slot + 0x0124` dans la sauvegarde
 - **Inventaire vivant** : pièces en `u32` à `02056400`. Format décalé de
-  2 octets par rapport à la sauvegarde. Première adresse d'état de jeu
+  2 octets par rapport à la sauvegarde. **L'écriture y est effective** :
+  999 écrit en jeu, repris à l'écran puis dans la sauvegarde
 - **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
   pas d'état de sauvegarde
 - **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
@@ -212,7 +213,7 @@ dix dumps du 3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans
 
 Restent ouverts, plus rien de bloquant :
 
-- **Risque principal** : livrer un item dans le jeu qui tourne n'a
-  jamais été testé. La détection est acquise, l'écriture non
+- Livrer un **objet** et non des pièces : les 26 compteurs d'objets de
+  l'inventaire vivant ne sont pas encore cartographiés
 - Les flags des trésors hors `TreasureInfo.dat` sont des flags de
   cinématique, à lire via `mnlscript`, ce n'est pas une table à dumper

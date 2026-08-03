@@ -504,6 +504,33 @@ interprétation.
 `u32` de pièces en tête, mais la suite décalée de 2 octets. La
 correspondance champ par champ reste à faire.
 
+### La première écriture, et elle traverse toute la chaîne
+
+Dernier risque du projet, celui qu'on repoussait depuis le début : on
+savait lire, on n'avait jamais écrit. Sans écriture, un APWorld détecte
+qu'une `location` est validée mais ne peut rien livrer au joueur.
+
+Cible choisie pour sa docilité : le compteur de pièces. Ni pointeur, ni
+index, ni taille, donc une valeur fausse donne un affichage faux et pas
+un plantage. Et surtout, c'est le seul champ dont on sache lire une
+valeur de contrôle ailleurs, dans la sauvegarde.
+
+999 écrit à `02056400` en marchant sur le terrain, puis quelques pas,
+puis sauvegarde en jeu. Résultat au `run13` : 999 en RAM, 999 dans la
+sauvegarde, 999 dans la copie de secours, témoin des trésors intact à
+`0x0F`, et aucun autre octet du tableau `Exxx` modifié.
+
+Le meilleur contrôle n'est pas venu d'un dump : l'utilisateur a **vu le
+compteur passer à 999 à l'écran** au moment de sauvegarder. Le jeu ne
+subit pas la valeur, il l'adopte, l'affiche, la sérialise et recalcule
+son checksum lui-même.
+
+Ce qui reste à faire, et qu'il ne faut pas confondre avec ce qui est
+acquis : livrer un *objet* n'est pas livrer des pièces, et les
+26 compteurs d'objets de l'inventaire vivant ne sont pas cartographiés.
+Le test a eu lieu sur le terrain ; écrire pendant un combat ou une
+cinématique reste supposé dangereux jusqu'à preuve du contraire.
+
 ### Ultracode et auto mode rendus permanents pour le projet
 
 Demande de l'utilisateur : que le raccourci du bureau ouvre toujours une

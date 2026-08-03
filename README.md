@@ -84,6 +84,20 @@ RAM never shows. **The save is not a faithful copy of RAM**, so writing
 one into the other would clear that bit — a trap for later, alongside
 the checksum and the backup copy.
 
+### Writing back to the running game
+
+Detection is only half of an Archipelago world: it also has to deliver
+items into the game. The live coin counter sits at `02056400` in main
+RAM, and writing to it works end to end — 999 written while walking in
+the field showed up on screen, then in the save file and its backup
+copy, with a checksum the game computed itself. Nothing else moved:
+the treasure bitfield came through untouched.
+
+So the game adopts a written value rather than merely tolerating it.
+What is not established yet: delivering an *item* rather than coins —
+the 26 item counters of the live inventory are not mapped — and whether
+writing is safe outside the overworld.
+
 ## What is in here
 
 | Path | Contents |

@@ -88,6 +88,21 @@ que la RAM ne porte jamais. **La sauvegarde n'est pas une copie fidèle de
 la RAM**, donc y recopier l'une effacerait ce bit — un piège pour plus
 tard, au même titre que le checksum et la copie de secours.
 
+### Écrire dans le jeu qui tourne
+
+Détecter ne fait que la moitié d'un monde Archipelago : il faut aussi
+livrer des items dans le jeu. Le compteur de pièces vivant est à
+`02056400` en RAM principale, et l'écriture y fonctionne de bout en
+bout — 999 écrit en marchant sur le terrain s'est affiché à l'écran,
+puis dans la sauvegarde et sa copie de secours, avec un checksum que le
+jeu a calculé lui-même. Rien d'autre n'a bougé, le champ de bits des
+trésors est passé intact.
+
+Le jeu adopte donc la valeur écrite au lieu de simplement la subir. Ce
+qui n'est pas acquis : livrer un *objet* plutôt que des pièces, les
+26 compteurs d'objets de l'inventaire vivant n'étant pas cartographiés,
+et savoir si écrire hors du terrain est sans risque.
+
 ## Contenu
 
 | Chemin | Contenu |
