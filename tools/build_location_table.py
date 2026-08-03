@@ -11,6 +11,12 @@ Decodage :
     d'apres to_script_command dans data_classes.py 83-87
   - autres objets : quantite (quantity + 1) * max_hits, meme source
   - regroupement en salles : bit is_last_entry_in_room ferme la salle
+  - carte et zone : jointure avec data/salles_zones.csv, produit par
+    tools/build_salles_zones.py. La correspondance salle <-> carte est
+    une bijection sur 265 des 272 salles, verifiee le 4 aout 2026 : le
+    regroupement par is_last_entry_in_room EST le decoupage en cartes du
+    jeu. 13 tresors sur 685 sont revendiques par plusieurs cartes, dont
+    la plus petite plage est retenue comme la plus specifique.
 
 Sortie : data/locations_bis.csv
 """
@@ -40,6 +46,22 @@ data = rom.getFileByName("Treasure/TreasureInfo.dat")
 
 # Noms produits par tools/extract_names.py. Facultatif : sans le fichier,
 # la colonne reste vide plutot que de faire echouer le dump.
+# Cartes et zones produites par tools/build_salles_zones.py. Facultatif
+# lui aussi : sans le fichier, les colonnes restent vides.
+CARTE_DE = {}   # index de tresor -> (carte, zone)
+fichier_zones = RACINE / "data" / "salles_zones.csv"
+if fichier_zones.exists():
+    revendications = {}
+    with open(fichier_zones, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            debut, fin = int(r["tresor_debut"]), int(r["tresor_fin"])
+            for i in range(debut, fin):
+                # plage la plus petite = carte la plus specifique
+                precedent = revendications.get(i)
+                if precedent is None or (fin - debut) < precedent[0]:
+                    revendications[i] = (fin - debut, int(r["carte"]), r["zone"])
+    CARTE_DE = {i: (c, z) for i, (_, c, z) in revendications.items()}
+
 NOMS = {}
 fichier_noms = RACINE / "data" / "noms_items.csv"
 if fichier_noms.exists():
@@ -72,9 +94,12 @@ for index in range(685):  # borne : premiere entree nulle
         id_item = item & 0xFFF
         montant = (quantity + 1) * max_hits
 
+    carte, zone = CARTE_DE.get(index, ("", ""))
     lignes.append({
         "index": index,
         "salle": salle,
+        "carte": carte,
+        "zone": zone,
         "identifiant": ident,
         "type_tresor": TYPES_TRESOR.get(type_tresor, f"inconnu_{type_tresor}"),
         "type_tresor_brut": type_tresor,

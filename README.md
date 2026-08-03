@@ -9,8 +9,9 @@ world exists yet for this game.
 ## Status: feasibility, and it is now established
 
 **A skeleton world now exists in `mlbis/`.** Archipelago 0.6.8 loads it
-and generates a seed with 647 locations and 86 items — no logic, no
-client, no ROM patching yet. Reproduce with
+and generates a seed with 647 locations across 16 real regions — the
+game's own named areas — and 86 items. No logic, no client, no ROM
+patching yet. Reproduce with
 `venv\Scripts\python.exe tools\test_generation.py`.
 
 Everything else here is research, extracted data tables, and the tools

@@ -54,14 +54,17 @@ noms_vus = Counter()
 for r in lignes:
     ident = int(r["identifiant"])
     type_en = TYPES_EN.get(r["type_tresor"], "Treasure")
-    nom_location = f"{type_en} {ident}"
+    zone = r["zone"] or "Unknown Area"
+    # L'identifiant suffit a l'unicite ; la zone et le type sont la pour
+    # que le nom soit lisible par un joueur dans le client Archipelago.
+    nom_location = f"{zone} - {type_en} {ident}"
     noms_vus[nom_location] += 1
 
     if r["type_item"] == "pieces":
         item = f"{r['montant']} Coins"
     else:
         item = r["nom_item"]
-    tresors.append((ident, nom_location, item, int(r["salle"])))
+    tresors.append((ident, nom_location, item, zone))
 
 doublons = [n for n, c in noms_vus.items() if c > 1]
 if doublons:
@@ -86,11 +89,21 @@ lignes_py = [
     f"BASE_ID = {BASE_ID:#x}",
     f"RESERVE_HORS_TABLE = {RESERVE_HORS_TABLE}",
     "",
-    "# (identifiant TreasureInfo, nom de location, item d'origine, salle)",
+    "# (identifiant TreasureInfo, nom de location, item d'origine, zone)",
     "TREASURES = [",
 ]
-for ident, nom, item, salle in tresors:
-    lignes_py.append(f"    ({ident}, {nom!r}, {item!r}, {salle}),")
+for ident, nom, item, zone in tresors:
+    lignes_py.append(f"    ({ident}, {nom!r}, {item!r}, {zone!r}),")
+lignes_py.append("]")
+lignes_py.append("")
+lignes_py.append("# zones portant au moins un tresor, dans l'ordre d'apparition")
+lignes_py.append("ZONES = [")
+vues = []
+for _, _, _, zone in tresors:
+    if zone not in vues:
+        vues.append(zone)
+for zone in vues:
+    lignes_py.append(f"    {zone!r},")
 lignes_py.append("]")
 lignes_py.append("")
 lignes_py.append("# nom d'item -> nombre d'exemplaires dans le jeu d'origine")

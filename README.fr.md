@@ -9,8 +9,9 @@ Aucun monde n'existe à ce jour pour ce jeu.
 ## État : faisabilité, et elle est acquise
 
 **Un squelette de monde existe maintenant dans `mlbis/`.** Archipelago
-0.6.8 le charge et génère une seed avec 647 `location` et 86 `item` —
-sans logique, sans client, sans patch de ROM. Reproductible par
+0.6.8 le charge et génère une seed avec 647 `location` réparties sur 16
+`region` réelles — les zones nommées du jeu — et 86 `item`. Sans
+logique, sans client, sans patch de ROM. Reproductible par
 `venv\Scripts\python.exe tools\test_generation.py`.
 
 Le reste du dépôt est de la recherche, des tables de données extraites,

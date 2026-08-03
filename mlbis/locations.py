@@ -33,3 +33,6 @@ VANILLA_PLACEMENT: Dict[str, str] = {nom: item for _, nom, item, _ in TREASURES}
 LOCATION_TO_BIT: Dict[str, int] = {
     nom: identifiant for identifiant, nom, _, _ in TREASURES
 }
+
+# nom de location -> zone nommee du jeu, donc region
+ZONE_DE_LOCATION: Dict[str, str] = {nom: zone for _, nom, _, zone in TREASURES}

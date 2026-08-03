@@ -43,13 +43,9 @@ comment l'obtenir.
 
 ## Versions d'outils, non négociables
 
-- **Python 3.13.** Intersection entre Archipelago, qui exige 3.11.9
-  minimum et strictement moins de 3.14, et Randoglobin, qui exige 3.12
-  minimum et strictement moins de 3.15
-- **BizHawk 2.10 exactement.** Le connector Lua d'Archipelago
-  (`data/lua/connector_bizhawk_generic.lua`, lignes 633 à 637) refuse
-  les versions antérieures à 2.7.0 et avertit au-delà de 2.10. Ne pas
-  installer la dernière version publiée
+**Python 3.13** et **BizHawk 2.10 exactement**, jamais la dernière
+version publiée. Le pourquoi de chaque borne est dans
+`installation-apworld-bis.md`, il n'a pas à être relu à chaque session.
 
 ## Licences
 
@@ -180,9 +176,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
   réservés aux locations hors `TreasureInfo.dat`
 - **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
   pas d'état de sauvegarde
-- **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
-  l'anglais. Index 1 à 12 dehors, 13 à 30 dans Bowser, 31 `Challenge
-  Node`. Base naturelle du découpage en `region`
+- **Zones** : 32 nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
+  l'anglais, dont **16 portent des trésors**. La chaîne trésor → carte →
+  zone est établie, `tools/build_salles_zones.py`. Notre découpage en
+  salles est en bijection avec les cartes du jeu. Ce sont les `region`
 
 ### Tables déjà extraites, dans `data/`
 

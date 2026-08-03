@@ -751,6 +751,62 @@ Observation faite avant que la réponse de Marc n'arrive, ce qui lui donne
 la valeur d'une prédiction rencontrée après coup plutôt que d'une lecture
 orientée. Elle porte sur un seul dump, elle ne remplace pas une preuve.
 
+## Salle, carte et zone, la correspondance est établie
+
+**Vérifié** le 4 août 2026 par `tools/build_salles_zones.py`. C'est ce
+qui manquait pour avoir de vraies `region`.
+
+La chaîne est celle que Randoglobin utilise pour nommer ses trouvailles,
+`treasure.py` lignes 396 à 425, offsets dans `main.py` lignes 1035, 1036,
+1046, 1089 et 1169 à 1172, structure dans `data_classes.py` lignes 89
+à 97. Base NA :
+
+```
+pour chaque carte j de 0 à 0x2A8, soit 681 cartes :
+  overlay 3   [0x19FD0 + j*20 + 16]   -> treasure_index, 0xFFFFFFFF si aucun
+  overlay 4   [0x4AA30 + 4 + ti*4]    -> début et fin dans TreasureInfo.dat
+  overlay 3   [0x098A0 + j*12]        -> select_map = (u32[0] >> 2) & 0x3FF
+  overlay 129 [0x0864C + k*12 + 4]    -> 3 u16 ; si select_map y figure,
+                                          le u16 à +0 indexe les noms de zone
+  sinon, zone 0xA
+```
+
+Le repli sur la zone `0xA` n'est pas arbitraire : l'intérieur du lac
+Blubble est la seule zone absente de l'écran de sélection de fichier,
+d'où viennent ces chaînes. Commentaire explicite `treasure.py:424`.
+
+Un trésor d'index `i` appartient à la carte `j` si
+`début <= i*12 < fin`.
+
+**Résultat** : 278 cartes sur 681 portent des trésors, et les 647 trésors
+exploitables se répartissent sur **16 zones nommées** sur 32.
+
+| Zone | Trésors | Zone | Trésors |
+|---|---|---|---|
+| Peach's Castle | 117 | Cavi Cape | 21 |
+| Bowser Castle | 66 | Pump Works | 20 |
+| Dimble Wood | 65 | Bowser Path | 19 |
+| Toad Town | 64 | Bumpsy Plains | 17 |
+| Plack Beach | 56 | Tunnel | 11 |
+| Energy Hold | 54 | Trash Pit | 11 |
+| Airway | 51 | Tower of Yikk | 3 |
+| Blubble Lake | 50 | Flab Zone | 22 |
+
+### Ce que la mesure a appris en plus
+
+**Notre découpage en salles était déjà le bon.** Le regroupement par le
+bit `is_last_entry_in_room`, fait le 2 août sans rien savoir des cartes,
+est en **bijection** avec le découpage en cartes du jeu : 265 salles pour
+265 cartes, aucune salle vers deux cartes, aucune carte vers deux salles.
+
+**Réserve** : 13 trésors sur 685 sont revendiqués par deux cartes, deux
+d'entre eux par trois. Des plages qui se chevauchent.
+`build_location_table.py` retient la plage la plus petite, donc la carte
+la plus spécifique, ce qui est un choix et non une lecture.
+
+`data/locations_bis.csv` porte désormais les colonnes `carte` et `zone`,
+et **les 647 trésors exploitables ont tous une zone**.
+
 ## Trésors hors `TreasureInfo.dat`
 
 Coffres de quête, récompenses de PNJ, achats en boutique. Établi le

@@ -1,43 +1,51 @@
 """Le decoupage en regions.
 
-ETAT PROVISOIRE, ET IL FAUT SAVOIR POURQUOI. Tout tient dans une seule
-region, sans aucune regle d'acces.
+Une region par zone nommee du jeu, 16 au total, plus le Menu.
 
-La raison n'est pas la paresse : `data/locations_bis.csv` porte un numero
-de salle reconstruit par le bit is_last_entry_in_room, donc un simple
-regroupement dans l'ordre du fichier. Les 32 zones nommees de
-mfset_EMesPlace.dat sont une autre numerotation, et **la correspondance
-entre les deux n'est pas etablie**. Inventer un decoupage maintenant
-reviendrait a inventer une donnee, ce que le projet s'interdit.
+La correspondance tresor -> carte -> zone a ete etablie le 4 aout 2026
+en lisant la chaine que Randoglobin utilise pour nommer ses trouvailles :
+overlay 3 pour le groupe de cartes et les metadonnees, overlay 4 pour les
+plages de TreasureInfo, overlay 129 pour les icones de l'ecran de
+selection de fichier, qui portent l'index du nom de zone. Detail dans
+tools/build_salles_zones.py et formats-bis.md.
 
-Le jour ou salle -> zone sera etabli, ce fichier deviendra le vrai
-decoupage en regions, et c'est la que les access_rule s'accrocheront.
+AUCUNE REGLE D'ACCES. Toutes les regions pendent directement au Menu.
+Le decoupage est reel, la logique ne l'est pas encore : savoir qu'un
+tresor est dans Dimble Wood ne dit pas ce qu'il faut pour y entrer.
+C'est le prochain chantier, et il demande de connaitre le jeu.
 """
 from BaseClasses import ItemClassification, Region
 
+from .data import ZONES
 from .items import MLBISItem, VICTORY
-from .locations import MLBISLocation, location_name_to_id
+from .locations import MLBISLocation, ZONE_DE_LOCATION, location_name_to_id
 
 MENU = "Menu"
-MONDE = "Bowser's Inside Story"
 FIN = "Defeat Dark Bowser"
+REGION_FIN = "Peach's Castle"
 
 
 def create_regions(world) -> None:
     menu = Region(MENU, world.player, world.multiworld)
-    monde = Region(MONDE, world.player, world.multiworld)
+    world.multiworld.regions.append(menu)
+
+    regions = {}
+    for zone in ZONES:
+        region = Region(zone, world.player, world.multiworld)
+        regions[zone] = region
+        world.multiworld.regions.append(region)
+        # Sans regle d'acces, tout est joignable depuis le Menu.
+        menu.connect(region)
 
     for nom, code in location_name_to_id.items():
-        monde.locations.append(MLBISLocation(world.player, nom, code, monde))
+        region = regions[ZONE_DE_LOCATION[nom]]
+        region.locations.append(MLBISLocation(world.player, nom, code, region))
 
-    # Location d'evenement : elle n'a pas d'identifiant et ne compte pas
-    # comme un check. Elle porte l'item qui declare la partie gagnee.
-    fin = MLBISLocation(world.player, FIN, None, monde)
+    # Location d'evenement : pas d'identifiant, ne compte pas comme un
+    # check. Elle porte l'item qui declare la partie gagnee.
+    fin_region = regions[REGION_FIN]
+    fin = MLBISLocation(world.player, FIN, None, fin_region)
     fin.place_locked_item(
         MLBISItem(VICTORY, ItemClassification.progression, None, world.player)
     )
-    monde.locations.append(fin)
-
-    world.multiworld.regions.append(menu)
-    world.multiworld.regions.append(monde)
-    menu.connect(monde)
+    fin_region.locations.append(fin)

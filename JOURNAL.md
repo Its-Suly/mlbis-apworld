@@ -1,5 +1,45 @@
 # Journal du projet APWorld BIS
 
+## 4 août 2026, les régions deviennent réelles
+
+Le squelette n'avait qu'une seule `region` parce que la correspondance
+salle → zone manquait. Elle ne manque plus.
+
+La piste était dans la signature de `randomize_treasure` : Randoglobin
+reçoit un `map_metadata_offset` et un `map_group_offset`. En remontant
+son code de nommage, `treasure.py` 396 à 425, on obtient la chaîne
+complète : overlay 3 pour le groupe de cartes et les métadonnées,
+overlay 4 pour les plages d'octets dans `TreasureInfo.dat`, overlay 129
+pour les icônes de l'écran de sélection de fichier, qui portent l'index
+du nom de zone.
+
+681 cartes, 278 portent des trésors, et les 647 trésors exploitables se
+répartissent sur **16 zones nommées** : Peach's Castle 117, Bowser Castle
+66, Dimble Wood 65, Toad Town 64, et ainsi de suite jusqu'à Tower of Yikk
+avec 3.
+
+### Le résultat qui fait plaisir
+
+Le regroupement en salles fait le 2 août par le bit
+`is_last_entry_in_room`, sans rien savoir des cartes du jeu, est en
+**bijection** avec le découpage réel : 265 salles pour 265 cartes, aucune
+ambiguïté dans les deux sens. On avait deviné juste sans le savoir, et on
+peut maintenant le prouver.
+
+Réserve consignée : 13 trésors sur 685 sont revendiqués par plusieurs
+cartes, plages qui se chevauchent. La plus petite est retenue comme la
+plus spécifique. C'est un choix, pas une lecture.
+
+Conséquence immédiate : le monde passe de 1 à 16 `region`, et les noms de
+`location` deviennent lisibles, `Pump Works - Block 0` au lieu de
+`Block 0`. Fait maintenant plutôt que plus tard, parce que ces noms sont
+un contrat gelé dès la première seed publiée.
+
+Ce qui reste absent, et pour la même raison qu'avant : aucune
+`access_rule`. Savoir qu'un trésor est dans Dimble Wood ne dit pas ce
+qu'il faut pour y entrer. C'est le prochain chantier, et c'est celui qui
+demande de connaître le jeu plutôt que de le désassembler.
+
 ## 4 août 2026, le squelette génère
 
 Premier code d'APWorld du projet, dans `mlbis/`. Six fichiers, aucune
