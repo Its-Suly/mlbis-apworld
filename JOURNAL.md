@@ -470,6 +470,40 @@ recherche de motif « au cas où la prédiction serait fausse ». Elle n'a
 pas servi à rattraper une erreur, elle a servi à trouver la copie de
 secours. Une sortie prévue pour un échec a payé sur un succès.
 
+### La première adresse vivante, après trois échecs de ma faute
+
+Chasse au compteur de pièces, pour tenir enfin une adresse d'état de jeu
+et non de sauvegarde. Trois recherches successives, toutes négatives :
+image de l'inventaire cherchée dans la RAM, delta `+8` puis `+9`, crédit
+unique de `+10` sur trois domaines et trois tailles.
+
+La quatrième a marché en changeant de prise : plutôt que de filtrer sur
+des valeurs absolues supposées, filtrer sur le seul fait certain, le
+`+7` des trois blocs 544, 545 et 547 dont on connaissait les montants par
+`locations_bis.csv`. Deux `u32` seulement montent de 7 dans les 4 Mo :
+`0x056400` et son image dans le tampon de sauvegarde.
+
+`02056400`, `u32`. La série `0, 0, 1, 1, 2, 2, 9` sur les sept dumps ne
+laisse aucun doute.
+
+Ce que la mesure révèle est plus embarrassant : le bloc 546 n'a jamais
+donné 10 pièces, il en a donné 2. Le joueur part de 0 et monte à 2. Les
+pièces retombent au sol et il faut les toucher.
+
+Donc mes trois échecs cherchaient des deltas qui n'ont jamais existé.
+La méthode différentielle était juste depuis le début ; c'est la
+quantité, que j'avais déduite de `max_hits = 10` sans la mesurer, qui
+était fausse. Une prémisse non vérifiée a coûté trois recherches, et
+elle venait de moi, pas d'une source.
+
+Le réflexe qui a débloqué : chercher un delta connu plutôt qu'une valeur
+supposée. Le delta venait d'une table extraite de la ROM, pas d'une
+interprétation.
+
+À noter aussi, le format vivant n'est pas celui de la sauvegarde : même
+`u32` de pièces en tête, mais la suite décalée de 2 octets. La
+correspondance champ par champ reste à faire.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est remonté à 219 lignes, à une du plafond. Trois lignes

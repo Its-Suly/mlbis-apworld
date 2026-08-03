@@ -83,13 +83,11 @@ souvent de la progression de l'autre.
 
 ## Particularités du jeu
 
-- Le jeu alterne entre Mario et Luigi dans le corps de Bowser, et
-  Bowser à l'extérieur, avec des inventaires et capacités distincts. Il
-  y a plusieurs structures à suivre, pas une seule
-- Écrire en mémoire pendant un combat ou une cinématique est le moyen
-  le plus sûr de faire planter la ROM. Toute proposition d'injection
-  doit préciser dans quel état du jeu elle s'exécute et comment cet
-  état est détecté
+- Deux équipes, Mario-Luigi et Bowser, avec inventaires et capacités
+  distincts. Plusieurs structures à suivre, pas une seule
+- Écrire en mémoire pendant un combat ou une cinématique fait planter la
+  ROM. Toute injection doit préciser dans quel état du jeu elle
+  s'exécute et comment cet état est détecté
 
 ## Méthode de travail
 
@@ -178,6 +176,8 @@ Ordre de fiabilité à respecter :
 - **Flags** : dans `Exxx`, les trésors partent de `0xE000`, les ennemis
   de `0xE400`, l'histoire de `0xE700`. Les `0x2xxx` sont 64 bits, à
   `02056038` en RAM et à `slot + 0x0124` dans la sauvegarde
+- **Inventaire vivant** : pièces en `u32` à `02056400`. Format décalé de
+  2 octets par rapport à la sauvegarde. Première adresse d'état de jeu
 - **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
   pas d'état de sauvegarde
 - **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour

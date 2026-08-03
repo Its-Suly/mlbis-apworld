@@ -115,26 +115,48 @@ moment ne changerait rien à la partie et serait probablement écrasé.
 Son intérêt est ailleurs : c'est là qu'on pourra observer l'écriture du
 bit `0xEB3F` et trancher son origine.
 
-**Non trouvé, à ne pas refaire tel quel** : l'inventaire vivant, celui
-que lit et écrit le jeu en cours de partie. Ce qui a été tenté sur les
-dumps `run06` à `run11`, qui encadrent la récolte des dix pièces du bloc
-546, et qui n'a rien donné :
+## Inventaire vivant
 
-- image de l'inventaire de la sauvegarde cherchée dans `Main RAM` :
-  une seule occurrence, le tampon ci-dessus
-- compteur suivant la récolte pièce par pièce, `+8` puis `+9` entre
-  `run08`, `run09` et `run10`, en `u16` et `u32` alignés : aucun
-- crédit unique de `+10` entre `run07` et `run10`, en `u8`, `u16` et
-  `u32`, dans `Main RAM`, `Shared WRAM` et `ARM7 WRAM` : 44 offsets,
-  tous écartés. Le seul dans le BSS, `0x056810`, vaut `0` à deux dumps
-  et `0xFFFF` en poids fort à d'autres : donnée volatile, pas un
-  compteur
+**Vérifié** le 3 août 2026, dumps `run06` à `run12`.
 
-Deux pistes restent, dans l'ordre de coût : relever le nombre de pièces
-à l'écran pour disposer d'une ancre, ou passer par l'outil RAM Search de
-BizHawk, qui filtre sur plusieurs pas successifs là où un diff n'en
-compare que deux. À noter aussi que `Instruction TCM` et `Data TCM` ne
-sont pas dumpés par `tools/dump_ram.lua`.
+```
+compteur de pièces : Main RAM 0x056400, absolu 02056400, u32
+```
+
+C'est la **première adresse d'état de jeu vivant** trouvée dans ce
+projet, par opposition au tampon de sauvegarde. Elle se lit et se suit en
+temps réel :
+
+| Dump | Pièces | État |
+|---|---|---|
+| `run06` | 0 | départ |
+| `run08` | 1 | première pièce du bloc 546 |
+| `run10` | 2 | bloc 546 épuisé |
+| `run12` | 9 | après les blocs 544, 545 et 547, qui valent 1, 5 et 1 |
+
+Sur les 4 Mo, seuls deux `u32` montent d'exactement 7 entre `run11` et
+`run12` : celui-ci et son image dans le tampon de sauvegarde.
+
+L'adresse tombe juste après le bloc des registres globaux, qui finit à
+`0205636E`, ce qui est cohérent avec une zone de données de partie.
+
+**Le format n'est pas identique à celui de la sauvegarde.** Le compteur
+de pièces occupe bien un `u32` en tête, mais la suite est décalée de
+2 octets : le premier compteur d'objet est à `+0x06` en RAM contre
+`+0x04` dans la sauvegarde, et le décalage se retrouve sur les 42 octets
+qui diffèrent. La correspondance champ par champ reste **à établir**.
+
+### Ce que cette mesure corrige
+
+Le bloc 546 n'a jamais rapporté 10 pièces, il en a rapporté **2**. Les
+pièces sortent du bloc et doivent être touchées au sol ; les autres sont
+retombées sans être ramassées. `max_hits = 10` décrit la capacité du
+bloc, pas ce que le joueur encaisse.
+
+Trois recherches antérieures avaient échoué parce qu'elles cherchaient
+des deltas de `+8`, `+9` puis `+10`, déduits de cette prémisse fausse.
+La méthode différentielle était bonne, la quantité supposée ne l'était
+pas. Ne pas déduire d'un `max_hits` ce qui n'a pas été mesuré.
 
 ### La sauvegarde n'est pas une copie fidèle de la RAM
 
