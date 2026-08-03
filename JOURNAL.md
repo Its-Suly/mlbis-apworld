@@ -1,5 +1,43 @@
 # Journal du projet APWorld BIS
 
+## 4 août 2026, la chaîne complète tourne
+
+Première séance de test bout en bout. Serveur local, client BizHawk,
+connecteur Lua, partie en cours.
+
+```
+Connected to BizHawk
+Running handler for Mario & Luigi Bowser's Inside Story
+...
+TestBIS sent Flower Gloves to TestBIS (Trash Pit - Block 555)
+```
+
+`validate_rom` a lu l'en-tête de cartouche, reconnu `MARIO&LUIGI3` et
+`CLJE`, et Archipelago a choisi notre client sur cette base. Les onze
+trésors déjà ramassés sont remontés d'un coup à la connexion, puis le
+bloc cassé pendant la séance est apparu en direct.
+
+`emu.getsystemid()` répond bien `NDS`. L'hypothèse du client tombe.
+
+### Deux pièges de séance, tous les deux hors du code
+
+Le premier a coûté vingt minutes : **ouvrir un script dans la console Lua
+de BizHawk ne le lance pas**. La case doit être cochée. Le connecteur
+affichait « Looking for client... » en boucle alors qu'il ne tournait
+pas, et le client affichait « Waiting to connect to BizHawk... » : deux
+messages parfaitement cohérents avec un troisième acteur absent.
+
+Le second : le client lancé depuis mon outil n'a jamais accroché, celui
+lancé par l'utilisateur oui. Droits réseau, autorisation de pare-feu, ou
+cloisonnement de mon côté — non tranché, et sans importance tant que la
+règle pratique tient : **les processus qui doivent parler à l'émulateur,
+c'est l'utilisateur qui les lance.**
+
+### Le nom du slot est saisi à la main, et c'est normal
+
+Notre client ne connaît pas son slot : dans un monde fini, il est inscrit
+dans la ROM patchée à la génération. On ne patche rien encore.
+
 ## 4 août 2026, le client qui lit
 
 `mlbis/client.py`, sous-classe de `BizHawkClient`. Il lit 95 octets à

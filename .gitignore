@@ -22,3 +22,7 @@ bizhawk-*/
 # Dumps de RAM, volumineux et regenerables
 dumps/
 *.bin
+
+# Seeds generees
+seeds/*.zip
+seeds/*.archipelago

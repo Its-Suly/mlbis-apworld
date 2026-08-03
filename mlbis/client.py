@@ -44,10 +44,9 @@ CODE_ATTENDU = b"CLJE"
 
 class MLBISClient(BizHawkClient):
     game = GAME_NAME
-    # A VERIFIER : chaine renvoyee par emu.getsystemid() sur le coeur
-    # NDS de BizHawk 2.10. Aucun monde NDS n'est livre avec Archipelago
-    # 0.6.8, donc pas de precedent a copier. Se controle en une ligne
-    # dans la console Lua : print(emu.getsystemid())
+    # Verifie le 4 aout 2026 : emu.getsystemid() repond "NDS" sur le
+    # coeur NDS de BizHawk 2.10. Aucun monde NDS n'est livre avec
+    # Archipelago 0.6.8, il n'y avait donc pas de precedent a copier.
     system = "NDS"
 
     local_checked_locations: Set[int]
