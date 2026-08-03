@@ -1,5 +1,55 @@
 # Journal du projet APWorld BIS
 
+## 4 août 2026, le client qui lit
+
+`mlbis/client.py`, sous-classe de `BizHawkClient`. Il lit 95 octets à
+`0x0560C8` dans `Main RAM` et signale au serveur chaque bit allumé.
+
+Le gain de la convention d'identifiants se voit ici : la boucle n'a
+**aucune table de correspondance** entre un bit et une `location`, parce
+que l'identifiant de trésor est à la fois le rang du bit et, à `BASE_ID`
+près, l'identifiant de location. MLSS, faute de cette propriété, refait
+à chaque check une reconstruction d'adresse par pointeur en ROM et
+soustractions cumulées, `Client.py` 225 à 238.
+
+### Un défaut de conception corrigé en cours de route
+
+Première version : tout dans `client.py`. Le test a échoué au premier
+`import`, parce que charger `mlbis` tire `worlds.AutoWorld`, donc
+Archipelago entier, absent du venv de la racine.
+
+Le vrai problème n'était pas le venv. **La connaissance du plan mémoire
+du jeu n'a aucune raison de dépendre du client.** Sortie dans
+`mlbis/bitfield.py`, qui n'importe rien : ni Archipelago, ni le reste du
+monde. Elle devient vérifiable sur un dump, sans émulateur et sans
+serveur.
+
+`tools/test_client.py` le fait, et passe :
+
+```
+run06 : 0 location    run08 : 1    run12 : 4    run13 : 4
+correspondance id = BASE_ID + rang de bit : OK sur 647 locations
+```
+
+Les attendus ne sont pas inventés pour l'occasion : ce sont les mesures
+déjà consignées dans `formats-bis.md`. Le test relit de vrais dumps.
+
+### Deux choses volontairement absentes
+
+`items_handling = 0b000` : le serveur ne nous envoie aucun item. On sait
+écrire depuis le 3 août, mais **on ne sait pas quand c'est sûr**, et
+`CLAUDE.md` impose de tenir une écriture en combat ou en cinématique pour
+dangereuse tant que rien ne prouve le contraire.
+
+Aucune détection de fin de partie, faute d'un flag de victoire identifié.
+
+### À vérifier, et c'est une supposition assumée
+
+`system = "NDS"`. Aucun monde NDS n'est livré avec Archipelago 0.6.8,
+donc aucun précédent à copier ; la valeur vient de `emu.getsystemid()`,
+qu'il suffit d'afficher une fois dans la console Lua. Noté dans
+`CLAUDE.md` pour ne pas l'oublier au prochain lancement.
+
 ## 4 août 2026, les régions deviennent réelles
 
 Le squelette n'avait qu'une seule `region` parce que la correspondance

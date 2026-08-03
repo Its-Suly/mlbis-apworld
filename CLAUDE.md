@@ -3,7 +3,10 @@
 Développement d'un APWorld Archipelago pour Mario & Luigi : Voyage au
 Centre de Bowser, version NDS de 2009. Faisabilité acquise : lecture des
 checks, écriture d'items et sauvegarde vérifiées. Le monde vit dans
-`mlbis/`, squelette qui génère une seed. Test `tools/test_generation.py`.
+`mlbis/` : 647 `location`, 16 `region`, un client BizHawk en lecture
+seule. Tests `tools/test_generation.py` et `tools/test_client.py`.
+**À vérifier au prochain lancement de BizHawk** : `emu.getsystemid()`
+doit répondre `NDS`, valeur supposée dans `mlbis/client.py`.
 
 ## Version de ROM, figée
 

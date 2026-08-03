@@ -18,6 +18,7 @@ from typing import Any, Dict
 
 from worlds.AutoWorld import WebWorld, World
 
+from .client import MLBISClient  # noqa: F401  enregistre le client BizHawk
 from .data import TREASURES
 from .items import MLBISItem, VICTORY, classification, item_name_to_id
 from .locations import GAME_NAME, VANILLA_PLACEMENT, location_name_to_id
