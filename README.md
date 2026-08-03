@@ -20,12 +20,18 @@ That question is now answered.
 
 ### The treasure bitfield
 
-Collected treasures are tracked by a bitfield in the NDS main RAM:
+Collected treasures are tracked by bits in the NDS main RAM:
 
 ```
-treasure with identifier N  ->  byte 0x0560C8 + N/8, bit N%8   (LSB first)
-field spans 0x0560C8 to 0x056126, 95 bytes, 758 identifiers
+treasure with identifier N  ->  byte 020560C8 + N/8, bit N%8   (LSB first)
 ```
+
+That address is not a treasure-specific structure. It is the `Exxx`
+global script-variable bitfield, 4096 elements, `0x200` bytes, named in
+[8y8x's MLBIS manual](https://inf.gg/mlbis/manual). Treasures occupy its
+low indices — identifiers 0 to 757 fit in the first 95 bytes. The array
+sits in the ARM9 BSS, so the address is fixed for the whole session,
+outside the overlays and the heaps.
 
 The bit rank is the identifier stored in bytes 4-5 of each
 `Treasure/TreasureInfo.dat` entry — a field the existing randomizer
@@ -46,6 +52,24 @@ The last two blocks were hit in reverse order, so bit 3 was set before
 bit 2. The bits follow the table identifiers, not the order of the
 player's actions — which rules out the competing explanation of a
 sequential pickup counter.
+
+### When the flag is set
+
+A block can hold several hits — identifier 546 gives one coin per jump,
+ten times. Measured across five more dumps from a clean savestate:
+
+| Dump | Byte `0x05610C` | Block state |
+|---|---|---|
+| `run06` | `0x00` | before anything |
+| `run07` | `0x00` | block struck, emulator paused at once |
+| `run08` | `0x04` | first coin taken, nine still available |
+| `run09` | `0x04` | next-to-last coin |
+| `run10` | `0x04` | block exhausted |
+
+**The bit is set on the first coin, not on exhaustion**, so a `location`
+is validated on the first hit. `run07` adds a detail worth knowing: the
+bit is not set at the instant of the hit but a few frames later. It
+follows the item being *awarded*, not the block being struck.
 
 ## What is in here
 
@@ -101,6 +125,13 @@ of BizHawk **2.10 exactly** — the Archipelago Lua connector refuses
 anything older than 2.7.0 and warns above 2.10 — then compare dumps
 with `tools/cherche_champ_bits.py`.
 
+Two tools help read what comes out. `tools/treasure_bit.py` turns a
+treasure identifier into an address and bit rank, and back.
+`tools/compare_block.py` looks for the RAM array inside a save dump. The
+95 bytes carrying the flags, across all ten dumps, are published in
+`data/preuve_champ_bits.txt` — the 4 MB dumps themselves are not, but
+that file is enough to check the result.
+
 ## About the ROM
 
 **No ROM is included in this repository, and none will be provided.**
@@ -118,6 +149,10 @@ licence, and what was taken from it.**
   [Discord](https://discord.gg/rhJ6HGyymJ) — Randoglobin for the
   treasure and item tables, Cheatoglobin for the save structure,
   `mnllib` for the internal formats, BIS-docs for the script commands
+- [8y8x's MLBIS manual](https://inf.gg/mlbis/manual), CC0 — named the
+  `Exxx` bitfield we had located by measurement, along with the global
+  register block and the ARM9 memory map, and independently confirms the
+  ROM revision targeted here
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago), and in
   particular its bundled `worlds/mlss`, the Superstar Saga world, which
   had already solved this class of problem for the first game in the

@@ -22,13 +22,19 @@ Cette question a maintenant sa réponse.
 
 ### Le champ de bits des trésors
 
-Les trésors ramassés sont suivis par un champ de bits dans la RAM
-principale du NDS :
+Les trésors ramassés sont suivis par des bits dans la RAM principale du
+NDS :
 
 ```
-trésor d'identifiant N  ->  octet 0x0560C8 + N/8, bit N%8   (LSB en premier)
-champ de 0x0560C8 à 0x056126, 95 octets, 758 identifiants
+trésor d'identifiant N  ->  octet 020560C8 + N/8, bit N%8   (LSB en premier)
 ```
+
+Cette adresse n'héberge pas une structure dédiée aux trésors. C'est le
+tableau de bits global des variables de script `Exxx`, 4096 éléments,
+`0x200` octets, nommé par le [manuel de 8y8x](https://inf.gg/mlbis/manual).
+Les trésors en occupent les index bas : les identifiants 0 à 757 tiennent
+dans les 95 premiers octets. Le tableau vit dans le BSS de l'ARM9, donc à
+adresse fixe pour toute la partie, hors des overlays et hors des heaps.
 
 Le rang du bit est l'identifiant stocké dans les octets 4-5 de chaque
 entrée de `Treasure/TreasureInfo.dat` — un champ que le randomizer
@@ -49,6 +55,25 @@ Les deux derniers blocs ont été frappés dans l'ordre inverse, si bien
 que le bit 3 s'allume avant le bit 2. Les bits suivent les identifiants
 de la table et non l'ordre des actions du joueur, ce qui écarte
 l'explication concurrente d'un compteur séquentiel de ramassages.
+
+### À quel moment le flag tombe
+
+Un bloc peut tenir plusieurs coups : l'identifiant 546 donne une pièce
+par saut, dix fois. Mesuré sur cinq dumps de plus, depuis un savestate
+vierge :
+
+| Dump | Octet `0x05610C` | État du bloc |
+|---|---|---|
+| `run06` | `0x00` | avant tout |
+| `run07` | `0x00` | bloc frappé, pause immédiate |
+| `run08` | `0x04` | première pièce prise, neuf disponibles |
+| `run09` | `0x04` | avant-dernière pièce |
+| `run10` | `0x04` | bloc épuisé |
+
+**Le bit monte à la première pièce et non à l'épuisement**, donc une
+`location` est validée dès le premier coup. Le `run07` ajoute un détail
+utile : le bit ne monte pas à l'instant de la frappe mais quelques frames
+plus tard. Il suit l'*attribution* de l'objet, pas le coup porté au bloc.
 
 ## Contenu
 
@@ -105,6 +130,13 @@ Lua de BizHawk **2.10 exactement** — le connecteur Lua d'Archipelago
 refuse les versions antérieures à 2.7.0 et avertit au-delà de 2.10 —
 puis comparer les dumps avec `tools/cherche_champ_bits.py`.
 
+Deux outils aident à lire ce qui en sort. `tools/treasure_bit.py` traduit
+un identifiant de trésor en adresse et rang de bit, et inversement.
+`tools/compare_block.py` cherche le tableau de la RAM dans un dump de la
+sauvegarde. Les 95 octets qui portent les flags, pour les dix dumps, sont
+publiés dans `data/preuve_champ_bits.txt` : les dumps de 4 Mo eux-mêmes
+ne le sont pas, mais ce fichier suffit à contrôler le résultat.
+
 ## Au sujet de la ROM
 
 **Aucune ROM n'est présente dans ce dépôt, et aucune ne sera fournie.**
@@ -123,6 +155,10 @@ URL, le commit exact consulté, sa licence, et ce qui en a été tiré.**
   tables de trésors et d'objets, Cheatoglobin pour la structure de
   sauvegarde, `mnllib` pour les formats internes, BIS-docs pour les
   commandes de script
+- Le [manuel de 8y8x](https://inf.gg/mlbis/manual), en CC0 — il met un
+  nom sur le tableau `Exxx` que nous avions localisé à la mesure, donne
+  le bloc des registres globaux et le plan mémoire de l'ARM9, et
+  confirme de son côté la révision de ROM visée ici
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago), et en
   particulier son `worlds/mlss` intégré, le monde Superstar Saga, qui
   avait déjà résolu ce type de problème pour le premier jeu de la série
