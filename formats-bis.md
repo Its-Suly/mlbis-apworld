@@ -8,6 +8,13 @@ dans ce fichier ; seule la conséquence pratique remonte dans `CLAUDE.md`.
 Étiquettes de statut identiques à celles de `CLAUDE.md` : **Vérifié**
 avec fichier et ligne, **Hypothèse**, **À tester**.
 
+Les adresses tirées de `inf.gg/mlbis/manual` valent pour la release NA
+`CLJE`, sauf mention contraire du manuel, donc pour notre ROM. Celle-ci
+est **confirmée par une deuxième source indépendante** depuis le 3 août
+2026 : son SHA-256 `9126963d…eef4f1` figure dans la section Known ROMs du
+manuel, sous `CLJE` North America, *not signed*, 128 Mo. Il concordait
+déjà avec `randoglobin/main.py` lignes 189 à 196.
+
 ## Fichier de sauvegarde
 
 **Vérifié**, source `vendor/Cheatoglobin/cheatoglobin/window.py` :
@@ -33,6 +40,37 @@ Broque Madame et nœuds de défi, 2 octets inconnus.
 Zone non documentée : de `slot + 0x012C` à `slot + 0x05F2`, soit
 1222 octets sur lesquels Cheatoglobin ne dit rien. C'est là que doivent
 vivre les flags de trésors.
+
+**Hypothèse H2**, sérialisation du bloc des registres globaux. Si la
+sauvegarde conserve l'ordre de la RAM à partir de `2xxx`, qui est à
+`slot + 0x0124` d'après Cheatoglobin, alors le bloc décrit plus bas dans
+« Registres globaux » se déplie ainsi :
+
+| Offset | Plage | Taille |
+|---|---|---|
+| `slot + 0x0124` | `2xxx` | `0x08` |
+| `slot + 0x012C` | `Dxxx` | `0x88` |
+| `slot + 0x01B4` | `Exxx` | `0x200` |
+| `slot + 0x03B4` | `6xxx` | `0x98` |
+| `slot + 0x044C` | sans identifiant | `0x0E` |
+| `slot + 0x045A` | fin | — |
+
+Tout tient dans la zone non documentée, qui s'arrête à `slot + 0x05F2`,
+et il resterait 408 octets libres après.
+
+Deux réserves contre cette hypothèse, à garder en tête :
+
+- La sérialisation ne peut pas être une copie du bloc entier. En RAM,
+  `2xxx` est précédé de `5xxx` et `Cxxx`, `0x54` octets. Dans la
+  sauvegarde, `slot + 0x0124` est précédé de l'inventaire, dont le
+  détail de Cheatoglobin totalise exactement les `0xD0` octets
+  disponibles. Ces deux tableaux sont donc ailleurs, ou pas sauvegardés
+- L'ordre pourrait être conservé sans que les tailles le soient, si le
+  jeu ne sauvegarde qu'une partie de chaque tableau
+
+**À tester** avec `tools/compare_block.py`, qui cherche aussi le motif
+n'importe où dans le dump `SRAM`, donc tranche même si la prédiction
+d'offset ci-dessus est fausse.
 
 ## Table des trésors, `Treasure/TreasureInfo.dat`
 
@@ -72,6 +110,39 @@ Ce qui fonde l'hypothèse sur les octets 4-5 :
 - L'ordre ne suit pas celui du fichier, donc ce n'est pas l'index
 - Randoglobin ne lit jamais ce champ, il ne décode que les 4 premiers
   octets
+
+### Ordre des identifiants, **Vérifié** par `tools/analyse_geographie.py`
+
+Analyse de bureau du 3 août 2026, sans ROM ni émulateur. Elle décide du
+choix des cibles de tous les tests en jeu.
+
+**Les identifiants ne suivent pas la géographie.** Toute plage de 64
+identifiants se disperse sur l'ensemble de la carte : la plage 0 à 63
+touche les salles 0 à 237, la plage 128 à 191 les salles 16 à 182. Il est
+donc inutile d'espérer couvrir une plage d'identifiants en restant dans
+une zone.
+
+**Mais ils sont groupés par salle en local**, ce qui sauve les tests :
+
+- 184 salles sur 269 ont des identifiants entièrement contigus
+- 603 des 646 écarts entre identifiants consécutifs valent 1
+- 85 salles sont éclatées en deux paquets ou plus, par exemple la salle
+  15 qui porte `31, 34, 35, 36` puis `256, 257, 258, 260`
+
+Le facteur d'ordre visible est le **type de trésor**, en gros et non en
+détail : la plage 0 à 63 est à 89 % des blocs `?`, la plage 192 à 255 à
+75 % des haricots, la plage 384 à 447 à 76 % des blocs brique. Les salles
+éclatées s'expliquent bien par une salle contenant plusieurs types.
+
+Conséquences pratiques :
+
+- Une salle unique fournit plusieurs identifiants consécutifs sans
+  déplacement. C'est ce qui a rendu la salle 258 si commode, avec
+  `544` à `547`
+- Les 85 salles éclatées sont les **meilleures cibles de falsification** :
+  elles permettent d'allumer des bits non adjacents sans bouger
+- Choisir chaque cible de test dans `locations_bis.csv`, jamais par
+  plage d'identifiants
 
 Ce qui fonde l'hypothèse coordonnées sur les octets 6 à 11 : plages
 24-1816, 52-1604 et 0-920, très majoritairement multiples de 8, et le
@@ -204,10 +275,32 @@ Acquis :
 ### Adresse de base, **Vérifié**
 
 ```
-base = 0x0560C8 dans Main RAM
+base = 0x0560C8 dans Main RAM, soit l'adresse absolue 020560C8
 bit du trésor d'identifiant N  ->  octet 0x0560C8 + N // 8, bit N % 8
-champ = 95 octets, de 0x0560C8 a 0x056126, pour 758 identifiants
 ```
+
+**Vérifié**, source `inf.gg/mlbis/manual` section IDs > Registers, lue le
+3 août 2026 : cette adresse n'héberge pas une structure dédiée aux
+trésors. C'est le **tableau de bits global des variables de script
+`Exxx`**, 4096 bits soit `0x200` octets, de `020560C8` à `020562C8`. Les
+flags de trésors en occupent les **index bas**.
+
+Nos 758 identifiants tiennent donc dans les **95 premiers octets** du
+tableau, `0x0560C8` à `0x056126` inclus, soit moins d'un cinquième de sa
+taille. Ce fichier présentait auparavant ces 95 octets comme la taille de
+la structure, ce qui était faux ; le chiffre reste juste comme portion
+utile et sert à dimensionner les lectures du client.
+
+Le manuel ajoute que le jeu traite `Exxx` et `Fxxx` comme **une seule
+plage continue indexée par `id & 0x1fff`**.
+
+**Contradiction relevée dans le manuel, non tranchée** : `id & 0x1fff`
+produit des index de 0 à 8191, alors que `Exxx` n'est déclaré qu'à 4096
+éléments. Les index 4096 et au-dessus, c'est-à-dire les variables
+`Fxxx`, tomberaient hors des `0x200` octets, donc dans le tableau `6xxx`
+à `020562C8`. Sans conséquence pour les trésors, qui restent sous
+l'index 758, mais **toute écriture à un index élevé est en terrain non
+sûr** tant que ce point n'est pas éclairci.
 
 Le rang du bit **est** l'identifiant des octets 4-5 de
 `TreasureInfo.dat`. Confirmé le 3 août 2026 par cinq dumps successifs
@@ -231,6 +324,15 @@ exclut un simple compteur de ramassages.
 Entre `run04` et `run05`, un seul octet a changé dans un rayon de
 512 octets autour du champ.
 
+**Hypothèse H1**, l'identifiant vaut l'index sur toute la table. Mesuré
+sur les identifiants 544 à 547 : `0x05610C = 0x0560C8 + 68` et
+`68 × 8 = 544`. Extrapolé aux 754 autres, jamais vérifié ailleurs.
+En appliquant la règle `id & 0x1fff` du manuel, le trésor 544 serait la
+variable de script `0xE220` et le trésor 757 la variable `0xE2F5`.
+Arithmétiquement forcé, mais **aucun script lu ne référence de variable
+`0xE2xx`** : les plages vues dans Randoglobin sont `0xE7xx` à `0xEBxx`.
+La correspondance index / nom de variable reste donc à confirmer.
+
 **À tester** : sur un bloc à `max_hits` supérieur à 1, le bit monte-t-il
 au premier coup ou à l'épuisement du bloc ? L'identifiant 546 porte
 `quantity = 0` et `max_hits = 10`, et le comportement observé en jeu est
@@ -243,6 +345,77 @@ validée.
 l'expérience. Le jeu n'écrit dans la sauvegarde qu'au moment d'une
 sauvegarde explicite, le champ de bits vit d'abord en RAM de travail.
 
+## Registres globaux et plan mémoire de l'ARM9
+
+**Vérifié** ligne par ligne, source `inf.gg/mlbis/manual`, sections
+IDs > Registers et le plan mémoire, lues le 3 août 2026. Adresses
+relevées sur la release NA `CLJE`, celle du projet.
+
+Les variables de script ne sont pas éparpillées : elles vivent dans un
+bloc de six tableaux contigus, en tête du BSS de l'ARM9.
+
+| Adresse | Plage | Contenu | Taille |
+|---|---|---|---|
+| `02055FE4` | `5xxx` | tableau de `s32`, 16 éléments | `0x40` |
+| `02056024` | `Cxxx` | tableau de `s32`, 5 éléments | `0x14` |
+| `02056038` | `2xxx` | champ de bits, 64 éléments | `0x08` |
+| `02056040` | `Dxxx` | tableau de bits, 1088 éléments | `0x88` |
+| `020560C8` | `Exxx` | tableau de bits, 4096 éléments | `0x200` |
+| `020562C8` | `6xxx` | tableau de `s8`, 152 éléments | `0x98` |
+| `02056360` | — | sans identifiant, usage inconnu du manuel | `0x0E` |
+| `0205636E` | — | fin du bloc | — |
+
+La **contiguïté est une déduction arithmétique**, pas une affirmation du
+manuel : chaque fin colle exactement au début suivant, ce qui la valide.
+Bloc de 906 octets, `0x38A`, commençant 4 octets après le début du BSS.
+
+Plan mémoire, **Vérifié**, même source :
+
+| Élément | Plage |
+|---|---|
+| segment ARM9 chargé à | `02004000`, point d'entrée `02004800` |
+| BSS ARM9 | `02055FE0` à `02063B00` |
+| BSS ITCM | `01FF93C0` à `01FFA580` |
+| BSS DTCM | `027E00E0` à `027E1200` |
+| ITCM copié depuis | `02055FE0` à `020573A0`, `0x13C0` |
+| DTCM copié depuis | `020573A0` à `02057480`, `0xE0` |
+| segment ARM7 chargé à | `02380000`, non compressé |
+
+Deux conséquences, l'une pratique et l'autre explicative :
+
+- `020560C8` est **dans le BSS de l'ARM9**, donc à une adresse fixe pour
+  toute la partie, hors de la zone des overlays et hors du heap. Le
+  client pourra lire là sans se soucier de la salle chargée. Remplace
+  l'hypothèse précédente sur le placement
+- Le BSS de l'ARM9 **écrase l'image d'origine du code ITCM et DTCM**,
+  dont la source recouvre justement `02055FE0` à `020573A0`. C'est ce
+  qui explique les 410 octets de zéros continus observés au `run05` :
+  cette zone est de la mémoire remise à zéro, pas du code
+
+Heaps, **Vérifié**, gérés par `Heap::init_heaps` d'après le manuel :
+
+| Heap | Plage | Rôle |
+|---|---|---|
+| 0 | `021277C0` à `023E0000` | mémoire principale |
+| 1 | `01FFA580` à `02000000` | ITCM |
+| 2 | `027E1200` à `027E2780` | DTCM |
+| 3 | `027FF000` à `027FFC00` | non documenté |
+
+Overlays, **Vérifié**, même source :
+
+| Overlay | Contenu |
+|---|---|
+| 0 | `clMesWinEff`, **code de sauvegarde** |
+| 1 | initialisation de la partie |
+| 2 à 7 | `field`, sans description dans le manuel |
+| 8 et au-delà | combat |
+| 138 et 139 | DSProtect |
+
+L'overlay 0 porte le code de sauvegarde : c'est là qu'il faudra chercher
+si la prédiction de sérialisation H2 tombe à côté. La case vide des
+overlays 2 à 7 est partiellement remplie par BIS-docs, qui place la
+table des commandes de script dans `overlay_0006.bin`.
+
 ## Variables de script
 
 **Vérifié** : les flags de progression sont des variables de script.
@@ -254,16 +427,52 @@ commentaire explicite.
 `(variable << 16) + index_de_subroutine`, ce qui conditionne son
 comportement à une variable. Source même fichier, ligne 535.
 
-**Hypothèse** : les variables `0x2000` à `0x203F` sont 64 flags d'un bit
-stockés dans les 8 octets à `slot + 0x0124`. Cheatoglobin y lit
-exactement 8 octets nommés `var_2xxx` et les manipule au bit près
-(`window.py` ligne 144, `save_file_tab.py` lignes 48 et 55). Toutes les
-variables `0x2xxx` vues dans Randoglobin sont inférieures à `0x2040`.
+**Vérifié**, ce qui était une hypothèse jusqu'au 3 août 2026 : les
+variables `0x2000` à `0x203F` sont bien **64 flags d'un bit tenant dans
+8 octets**. Deux sources indépendantes le disent, chacune de son côté :
+
+- en RAM, à `02056038`, source `inf.gg/mlbis/manual` section
+  IDs > Registers
+- dans la sauvegarde, à `slot + 0x0124`, où Cheatoglobin lit exactement
+  8 octets nommés `var_2xxx` et les manipule au bit près
+  (`window.py` ligne 144, `save_file_tab.py` lignes 48 et 55)
+
+Reste une déduction et non un fait lu : que ces deux emplacements
+portent **la même donnée**, l'un étant la sérialisation de l'autre.
+Aucune des deux sources ne décrit la copie. Toutes les variables `0x2xxx`
+vues dans Randoglobin sont inférieures à `0x2040`, ce qui est cohérent
+avec 64 éléments.
 
 Plages de variables vues dans Randoglobin, par fréquence décroissante :
 `0xEAxx`, `0xEBxx`, `0x90xx`, `0xA0xx`, `0x60xx`, `0x30xx`, `0xE9xx`,
 `0xE7xx`, `0x10xx`, `0xE8xx`, `0x20xx`, `0x50xx`, `0xC0xx`, `0xB0xx`,
 `0xD0xx`. Leur sémantique respective n'est pas documentée.
+
+**Hypothèse H3**, partage du tableau `Exxx` entre trésors et événements.
+Les plages `0xE7xx` à `0xEBxx` relevées dans Randoglobin tomberaient aux
+index 1792 à 3071 du même tableau, en appliquant `id & 0x1fff`. Les
+index bas seraient réservés aux trésors, les index hauts aux scripts
+d'événements. Cohérent avec le fait que nos trésors s'arrêtent à l'index
+757, mais rien ne documente ce découpage. Ces index restent tous sous
+4096, donc dans le tableau `Exxx` déclaré, sans dépendre de la
+contradiction `Fxxx` relevée plus haut.
+
+**Mesure à l'appui de H3**, relevée le 3 août 2026 en relisant `run05`
+au-delà des 95 octets des trésors. Le tableau ne portait que quatre
+octets non nuls sur `0x200` :
+
+| Offset | Valeur | Index | Variables sous H1 |
+|---|---|---|---|
+| `+0x044` | `0x0F` | 544 à 547 | nos quatre trésors |
+| `+0x10A` | `0xE0` | 2133 à 2135 | `0xE855` à `0xE857` |
+| `+0x10B` | `0x0F` | 2136 à 2139 | `0xE858` à `0xE85B` |
+| `+0x152` | `0x08` | 2707 | `0xEA93` |
+
+Les index hauts effectivement allumés en cours de partie tombent en
+`0xE8xx` et `0xEAxx`, deux des plages relevées dans Randoglobin, et
+`0xEAxx` est la plus fréquente de toutes. Les index bas restent aux
+trésors. C'est le découpage prévu par H3, observé sans avoir été
+cherché. Reste une observation sur un seul dump, pas une preuve.
 
 ## Écarté
 

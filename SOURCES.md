@@ -106,6 +106,56 @@ which this file provides. Note that the copy of the command
 documentation circulating on the MnL-Modding Google Drive dates from
 September 2024 and is **out of date** — regenerate from `bisdocs.py`.
 
+### 8y8x's MLBIS Manual
+
+- Site: <https://inf.gg/mlbis/manual>
+- Author: yx (8y8x), also the author of `mlbis-dumper`
+- Licence: **CC0 1.0** — public domain dedication, no reuse constraint
+  and no attribution requirement. Credited here anyway
+- Consulted: 2026-08-03
+
+The most direct documentation of the game's runtime layout we have. The
+manual states that unless noted otherwise its addresses come from the
+North America release, which is the one this project is pinned to. Facts
+drawn from it:
+
+- Section *Known ROMs* — independently confirms this project's ROM
+  hash, `9126963d…eef4f1`, as `CLJE` North America, not signed, 128 MB.
+  A second source after `randoglobin/main.py` lines 189-196
+- Section *IDs > Registers* — the block of global script-variable
+  arrays: `5xxx` at `02055fe4`, `Cxxx` at `02056024`, `2xxx` at
+  `02056038`, `Dxxx` at `02056040`, **`Exxx` at `020560c8`, 4096
+  elements, `0x200` bytes**, `6xxx` at `020562c8`. This is what named
+  the address we had located by measurement, and corrected our
+  description of its size. Same section: the game treats `Exxx` and
+  `Fxxx` as one continuous range indexed by `id & 0x1fff`
+- The ARM9 / ARM7 memory map — load addresses, BSS ranges, and the ITCM
+  and DTCM copy sources. Establishes that `020560c8` sits in the ARM9
+  BSS, hence at a fixed address, outside the overlays and the heaps
+- The heap table and the overlay list, including overlay 0 holding the
+  save-file code
+
+Contradiction noted, **not resolved**, in `formats-bis.md`: `id & 0x1fff`
+yields indices up to 8191, while `Exxx` is declared with 4096 elements.
+
+### mlbis-dumper
+
+- Repository: <https://github.com/8y8x/mlbis-dumper>
+- Author: yx (8y8x)
+
+The dumper and ARM disassembler behind the manual above. Not used
+directly yet; listed because it is where the manual's addresses come
+from, and the natural tool to re-derive them.
+
+### GBATEK
+
+- Site: <https://problemkaputt.de/gbatek-ds-technical-data.htm>
+- Author: Martin Korth
+
+The reference for Nintendo DS hardware: memory map, TCM behaviour, save
+hardware. Background for reading the addresses above; no specific claim
+in this repository rests on it alone.
+
 ### BizHawk
 
 - Repository: <https://github.com/TASEmulators/BizHawk>
@@ -169,7 +219,8 @@ the clarifications here fixes the detection without losing anything.)*
 
 ## Verification
 
-`data/preuve_champ_bits.txt` holds the 95 bytes of the treasure
-bitfield across the five RAM dumps that established the central result.
+`data/preuve_champ_bits.txt` holds the 95 bytes that carry the treasure
+flags — the low end of the `Exxx` global bitfield array — across the
+five RAM dumps that established the central result.
 The full 4 MB dumps are not published; regenerate them with
 `tools/dump_ram.lua`.

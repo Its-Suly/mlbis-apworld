@@ -10,8 +10,9 @@ Ne jamais raisonner sur une autre version.
 
 - Mario & Luigi Bowser's Inside Story, NDS, région NA, révision pre-DSi
 - SHA-256 `9126963d6c6b6f81a9a666ba766e223781ff286634486e2a56d07a4c82eef4f1`
-- Référence issue de `randoglobin/main.py` lignes 189 à 196. Le `.nds`
-  présent dans ce dossier a été rehashé le 2 août 2026 et correspond
+- Deux sources concordantes, `randoglobin/main.py` lignes 189 à 196 et
+  `inf.gg/mlbis/manual` section Known ROMs. Le `.nds` de ce dossier a
+  été rehashé le 2 août 2026 et correspond
 - Non moddée
 
 Tout offset, adresse ou structure se rapporte à cette révision. Si une
@@ -68,8 +69,7 @@ de s'inspirer.
 ## Contraintes d'empaquetage APWorld
 
 Cinq pièges dont le message d'erreur ne pointe pas vers la vraie cause,
-détaillés dans `empaquetage-apworld.md`. À relire avant le premier
-empaquetage, pas avant.
+dans `empaquetage-apworld.md`. À relire avant le premier empaquetage.
 
 ## Piège de logique connu
 
@@ -135,9 +135,10 @@ Tout ça va dans `JOURNAL.md` à la racine du projet, qui n'est pas
 chargé automatiquement. Y écrire librement, en datant chaque entrée.
 Le créer s'il n'existe pas.
 
-Ce fichier fait environ 175 lignes au 27 juillet 2026. S'il dépasse
-220 lignes, le signaler et proposer ce qui peut en sortir plutôt que
-de continuer à ajouter.
+Ce fichier fait 218 lignes au 3 août 2026, à deux lignes du plafond.
+S'il dépasse 220 lignes, le signaler et proposer ce qui peut en sortir
+plutôt que de continuer à ajouter. Premier candidat à la sortie : la
+section « Particularités du jeu », vers `formats-bis.md`.
 
 ## Sources, du plus fiable au moins fiable
 
@@ -152,15 +153,15 @@ Ordre de fiabilité à respecter :
    `apworld_dev_faq.md`, `network protocol.md`
 3. Code d'un APWorld NDS existant, Pokémon Mystery Dungeon Explorers of
    Sky ou Pokémon Black and White
-4. Écosystème MnL-Modding, puis sa documentation
+4. Écosystème MnL-Modding, ses outils puis sa documentation, dont
+   `inf.gg/mlbis/manual`, en CC0 donc réutilisable sans contrainte
 5. Discussions communautaires, à traiter comme des pistes
 
 ## Acquis à ne pas redécouvrir
 
 - **Commandes de script** : table dans `overlay_0006.bin`, plage
   commune, commandes d'objets `0x0043` et `0x0044`, injection ARM.
-  Détail dans `formats-bis.md`. La doc du Google Drive de MnL-Modding
-  est périmée, régénérer depuis `bisdocs.py`
+  Détail et sources dans `formats-bis.md`
 
 ### Structures confirmées, détail dans `formats-bis.md`
 
@@ -170,13 +171,12 @@ Ordre de fiabilité à respecter :
   le checksum et répliquer la copie**, sinon le slot est rejeté
 - **Locations candidates** : `Treasure/TreasureInfo.dat`, entrées de
   12 octets, **647 exploitables** dont 281 blocs `?` et 197 haricots.
-  Les octets 4-5 de chaque entrée portent un identifiant unique de 0 à
-  757, jamais lu par Randoglobin. Meilleur candidat au numéro de
-  `location`
+  Les octets 4-5 portent un identifiant unique de 0 à 757, qui est le
+  rang du bit de flag. Numéro de `location` naturel
 - **Flags** : les progressions sont des variables de script.
   `Variables[0x200E]` vaut 0 tant que le Bloc Aspirateur n'est pas
-  acquis. Les `0x2xxx` sont probablement des bits dans les 8 octets à
-  `slot + 0x0124`
+  acquis. Les `0x2xxx` sont 64 bits, à `02056038` en RAM et dans les
+  8 octets à `slot + 0x0124` de la sauvegarde. Vérifié
 - **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
   pas d'état de sauvegarde
 - **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
@@ -196,21 +196,24 @@ Régénérables par `tools/extract_names.py` puis
 ## Non résolu
 
 **Le point bloquant est levé, et vérifié.** Les trésors ramassés sont
-suivis par un champ de bits dans `Main RAM` :
+suivis par les index bas du tableau de bits `Exxx` des variables de
+script, 4096 bits, `0x200` octets à `020560C8` en `Main RAM` :
 
 ```
-bit du trésor d'identifiant N  ->  octet 0x0560C8 + N // 8, bit N % 8
+bit du trésor d'identifiant N  ->  octet 020560C8 + N // 8, bit N % 8
 ```
 
-Confirmé le 3 août 2026 par cinq dumps sur les quatre blocs de la salle
-258. Les bits suivent les identifiants de `TreasureInfo.dat` et non
-l'ordre des ramassages. Protocole et preuve dans `formats-bis.md`.
+Le tableau vit dans le BSS de l'ARM9, `02055FE0` à `02063B00`, donc à
+adresse fixe quelle que soit la salle chargée. Vérifié par cinq dumps du
+3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans `formats-bis.md`.
 
 Restent ouverts, plus rien de bloquant :
 
+- **Risque principal** : livrer un item dans le jeu qui tourne n'a
+  jamais été testé. La détection est acquise, l'écriture non
 - Sur un bloc à `max_hits` supérieur à 1, le bit monte-t-il au premier
   coup ou à l'épuisement ? Détermine quand une `location` est validée
-- Comment le champ est recopié dans la sauvegarde. `SRAM` n'a pas bougé
-  de l'expérience, le jeu n'y écrit qu'à une sauvegarde explicite
+- Comment le champ est recopié dans la sauvegarde. H2 prédit
+  `slot + 0x01B4`, à trancher avec `tools/compare_block.py`
 - Où sont les flags des trésors hors `TreasureInfo.dat` : coffres de
   quête, récompenses de PNJ, boutiques

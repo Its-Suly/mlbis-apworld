@@ -269,3 +269,103 @@ point, il est tombé tout seul.
 Nouvelle question ouverte dans la foulée, qui n'existait pas avant :
 sur un bloc multi-coups, le flag tombe-t-il au premier coup ou à
 l'épuisement ? Ça décide du moment où une `location` sera validée.
+
+## 3 août 2026, le manuel de 8y8x met un nom sur notre adresse
+
+Source apportée par l'utilisateur : `inf.gg/mlbis/manual`, par yx (8y8x),
+l'auteur de `mlbis-dumper`. En CC0, donc réutilisable sans contrainte,
+contrairement à Randoglobin. Vérifiée à la source avant d'être citée, pas
+seulement reprise de l'extrait fourni : tous les chiffres correspondent.
+
+Le manuel note « No AI used 💜 ». Aucune obligation n'en découle, la CC0
+n'en impose aucune, mais ça vaut d'être su avant d'aller discuter avec
+cette communauté.
+
+### Ce que le manuel corrige
+
+`020560C8` n'est pas une structure de trésors. C'est le tableau de bits
+global des variables de script `Exxx`, 4096 bits, `0x200` octets. Nos
+trésors n'en occupent que les 95 premiers octets. Nous décrivions donc
+la portion utile comme si c'était la structure.
+
+La formule passe d'extrapolée à vérifiée par une source externe. Deux
+autres acquis tombent en même temps : les `0x2xxx` sont bien 64 bits, et
+le tableau vit dans le BSS de l'ARM9, donc à adresse fixe. Ce dernier
+point retire une inquiétude qu'on n'avait pas encore formulée, celle de
+voir l'adresse bouger selon la salle chargée.
+
+Le BSS écrase l'image d'origine du code ITCM et DTCM. C'est l'explication
+des 410 octets de zéros continus du 3 août au matin, qui n'avaient jusque
+là aucune raison d'être là.
+
+### Contradiction relevée, non tranchée
+
+`Exxx` est déclaré à 4096 éléments, soit `0x200` octets, mais le manuel
+dit aussi que `Exxx` et `Fxxx` forment une plage continue indexée par
+`id & 0x1fff`, ce qui produit des index jusqu'à 8191. Les index au-delà
+de 4095 tomberaient dans le tableau `6xxx`. Sans effet sur les trésors,
+qui s'arrêtent à 757, mais consigné plutôt qu'arbitré.
+
+### Deux erreurs de ma part
+
+1. Écrit dans `formats-bis.md` que les variables `0xEBxx` de Randoglobin
+   dépassaient l'index 3071 et butaient sur cette contradiction. Faux :
+   `0xEBFF & 0x1fff` vaut 3071, elles tiennent toutes dans le tableau.
+   Corrigé dans la foulée
+2. Lu à l'œil la position des octets non nuls dans une sortie hexa de
+   271 octets, et annoncé `+0x14C` et `+0x152`. C'était `+0x10A`,
+   `+0x10B` et `+0x152`. Recompté par script. Ne pas compter des offsets
+   à l'œil dans un pavé hexadécimal, même court
+
+### Un acquis offert par la seconde erreur
+
+En recomptant proprement, le tableau ne portait que quatre octets non
+nuls sur `0x200`. Les trois qui ne sont pas les nôtres allument les index
+2133 à 2139 et 2707, soit `0xE855` à `0xE85B` et `0xEA93` sous H1. Ce
+sont exactement des plages relevées dans Randoglobin, `0xEAxx` étant la
+plus fréquente de toutes.
+
+Autrement dit, le partage supposé du tableau entre trésors en bas et
+scripts d'événements en haut s'observe directement dans le dump. Personne
+ne l'avait cherché, il était dans les données depuis le matin. On n'avait
+regardé que 95 octets sur 512.
+
+### H2 n'est pas testable avec les dumps existants
+
+`tools/compare_block.py` écrit pour trancher la sérialisation dans la
+sauvegarde. Premier passage : « différent », premier écart à `+0x044`,
+4 octets sur 512. Conclusion tentante et fausse.
+
+Vérification faite, **les deux slots sont vides**, 2 octets non nuls
+chacun sur `0x5F4`. Aucune partie n'a jamais été sauvegardée. La fenêtre
+comparée est nulle parce qu'il n'y a rien dedans, pas parce que H2 est
+fausse. Le script a été repris pour détecter ce cas et refuser de
+conclure, plutôt que de rapporter un écart trompeur.
+
+Un outil de mesure qui ne sait pas dire « je ne peux rien conclure » est
+un piège à retardement. Celui-là le dit maintenant, et propose la manip
+qui débloquerait la question.
+
+### Les identifiants ne suivent pas la géographie
+
+Analyse de bureau demandée avant de choisir les cibles des prochains
+tests, `tools/analyse_geographie.py`. Réponse nette : toute plage de 64
+identifiants se disperse sur toute la carte.
+
+Le sauvetage est local. 184 salles sur 269 ont des identifiants contigus,
+et 603 des 646 écarts consécutifs valent 1. Une salle donne donc
+plusieurs identifiants consécutifs sans se déplacer, ce qui explique
+après coup pourquoi la salle 258 avait si bien marché. Le facteur d'ordre
+est le type de trésor, en gros : la plage 0 à 63 est à 89 % des blocs `?`.
+
+Les 85 salles éclatées, celles qui portent deux paquets d'identifiants
+éloignés, deviennent les meilleures cibles de falsification : elles
+allument des bits non adjacents sans quitter la pièce.
+
+### Tenue des fichiers
+
+`CLAUDE.md` est remonté à 219 lignes, à une du plafond. Trois lignes
+seulement y ont été ajoutées, gagées par la compression de trois entrées
+devenues redondantes avec `formats-bis.md`. Prochain candidat à la
+sortie, noté dans le fichier lui-même : la section « Particularités du
+jeu ».
