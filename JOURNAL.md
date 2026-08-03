@@ -392,6 +392,53 @@ qui ne bouge pas en direct. Un saut manqué aurait produit la même sortie
 qu'un flag qui ne monte pas. Ici la suite des dumps lève le doute, le bit
 finissant par monter, mais il faudra cette adresse tôt ou tard.
 
+### La communauté répond, et H2 tombe juste
+
+Message posté sur le Discord MnL-Modding avec une liste de questions.
+Deux réponses le soir même, de yx (8y8x), l'auteur du manuel, et de Marc
+(ThePurpleAnon).
+
+Le gros morceau est une capture d'écran de Ghidra montrant la fonction de
+sauvegarde, `FUN_overlay_d_129__0206f1f4` cas 5 : cinq `memCopy32unk` qui
+écrivent `2xxx`, `Dxxx`, `Exxx`, `6xxx` et la plage anonyme, dans l'ordre
+et aux tailles du bloc en RAM.
+
+En calant sur l'ancre de Cheatoglobin, les cinq offsets se traduisent en
+`slot + 0x0124`, `0x012C`, `0x01B4`, `0x03B4`, `0x044C`. **C'est
+exactement ce que H2 prédisait, offset par offset.** Une prédiction posée
+le matin sur un raisonnement d'ordre et de tailles, confirmée le soir par
+du code décompilé qu'on n'avait pas.
+
+Marc donne par ailleurs le découpage de `Exxx` : trésors à partir de
+`0xE000`, ennemis de `0xE400`, histoire de `0xE700`. Ça valide H1, la
+variable d'un trésor étant `0xE000 + identifiant`, et ça précise H3.
+
+Détail qui fait plaisir : les trois octets non nuls repérés dans `run05`
+en fin d'après-midi, aux index 2133 à 2139 et 2707, tombent tous au-delà
+de `0xE700`, donc côté histoire. L'observation a précédé l'explication de
+quelques heures.
+
+Troisième acquis, moins agréable mais utile : les trésors hors
+`TreasureInfo.dat` sont des flags de cinématique, indistinguables par
+leur plage. Il n'y a pas de table à dumper, il faudra lire les scripts
+avec `mnlscript`. C'est le seul chantier restant qui demande d'entrer
+dans le langage de script.
+
+### Une affirmation publiée, mise en doute puis confirmée
+
+Marc conseille de lire le dernier commit de Randoglobin plutôt que la
+release, et se dit sûr à 90 % que le dernier commit lit les 6 premiers
+octets d'une entrée de trésor. Or nous publions dans le README que les
+octets 4-5 ne sont jamais lus.
+
+Vérifié plutôt que supposé : notre clone est déjà au dernier commit de
+`main`, `b40481cb`, zéro commit de retard, et `from_treasure_info` y fait
+`struct.unpack('<HH', data)`, soit 4 octets. L'affirmation tient. Il
+visait peut-être une des branches `v0.1` ou `v0.2`.
+
+Leçon générale : une remarque d'un contributeur mieux informé que nous
+mérite d'être vérifiée, pas gobée ni écartée. Elle coûtait deux commandes.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est remonté à 219 lignes, à une du plafond. Trois lignes

@@ -173,10 +173,9 @@ Ordre de fiabilité à respecter :
   12 octets, **647 exploitables** dont 281 blocs `?` et 197 haricots.
   Les octets 4-5 portent un identifiant unique de 0 à 757, qui est le
   rang du bit de flag. Numéro de `location` naturel
-- **Flags** : les progressions sont des variables de script.
-  `Variables[0x200E]` vaut 0 tant que le Bloc Aspirateur n'est pas
-  acquis. Les `0x2xxx` sont 64 bits, à `02056038` en RAM et dans les
-  8 octets à `slot + 0x0124` de la sauvegarde. Vérifié
+- **Flags** : dans `Exxx`, les trésors partent de `0xE000`, les ennemis
+  de `0xE400`, l'histoire de `0xE700`. Les `0x2xxx` sont 64 bits, à
+  `02056038` en RAM et à `slot + 0x0124` dans la sauvegarde
 - **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
   pas d'état de sauvegarde
 - **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
@@ -213,7 +212,7 @@ Restent ouverts, plus rien de bloquant :
 
 - **Risque principal** : livrer un item dans le jeu qui tourne n'a
   jamais été testé. La détection est acquise, l'écriture non
-- Comment le champ est recopié dans la sauvegarde. H2 prédit
-  `slot + 0x01B4`, à trancher avec `tools/compare_block.py`
-- Où sont les flags des trésors hors `TreasureInfo.dat` : coffres de
-  quête, récompenses de PNJ, boutiques
+- Le champ est recopié à `slot + 0x01B4`, d'après le décompilé de
+  l'overlay 129 montré sur Discord. À confirmer par notre mesure
+- Les flags des trésors hors `TreasureInfo.dat` sont des flags de
+  cinématique, à lire via `mnlscript`, ce n'est pas une table à dumper

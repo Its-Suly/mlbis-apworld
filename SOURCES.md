@@ -18,6 +18,24 @@ The hub for Mario & Luigi modding. Link taken from the BIS-docs site
 configuration, `hugo/hugo.yaml` line 35. Every tool below comes from
 this community.
 
+Two answers given on that Discord on 2026-08-03 are used directly, and
+credited here because they unblocked two open questions:
+
+- **yx (8y8x)** showed a decompiled listing of the save routine,
+  `FUN_overlay_d_129__0206f1f4` case 5, which gives the offsets at which
+  the global register arrays are written into the save. It also
+  established that the save code spans overlays 0, 127 and 129, and
+  offered an untested reading of `Dxxx` as field-map toggles
+- **Marc (ThePurpleAnon)** gave the layout of the `Exxx` range: treasure
+  flags from `0xE000`, defeated-enemy flags from `0xE400`, story flags
+  from `0xE700`; and explained that treasures outside
+  `TreasureInfo.dat` are cutscene flags, indistinguishable by range
+
+Chat messages rank below source code in this project's hierarchy. The
+decompiled listing is treated as strong evidence pending our own
+measurement; the range layout is recorded as a community claim, though
+three independent observations here agree with it.
+
 **Archipelago** — <https://archipelago.gg>
 
 ## Code and data sources

@@ -41,36 +41,51 @@ Zone non documentée : de `slot + 0x012C` à `slot + 0x05F2`, soit
 1222 octets sur lesquels Cheatoglobin ne dit rien. C'est là que doivent
 vivre les flags de trésors.
 
-**Hypothèse H2**, sérialisation du bloc des registres globaux. Si la
-sauvegarde conserve l'ordre de la RAM à partir de `2xxx`, qui est à
-`slot + 0x0124` d'après Cheatoglobin, alors le bloc décrit plus bas dans
-« Registres globaux » se déplie ainsi :
+### Sérialisation du bloc des registres globaux, ex-hypothèse H2
 
-| Offset | Plage | Taille |
-|---|---|---|
-| `slot + 0x0124` | `2xxx` | `0x08` |
-| `slot + 0x012C` | `Dxxx` | `0x88` |
-| `slot + 0x01B4` | `Exxx` | `0x200` |
-| `slot + 0x03B4` | `6xxx` | `0x98` |
-| `slot + 0x044C` | sans identifiant | `0x0E` |
-| `slot + 0x045A` | fin | — |
+**Vérifié par décompilation**, montrée le 3 août 2026 sur le Discord
+MnL-Modding par yx (8y8x), auteur du manuel et de `mlbis-dumper`. La
+fonction `FUN_overlay_d_129__0206f1f4`, cas 5, enchaîne cinq copies :
 
-Tout tient dans la zone non documentée, qui s'arrête à `slot + 0x05F2`,
-et il resterait 408 octets libres après.
+```
+memCopy32unk(VAR_ARRAY_UNK_2xxx,  param_1 + 0x15c, 8)
+memCopy32unk(VAR_ARRAY_UNK_Dxxx,  param_1 + 0x164, 0x88)
+memCopy32unk(VAR_ARRAY_gbi_Exxx,  param_1 + 0x1ec, 0x200)
+memCopy32unk(VAR_ARRAY_gby_6xxx,  param_1 + 0x3ec, 0x98)
+memCopy32unk(&DAT_02056360,       param_1 + 0x484, 0xe)
+```
 
-Deux réserves contre cette hypothèse, à garder en tête :
+Même ordre et mêmes tailles que le bloc en RAM. En calant sur l'ancre de
+Cheatoglobin, `2xxx` à `slot + 0x0124`, il vient `param_1 = slot - 0x38`,
+et les cinq offsets se traduisent ainsi :
 
-- La sérialisation ne peut pas être une copie du bloc entier. En RAM,
-  `2xxx` est précédé de `5xxx` et `Cxxx`, `0x54` octets. Dans la
-  sauvegarde, `slot + 0x0124` est précédé de l'inventaire, dont le
-  détail de Cheatoglobin totalise exactement les `0xD0` octets
-  disponibles. Ces deux tableaux sont donc ailleurs, ou pas sauvegardés
-- L'ordre pourrait être conservé sans que les tailles le soient, si le
-  jeu ne sauvegarde qu'une partie de chaque tableau
+| Offset dans le slot | Plage | Taille | Décompilé |
+|---|---|---|---|
+| `slot + 0x0124` | `2xxx` | `0x08` | `param_1 + 0x15c` |
+| `slot + 0x012C` | `Dxxx` | `0x88` | `param_1 + 0x164` |
+| `slot + 0x01B4` | `Exxx` | `0x200` | `param_1 + 0x1ec` |
+| `slot + 0x03B4` | `6xxx` | `0x98` | `param_1 + 0x3ec` |
+| `slot + 0x044C` | sans identifiant | `0x0E` | `param_1 + 0x484` |
+| `slot + 0x045A` | fin | — | — |
 
-**À tester** avec `tools/compare_block.py`, qui cherche aussi le motif
-n'importe où dans le dump `SRAM`, donc tranche même si la prédiction
-d'offset ci-dessus est fausse.
+**Les flags de trésors sont donc à `slot + 0x01B4 + N // 8`**, bit
+`N % 8`, dans la zone que Cheatoglobin laissait non documentée.
+
+Deux réserves, à lever par notre propre mesure :
+
+- Le décalage de `0x38` entre `param_1` et le début du slot est une
+  déduction à partir d'une seule ancre. Ce qui la rend solide est que
+  les cinq offsets s'alignent avec la **même** constante
+- Nous n'avons pas lancé Ghidra nous-mêmes, c'est une capture d'écran
+  lue sur Discord. Le test qui trancherait est direct : sauvegarder en
+  jeu puis chercher le motif avec `tools/compare_block.py`, qui balaie
+  tout le dump `SRAM` et rapporte l'offset réellement trouvé
+
+À noter, la sérialisation ne copie pas le bloc entier : `5xxx` et `Cxxx`,
+qui précèdent `2xxx` en RAM, ne figurent pas dans ces cinq copies.
+
+Le code de sauvegarde vit dans les overlays **0, 127 et 129**, et non
+dans le seul overlay 0 que retenait le manuel.
 
 ## Table des trésors, `Treasure/TreasureInfo.dat`
 
@@ -324,14 +339,11 @@ exclut un simple compteur de ramassages.
 Entre `run04` et `run05`, un seul octet a changé dans un rayon de
 512 octets autour du champ.
 
-**Hypothèse H1**, l'identifiant vaut l'index sur toute la table. Mesuré
-sur les identifiants 544 à 547 : `0x05610C = 0x0560C8 + 68` et
-`68 × 8 = 544`. Extrapolé aux 754 autres, jamais vérifié ailleurs.
-En appliquant la règle `id & 0x1fff` du manuel, le trésor 544 serait la
-variable de script `0xE220` et le trésor 757 la variable `0xE2F5`.
-Arithmétiquement forcé, mais **aucun script lu ne référence de variable
-`0xE2xx`** : les plages vues dans Randoglobin sont `0xE7xx` à `0xEBxx`.
-La correspondance index / nom de variable reste donc à confirmer.
+**L'identifiant vaut l'index**, mesuré sur les identifiants 544 à 547 :
+`0x05610C = 0x0560C8 + 68` et `68 × 8 = 544`. Extrapolé aux 754 autres,
+et appuyé depuis le 3 août 2026 par la base `0xE000` annoncée pour les
+trésors, voir « Découpage du tableau `Exxx` » plus bas. La variable de
+script d'un trésor est donc `0xE000 + identifiant`.
 
 ### Instant où le flag tombe, **Vérifié**
 
@@ -386,6 +398,14 @@ La **contiguïté est une déduction arithmétique**, pas une affirmation du
 manuel : chaque fin colle exactement au début suivant, ce qui la valide.
 Bloc de 906 octets, `0x38A`, commençant 4 octets après le début du BSS.
 
+**Hypothèse sur `Dxxx`**, avancée le 3 août 2026 par yx, qui précise ne
+pas l'avoir testée : ce seraient les bascules des cartes de terrain, du
+genre « l'eau de la pompe s'active quand la variable `0x216` est vraie ».
+L'argument est un rapprochement de capacités, les cartes de terrain
+utilisant 1026 registres de bascule pour 1088 bits disponibles dans
+`Dxxx`. Marc y ajoute les salles de la minicarte à dévoiler. Rien de
+mesuré, mais deux sources concordantes.
+
 Plan mémoire, **Vérifié**, même source :
 
 | Élément | Plage |
@@ -422,7 +442,7 @@ Overlays, **Vérifié**, même source :
 
 | Overlay | Contenu |
 |---|---|
-| 0 | `clMesWinEff`, **code de sauvegarde** |
+| 0, 127, 129 | `clMesWinEff` et **code de sauvegarde**. Les overlays 127 et 129 ont été signalés par yx le 3 août 2026, le manuel ne citait que le 0. La sérialisation des registres est dans le 129 |
 | 1 | initialisation de la partie |
 | 2 à 7 | `field`, sans description dans le manuel |
 | 8 et au-delà | combat |
@@ -460,23 +480,52 @@ Aucune des deux sources ne décrit la copie. Toutes les variables `0x2xxx`
 vues dans Randoglobin sont inférieures à `0x2040`, ce qui est cohérent
 avec 64 éléments.
 
+**Trésors hors `TreasureInfo.dat`**, c'est-à-dire coffres de quête,
+récompenses de PNJ et boutiques. Marc, le 3 août 2026 : ce sont des flags
+de cinématique, traités comme des flags d'histoire ordinaires, et **ils
+ne se reconnaissent pas à leur plage**. Il n'y a donc pas de table à
+dumper, il faut passer par `mnlscript`, sa sortie, et la façon dont
+Randoglobin s'en sert pour remplacer les scripts du jeu. C'est le seul
+des trois chantiers restants qui demande de comprendre les scripts.
+Référence donnée dans la foulée :
+`mnl-modding.github.io/BIS-docs/scripting/fevent_commands.txt`.
+
 Plages de variables vues dans Randoglobin, par fréquence décroissante :
 `0xEAxx`, `0xEBxx`, `0x90xx`, `0xA0xx`, `0x60xx`, `0x30xx`, `0xE9xx`,
 `0xE7xx`, `0x10xx`, `0xE8xx`, `0x20xx`, `0x50xx`, `0xC0xx`, `0xB0xx`,
 `0xD0xx`. Leur sémantique respective n'est pas documentée.
 
-**Hypothèse H3**, partage du tableau `Exxx` entre trésors et événements.
-Les plages `0xE7xx` à `0xEBxx` relevées dans Randoglobin tomberaient aux
-index 1792 à 3071 du même tableau, en appliquant `id & 0x1fff`. Les
-index bas seraient réservés aux trésors, les index hauts aux scripts
-d'événements. Cohérent avec le fait que nos trésors s'arrêtent à l'index
-757, mais rien ne documente ce découpage. Ces index restent tous sous
-4096, donc dans le tableau `Exxx` déclaré, sans dépendre de la
-contradiction `Fxxx` relevée plus haut.
+### Découpage du tableau `Exxx`, ex-hypothèse H3
 
-**Mesure à l'appui de H3**, relevée le 3 août 2026 en relisant `run05`
-au-delà des 95 octets des trésors. Le tableau ne portait que quatre
-octets non nuls sur `0x200` :
+**Source communautaire**, Marc (ThePurpleAnon) sur le Discord
+MnL-Modding, le 3 août 2026. Les flags de trésors, d'ennemis vaincus et
+d'histoire vivent tous dans `Exxx`, à des bases distinctes :
+
+| Base | Contenu | Index |
+|---|---|---|
+| `0xE000` | trésors | 0 à 1023 |
+| `0xE400` | ennemis vaincus | 1024 à 1791 |
+| `0xE700` | histoire | 1792 et au-delà |
+
+Il précise ne pas avoir cherché de subdivision plus fine au-delà de
+`0xE700`. Aucune ligne de code n'accompagne l'affirmation, donc elle
+reste au rang d'une source communautaire, mais elle est corroborée par
+trois observations indépendantes :
+
+- nos trésors s'arrêtent à l'index 757, bien sous la frontière 1024
+- la base `0xE000` implique index = identifiant, ce que nos dumps
+  mesurent directement sur les identifiants 544 à 547
+- les plages `0xE7xx` à `0xEBxx` relevées dans Randoglobin tombent
+  toutes au-dessus de `0xE700`, donc du côté histoire
+
+**Conséquence pour H1** : la variable de script d'un trésor est bien
+`0xE000 + identifiant`. Le trésor 544 est `0xE220`, le 757 est `0xE2F5`.
+Il reste qu'aucun script lu ne référence de `0xE2xx`, ce qui s'explique
+si les trésors sont gérés par le moteur et non par les scripts.
+
+**Mesure à l'appui de ce découpage**, relevée le 3 août 2026 en relisant
+`run05` au-delà des 95 octets des trésors, avant que la réponse de Marc
+n'arrive. Le tableau ne portait que quatre octets non nuls sur `0x200` :
 
 | Offset | Valeur | Index | Variables sous H1 |
 |---|---|---|---|
@@ -485,11 +534,15 @@ octets non nuls sur `0x200` :
 | `+0x10B` | `0x0F` | 2136 à 2139 | `0xE858` à `0xE85B` |
 | `+0x152` | `0x08` | 2707 | `0xEA93` |
 
-Les index hauts effectivement allumés en cours de partie tombent en
-`0xE8xx` et `0xEAxx`, deux des plages relevées dans Randoglobin, et
-`0xEAxx` est la plus fréquente de toutes. Les index bas restent aux
-trésors. C'est le découpage prévu par H3, observé sans avoir été
-cherché. Reste une observation sur un seul dump, pas une preuve.
+Les quatre octets se répartissent exactement selon le découpage annoncé :
+un seul du côté trésors, sous l'index 1024, et les trois autres au-delà
+de `0xE700`, donc du côté histoire. Aucun bit allumé dans la plage des
+ennemis, sans qu'on sache si c'est significatif ou propre à ce savestate,
+qui ne portait aucun trésor ramassé non plus.
+
+Observation faite avant que la réponse de Marc n'arrive, ce qui lui donne
+la valeur d'une prédiction rencontrée après coup plutôt que d'une lecture
+orientée. Elle porte sur un seul dump, elle ne remplace pas une preuve.
 
 ## Écarté
 
