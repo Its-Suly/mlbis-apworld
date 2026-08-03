@@ -91,6 +91,37 @@ tombe sur la **copie de secours**, `slot + 0x7EC + 0x01B4`, identique à
 la principale, ce qui confirme au passage l'offset `0x7EC` de
 Cheatoglobin. Le décalage de `0x38` déduit du décompilé était donc juste.
 
+### Tampon de sauvegarde en RAM, **Vérifié**
+
+Trouvé le 3 août 2026 en cherchant dans `Main RAM` l'image de
+l'inventaire lue dans la `SRAM` du `run11`. Occurrence **unique** dans
+les 4 Mo.
+
+```
+tampon de slot en Main RAM : 0x058F94, absolu 02058F94
+param_1 du décompilé       : 0x058F5C, absolu 02058F5C  (tampon - 0x38)
+```
+
+Le tampon reproduit la structure d'un slot : inventaire à `+0x0054`,
+tableau `Exxx` à `+0x01B4`, ce dernier octet pour octet identique à ce
+qui part en `SRAM`, bit surnuméraire compris.
+
+**Attention, ce n'est pas l'état de jeu vivant.** Le compteur en tête
+d'inventaire reste à zéro du `run06` au `run10` pendant que des pièces
+sont ramassées, et ne se remplit qu'au `run11`, après la sauvegarde. Le
+tampon n'est peuplé qu'au moment de sauvegarder. Y écrire hors de ce
+moment ne changerait rien à la partie et serait probablement écrasé.
+
+Son intérêt est ailleurs : c'est là qu'on pourra observer l'écriture du
+bit `0xEB3F` et trancher son origine.
+
+**Non trouvé, à chercher autrement** : l'inventaire vivant, celui que
+lit et écrit le jeu en cours de partie. Une recherche par différence
+entre `run08`, `run09` et `run10`, qui encadrent une récolte de pièces,
+ne donne aucun compteur suivant la récolte, ni en `u16` ni en `u32`
+aligné. Il faudra une valeur connue relevée à l'écran comme point
+d'ancrage, ou l'outil RAM Search de BizHawk.
+
 ### La sauvegarde n'est pas une copie fidèle de la RAM
 
 Un seul écart sur les 906 octets, mais il compte. À `Exxx + 0x167`, la
