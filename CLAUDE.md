@@ -133,10 +133,9 @@ Tout ça va dans `JOURNAL.md` à la racine du projet, qui n'est pas
 chargé automatiquement. Y écrire librement, en datant chaque entrée.
 Le créer s'il n'existe pas.
 
-Ce fichier fait 218 lignes au 3 août 2026, à deux lignes du plafond.
-S'il dépasse 220 lignes, le signaler et proposer ce qui peut en sortir
-plutôt que de continuer à ajouter. Premier candidat à la sortie : la
-section « Particularités du jeu », vers `formats-bis.md`.
+Ce fichier est au plafond de 220 lignes au 3 août 2026. S'il le dépasse,
+le signaler et proposer ce qui peut en sortir plutôt que d'ajouter.
+Prochain candidat : la liste des sources, qui doublonne `SOURCES.md`.
 
 ## Sources, du plus fiable au moins fiable
 
@@ -176,9 +175,10 @@ Ordre de fiabilité à respecter :
 - **Flags** : dans `Exxx`, les trésors partent de `0xE000`, les ennemis
   de `0xE400`, l'histoire de `0xE700`. Les `0x2xxx` sont 64 bits, à
   `02056038` en RAM et à `slot + 0x0124` dans la sauvegarde
-- **Inventaire vivant** : pièces en `u32` à `02056400`. Format décalé de
-  2 octets par rapport à la sauvegarde. **L'écriture y est effective** :
-  999 écrit en jeu, repris à l'écran puis dans la sauvegarde
+- **Inventaire vivant** à `02056400` : pièces en `u32`, consommable `N`
+  à `02056406 + N`, équipement `M` à `02056427 + M`. `slot + 0x0054 + X`
+  correspond à `02056400 + X + 2`. **L'écriture y est effective** : 999
+  écrit en jeu, repris à l'écran puis dans la sauvegarde
 - **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
   pas d'état de sauvegarde
 - **32 zones** nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
@@ -213,7 +213,7 @@ dix dumps du 3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans
 
 Restent ouverts, plus rien de bloquant :
 
-- Livrer un **objet** et non des pièces : les 26 compteurs d'objets de
-  l'inventaire vivant ne sont pas encore cartographiés
+- Livrer un objet : les compteurs sont cartographiés, l'écriture reste
+  à tester dessus, et le moment sûr pour écrire n'est pas défini
 - Les flags des trésors hors `TreasureInfo.dat` sont des flags de
   cinématique, à lire via `mnlscript`, ce n'est pas une table à dumper

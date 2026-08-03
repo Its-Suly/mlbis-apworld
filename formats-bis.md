@@ -140,11 +140,37 @@ Sur les 4 Mo, seuls deux `u32` montent d'exactement 7 entre `run11` et
 L'adresse tombe juste après le bloc des registres globaux, qui finit à
 `0205636E`, ce qui est cohérent avec une zone de données de partie.
 
-**Le format n'est pas identique à celui de la sauvegarde.** Le compteur
-de pièces occupe bien un `u32` en tête, mais la suite est décalée de
-2 octets : le premier compteur d'objet est à `+0x06` en RAM contre
-`+0x04` dans la sauvegarde, et le décalage se retrouve sur les 42 octets
-qui diffèrent. La correspondance champ par champ reste **à établir**.
+### Correspondance avec la sauvegarde, **Vérifié**
+
+Le format vivant reprend celui de la sauvegarde décalé de 2 octets après
+le `u32` de pièces :
+
+```
+sauvegarde slot + 0x0054 + X   ->   Main RAM 0x056400 + X + 2
+```
+
+Testée sur les 204 octets de l'inventaire du `run13`, la règle est
+**exacte de `X = 0x04` à `X = 0xA3`**, soit les 26 compteurs d'objets et
+les 127 compteurs d'équipement, sans une seule discordance. Les autres
+décalages, de 0 à 8, laissent tous au moins 38 octets discordants.
+
+À partir de `X = 0xA4` la correspondance cesse, ce qui est attendu :
+c'est là que commencent le champ de bits des badges, le compteur de
+temps de jeu en frames et les jauges, données volatiles qui ont changé
+entre l'instant de la sauvegarde et celui du dump.
+
+Adresses utiles, **la primitive de livraison d'items** :
+
+| Contenu | Adresse absolue | Taille |
+|---|---|---|
+| pièces | `02056400` | `u32` |
+| 26 compteurs de consommables | `02056406 + N` | 1 octet chacun |
+| 127 compteurs d'équipement | `02056427 + M` | 1 octet chacun |
+
+Contrôle de cohérence au `run13` : deux compteurs non nuls seulement,
+`3` à l'index 0 et `1` à l'index 16, soit trois `Mushroom` et un
+`Heart Bean` d'après `data/noms_items.csv`. Un inventaire de joueur
+plausible, sur les bons noms.
 
 ### Écriture validée, **Vérifié**
 
