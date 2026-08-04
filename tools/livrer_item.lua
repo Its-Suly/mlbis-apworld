@@ -10,8 +10,11 @@
 -- API verifiee dans
 -- vendor/Archipelago/data/lua/connector_bizhawk_generic.lua ligne 449.
 --
--- ETAT DE JEU REQUIS. Sur le terrain, en marchant. Jamais en combat, en
--- dialogue ou en cinematique. Faire un savestate avant.
+-- ETAT DE JEU. Mesure du 4 aout 2026 : une ecriture faite sur le terrain
+-- ou en plein combat prend effet et survit, le butin de fin de combat
+-- s'ajoute au lieu d'ecraser. Voir formats-bis.md. Restent non testes,
+-- donc a eviter : dialogue et cinematique.
+-- Faire un savestate avant, par principe.
 --
 -- Usage : Tools > Lua Console, Ctrl+O sur ce fichier.
 -- Modifier INDEX et QUANTITE ci-dessous pour changer de cible.

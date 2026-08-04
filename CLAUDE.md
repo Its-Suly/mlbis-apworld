@@ -163,8 +163,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
   `02056038` en RAM et à `slot + 0x0124` dans la sauvegarde
 - **Inventaire vivant** à `02056400` : pièces en `u32`, consommable `N`
   à `02056406 + N`, équipement `M` à `02056427 + M`. `slot + 0x0054 + X`
-  correspond à `02056400 + X + 2`. **L'écriture y est effective** : 999
-  écrit en jeu, repris à l'écran puis dans la sauvegarde
+  correspond à `02056400 + X + 2`. **Livrer un objet est acquis**,
+  4 août 2026 : un Nut écrit à `02056406 + 7` apparaît au menu et se
+  consomme normalement, un seul octet touché sur les 164 du bloc.
+  Pièces de même, 999 écrit puis sauvegardé
 - **Identifiants de location**, à figer avant la première seed publiée :
   `BASE_ID = 0xB15000`, location d'un trésor = `BASE_ID + identifiant`,
   qui est aussi son rang de bit dans `Exxx`. `BASE_ID + 1024` et au-delà
@@ -205,9 +207,9 @@ dix dumps du 3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans
 
 Restent ouverts, plus rien de bloquant :
 
-- Livrer un objet : compteurs cartographiés, moment d'écriture réglé,
-  seule l'écriture sur un compteur d'objet reste à mesurer.
-  `tools/livrer_item.lua` est écrit et n'a jamais tourné
+- Recevoir les items côté client : `client.py:72` est encore à
+  `items_handling = 0b000`, et l'index du dernier item reçu ira dans le
+  `DataStorage` du serveur, pas dans la sauvegarde
 - Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
   de victoire, les 16 `region` sont reliées sans exigence
 - Trésors hors `TreasureInfo.dat` : boutiques énumérables par
