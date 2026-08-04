@@ -1040,6 +1040,58 @@ livrer un objet, puisque l'écriture est sûre en toute circonstance
 mesurée, mais ce serait le bon outil pour trancher le cas des
 cinématiques, seul état encore non testé.
 
+### Pièces d'attaque, triplement suivies
+
+**Vérifié** le 4 août 2026, quinze dumps `run32` à `run46`, set Green
+Shell dans la zone de départ, neuf pièces sur dix ramassées une par une.
+
+Les blocs à pièces d'attaque sont **absents de `TreasureInfo.dat`** : la
+table ne connaît que cinq types de trésor et quatre types de contenu,
+aucun ne les décrit. Les 38 entrées `vide` sont toutes des touffes
+d'herbe de Dimble Wood et Bumpsy Plains, donc pas une échappatoire.
+
+Le jeu suit les pièces à **trois endroits redondants**, tous d'accord à
+chacun des quinze dumps.
+
+| Support | Adresse | Contenu |
+|---|---|---|
+| Bit `Exxx` | variable `0xE700 + k`, bit `1792 + k` | une pièce `k` |
+| Champ de bits `6xxx` | `0x601B` bits 0 à 4 | pièces 0 à 4 |
+| Champ de bits `6xxx` | `0x601C` bits 0 à 4 | pièces 5 à 9 |
+| Compteur `6xxx` | `0x601D` | nombre de pièces, 0 à 9 mesuré |
+
+La correspondance est exacte dans les deux sens. Au `run44`, `0x601C`
+vaut `00001001`, soit les pièces 5 et 8, et `Exxx` porte exactement
+`E700, E701, E702, E703, E704, E705, E708`. Le ramassage n'est pas
+ordonné, et les trois supports suivent le même désordre.
+
+En Main RAM, `0x601D` est à `020562E5`, soit `020562C8 + 0x1D`.
+
+**Ce que ça change.** Une pièce d'attaque est une `location` de première
+classe, lisible par le mécanisme que le client utilise déjà, un bit dans
+le tableau `Exxx`. Rien de neuf à écrire côté client sinon **élargir la
+fenêtre de lecture** : `mlbis/client.py` lit 95 octets, soit les bits 0 à
+759, et le bit 1792 tombe à l'octet 224. La convention
+`location = BASE_ID + rang de bit` tient sans exception, et 1792 est bien
+au-delà des 1024 réservés aux locations hors `TreasureInfo.dat`.
+
+**Ce que ça corrige.** Marc donnait `0xE700` comme début de la plage
+histoire. Les dix premières variables de cette plage sont des pièces
+d'attaque. La frontière est juste, son étiquette est trop étroite.
+
+**Piège écarté par la mesure.** `02056024`, base du tableau `Cxxx`, suit
+la même suite 0 à 9 et survit aux dix filtres. C'est le registre de
+message, celui qui affiche le compte à l'écran. Il est écarté sur un
+critère déjà vérifié et non sur une intuition : la fonction de
+sauvegarde ne recopie que `2xxx`, `Dxxx`, `Exxx`, `6xxx` et la plage
+anonyme. `Cxxx` n'est pas sauvegardé, donc il ne peut pas porter l'état.
+
+**Non tranché**, et c'est la question qui décide de tout : au ramassage
+de la dixième pièce, l'attaque se débloque. Les bits `Exxx` restent-ils
+levés, ou le jeu remet-il le lot à zéro pour le suivant ? S'ils
+retombent, les pièces d'attaque ne peuvent pas servir de `location` en
+l'état.
+
 ### Découpage `Exxx` selon mnllib
 
 `vendor/mnllib.py/mnllib/bis/consts.py:96-109` déclare douze plages,

@@ -212,6 +212,7 @@ Restent ouverts, plus rien de bloquant :
   `DataStorage` du serveur, pas dans la sauvegarde
 - Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
   de victoire, les 16 `region` sont reliées sans exigence
-- Trésors hors `TreasureInfo.dat` : boutiques énumérables par
-  `MDataShopBuyList.dat`, quêtes à qualifier à la main. **Aucun script ne
-  touche `0xE000-0xE3FF`**, donc trancher par breakpoint sur `020560C8`
+- Trésors hors `TreasureInfo.dat` : **pièces d'attaque réglées**, un bit
+  `Exxx` chacune, set Green Shell en `0xE700` à `0xE708`, ce sont des
+  `location` ordinaires. Restent boutiques et quêtes. Le client ne lit
+  que 95 octets, il en faut 225 pour voir le bit 1792
