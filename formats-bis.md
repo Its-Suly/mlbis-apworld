@@ -977,6 +977,69 @@ lecture naïve croirait `cmd[34]` inatteignable.
 **Le flag est posé avant le don.** Une `location` validée sur ce flag
 sera signalée un peu avant que le joueur voie l'objet.
 
+### Noms officiels des plages de variables
+
+**Source communautaire**, document de nommage transmis le 4 août 2026.
+Il porte des noms de développeurs, donc il vient vraisemblablement d'un
+symbole ou d'une doc interne, mais rien ne l'établit formellement.
+
+| Plage | Nom | Sens |
+|---|---|---|
+| `3xxx` | `frg` | field register |
+| `4xxx` | `brg` | battle register |
+| `5xxx` | `urg` | universal register |
+| `6xxx` | `gby` | global byte |
+| `9xxx` | `grg` | global register |
+| `Axxx` | `lrg` | local register |
+| `Bxxx` | `lbi` | local bitflag |
+| `Cxxx` | `mrg` | message register |
+| `Exxx` | `gbi` | **global bitflag** |
+
+`1xxx`, `2xxx` et `Dxxx` restent sans nom dans ce document.
+
+Décomposition : `l` local, `g` global, `u` universal, `f` field,
+`b` battle, `m` message ; suffixes `bi` bitflag, `by` byte, `rg`
+register.
+
+**Ce que ça corrige.** Nos notes s'appuyaient sur `mnllib/bis/consts.py`,
+dont les noms sont des suppositions de son auteur. Le document officiel
+le contredit : `3xxx` et `4xxx` ne sont pas un bloc `SPECIAL` unique mais
+les registres de terrain et de combat, `Axxx` est `lrg` et non `LOCAL2`,
+`Bxxx` est `lbi` et non `STACK_BITFIELD`.
+
+**Le point qui nous concerne.** `Exxx` est un **unique tableau de
+drapeaux globaux**, sans subdivision dans le moteur. Le découpage
+trésors / ennemis / histoire est donc une convention d'usage des
+développeurs et non une structure. Ça explique qu'aucun code ne
+matérialise les frontières `0xE400` et `0xE700`, et ça conforte notre
+lecture du tableau comme un champ de bits plat.
+
+Les exemples fournis, `E9A9`, `EAA3`, `EB18`, `EB19`, `EB32`, `EB88`,
+`EBF2` à `EBF4`, tombent tous au-dessus de `0xE700`. Nos deux octets non
+nuls du `run05`, index 2133 à 2139 et 2707, valent `0xE855` et `0xEA93`
+sous la même base : même voisinage.
+
+Détail sans usage technique mais qui date le code : les noms `gby` et
+`gbi` portent les initiales de leur auteur, `sk` Shunsuke Kobayashi,
+`cf` Chihiro Fujioka, `dg` Daisuke Goto.
+
+### États de jeu numérotés, piste à suivre
+
+**Source communautaire**, capture d'écran du 22 juin 2026 transmise le
+4 août. Le jeu a des états numérotés, et deux sont connus :
+
+- état `9` : écran blanc, overlays 0, 127 et 129
+- état `A` : écran de sauvegarde, pavé désactivé, mêmes overlays
+
+Ça explique au passage pourquoi le code de sauvegarde vit dans ces trois
+overlays, relevé plus haut sans qu'on sache pourquoi ils allaient
+ensemble.
+
+**Non trouvé** : où ce numéro d'état se lit en mémoire. Sans intérêt pour
+livrer un objet, puisque l'écriture est sûre en toute circonstance
+mesurée, mais ce serait le bon outil pour trancher le cas des
+cinématiques, seul état encore non testé.
+
 ### Découpage `Exxx` selon mnllib
 
 `vendor/mnllib.py/mnllib/bis/consts.py:96-109` déclare douze plages,
