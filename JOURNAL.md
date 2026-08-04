@@ -1,5 +1,54 @@
 # Journal du projet APWorld BIS
 
+## 4 août 2026, quand écrire, et la réponse est « quand on veut »
+
+Seize dumps, `run14` à `run30`, pour répondre à la dernière question
+technique du projet : à quel moment le client peut écrire sans risque.
+
+La réponse est qu'il n'y a pas de moment interdit. Une écriture faite en
+plein combat prend effet, s'affiche à l'écran, et survit à la sortie —
+le crédit de fin de combat s'ajoute à la valeur courante au lieu de la
+remplacer. Détail des mesures dans `formats-bis.md`.
+
+### Deux hypothèses fausses, la même forme que la veille
+
+J'ai d'abord conclu que le combat travaillait sur sa propre copie de
+l'inventaire, parce qu'un compteur d'objet n'avait pas bougé. Il n'avait
+pas bougé parce qu'aucun objet n'avait été consommé — l'utilisateur avait
+oublié de manger le champignon. **Prémisse non mesurée, conclusion
+fausse**, exactement comme le `max_hits` la veille.
+
+J'ai aussi cherché un drapeau d'état terrain / combat pendant une heure.
+Dix dumps de terrain et huit de combat laissaient 38 candidats, sans
+aucun moyen de choisir. La recherche était bien menée et parfaitement
+inutile : la bonne question n'était pas « le jeu est-il en combat » mais
+« notre cible est-elle touchée », et celle-là se mesure directement.
+
+### Ce que l'utilisateur a apporté
+
+Sa liste de sous-états de combat, que j'avais jugée en partie superflue,
+a produit les dumps qui ont tranché. Sa proposition d'écrire les pièces
+en plein combat valait mieux que mon protocole : une réponse binaire en
+deux minutes contre une heure de filtrage. Et la confirmation la plus
+forte n'est pas venue d'un dump mais de l'écran, où l'affichage montrait
+999 pendant le combat.
+
+Règle à en tirer : quand une question porte sur ce que fait le jeu,
+**faire faire au jeu** plutôt que comparer des images de sa mémoire.
+
+### Une question éliminée plutôt que résolue
+
+Il fallait mémoriser le nombre d'items déjà livrés, sinon une
+reconnexion les redonnerait en double. J'allais écrire dans les 7 octets
+que Cheatoglobin dit sans effet à `slot + 0x001E`, et demander à la
+communauté s'ils sont vraiment libres.
+
+Deux erreurs. On ne demande pas ce qu'on peut mesurer, et surtout le
+besoin n'existait pas : Archipelago a un `DataStorage` côté serveur, que
+MLSS utilise déjà pour ses flags. Le compteur y va, et **on n'écrit rien
+dans une zone qu'on ne comprend pas**. La bonne réponse à une question
+difficile est parfois de supprimer la question.
+
 ## 4 août 2026, la chaîne complète tourne
 
 Première séance de test bout en bout. Serveur local, client BizHawk,

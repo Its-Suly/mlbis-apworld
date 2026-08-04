@@ -240,6 +240,11 @@ sortie. **Mais le crédit s'ajoute, il ne remplace pas**, vérifié le
 Au second essai le joueur a gagné un champignon, et le compteur `+0x06`
 est passé de 8 à 9 : le butin en objets s'ajoute lui aussi sans écraser.
 
+**Confirmation à l'écran**, rapportée par le joueur et plus forte que le
+dump : pendant le combat, l'affichage montrait déjà 999 pièces. Le
+combat lit donc le compteur du terrain **en direct** pour l'afficher ;
+seule l'accumulation du butin est différée à la sortie.
+
 **Conclusion, et c'était le dernier inconnu technique du projet : une
 écriture faite pendant un combat prend effet et survit à sa sortie**,
 pour les objets comme pour les pièces. Aucun témoin d'état de jeu n'est
