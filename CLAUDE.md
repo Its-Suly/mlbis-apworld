@@ -205,8 +205,11 @@ dix dumps du 3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans
 
 Restent ouverts, plus rien de bloquant :
 
-- Livrer un objet : les compteurs sont cartographiés, l'écriture reste
-  à tester dessus, et le moment sûr pour écrire n'est pas défini
+- Livrer un objet : compteurs cartographiés, moment d'écriture réglé,
+  seule l'écriture sur un compteur d'objet reste à mesurer.
+  `tools/livrer_item.lua` est écrit et n'a jamais tourné
+- Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
+  de victoire, les 16 `region` sont reliées sans exigence
 - Trésors hors `TreasureInfo.dat` : boutiques énumérables par
   `MDataShopBuyList.dat`, quêtes à qualifier à la main. **Aucun script ne
   touche `0xE000-0xE3FF`**, donc trancher par breakpoint sur `020560C8`
