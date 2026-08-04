@@ -227,10 +227,27 @@ la seconde, dans la structure du terrain. Écrire un compteur d'objet
 pendant un combat prend donc effet immédiatement, et l'objet est
 utilisable dans le combat en cours.
 
-Les pièces sont l'exception : 948 pendant six dumps de combat, puis 952
-au retour. Elles sont accumulées ailleurs et appliquées à la sortie, donc
-**une écriture de pièces pendant un combat risque d'être écrasée**. À
-tester avec `tools/ecrire_pieces.lua` lancé en plein combat.
+Les pièces suivent un autre chemin : 948 pendant six dumps de combat,
+puis 952 au retour. Elles sont accumulées ailleurs et appliquées à la
+sortie. **Mais le crédit s'ajoute, il ne remplace pas**, vérifié le
+4 août 2026 par deux essais :
+
+| Essai | Avant | Écrit en combat | Après le combat |
+|---|---|---|---|
+| 1 | 932 | 999 | **1003**, soit 999 + 4 de butin |
+| 2 | 944 | 999 | **999**, ce combat n'ayant rapporté aucune pièce |
+
+Au second essai le joueur a gagné un champignon, et le compteur `+0x06`
+est passé de 8 à 9 : le butin en objets s'ajoute lui aussi sans écraser.
+
+**Conclusion, et c'était le dernier inconnu technique du projet : une
+écriture faite pendant un combat prend effet et survit à sa sortie**,
+pour les objets comme pour les pièces. Aucun témoin d'état de jeu n'est
+nécessaire pour livrer un item.
+
+**Non testé** : les cinématiques et les dialogues. Le risque paraît
+faible, on écrit des compteurs et non des structures, mais rien n'a été
+mesuré et ça ne s'écrit donc pas comme un fait.
 
 **Hypothèse abandonnée, notée pour ne pas la refaire** : « le combat
 travaille sur sa propre copie de l'inventaire ». Elle venait d'un dump
@@ -238,10 +255,12 @@ où le compteur d'objet n'avait pas bougé — parce qu'aucun objet n'avait
 été consommé. Une prémisse non vérifiée, encore. Le contre-test a
 demandé trois dumps.
 
-**Conséquence pour le client** : pas besoin de témoin d'état de jeu pour
-livrer un objet. Une recherche d'octet discriminant terrain / combat sur
-dix dumps de terrain et huit de combat laissait 38 candidats sans moyen
-de choisir ; elle devient inutile pour les objets.
+**Conséquence pour le client** : pas besoin de témoin d'état de jeu, ni
+pour un objet ni pour des pièces. Une recherche d'octet discriminant
+terrain / combat sur dix dumps de terrain et huit de combat laissait
+38 candidats sans moyen de choisir entre eux. Elle est abandonnée, et
+c'est une bonne nouvelle : un mauvais choix se serait payé par un
+plantage rare et irreproductible.
 
 ### Ce que cette mesure corrige
 

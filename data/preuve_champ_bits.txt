@@ -508,3 +508,72 @@ run27_Main_RAM.bin
       553  octet 0x05610D bit 1   bloc ? '5 coins'
       554  octet 0x05610D bit 2   bloc ? 'Mushroom'
       555  octet 0x05610D bit 3   bloc ? '1-Up Mushroom'
+
+----------------------------------------------------------------------
+run28_Main_RAM.bin
+
+  0x0560C8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560D8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560E8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560F8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x056108  00 00 00 00 ef 0f 00 00 00 00 00 00 00 00 00 00
+  0x056118  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+  identifiants a 1 : [544, 545, 546, 547, 549, 550, 551, 552, 553, 554, 555]
+      544  octet 0x05610C bit 0   bloc ? '1 coins'
+      545  octet 0x05610C bit 1   bloc ? '5 coins'
+      546  octet 0x05610C bit 2   bloc ? '10 coins'
+      547  octet 0x05610C bit 3   bloc ? '1 coins'
+      549  octet 0x05610C bit 5   bloc ? '10 coins'
+      550  octet 0x05610C bit 6   bloc ? 'Mushroom'
+      551  octet 0x05610C bit 7   bloc ? '10 coins'
+      552  octet 0x05610D bit 0   bloc ? '5 coins'
+      553  octet 0x05610D bit 1   bloc ? '5 coins'
+      554  octet 0x05610D bit 2   bloc ? 'Mushroom'
+      555  octet 0x05610D bit 3   bloc ? '1-Up Mushroom'
+
+----------------------------------------------------------------------
+run29_Main_RAM.bin
+
+  0x0560C8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560D8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560E8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560F8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x056108  00 00 00 00 ef 0f 00 00 00 00 00 00 00 00 00 00
+  0x056118  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+  identifiants a 1 : [544, 545, 546, 547, 549, 550, 551, 552, 553, 554, 555]
+      544  octet 0x05610C bit 0   bloc ? '1 coins'
+      545  octet 0x05610C bit 1   bloc ? '5 coins'
+      546  octet 0x05610C bit 2   bloc ? '10 coins'
+      547  octet 0x05610C bit 3   bloc ? '1 coins'
+      549  octet 0x05610C bit 5   bloc ? '10 coins'
+      550  octet 0x05610C bit 6   bloc ? 'Mushroom'
+      551  octet 0x05610C bit 7   bloc ? '10 coins'
+      552  octet 0x05610D bit 0   bloc ? '5 coins'
+      553  octet 0x05610D bit 1   bloc ? '5 coins'
+      554  octet 0x05610D bit 2   bloc ? 'Mushroom'
+      555  octet 0x05610D bit 3   bloc ? '1-Up Mushroom'
+
+----------------------------------------------------------------------
+run30_Main_RAM.bin
+
+  0x0560C8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560D8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560E8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0560F8  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x056108  00 00 00 00 ef 0f 00 00 00 00 00 00 00 00 00 00
+  0x056118  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+  identifiants a 1 : [544, 545, 546, 547, 549, 550, 551, 552, 553, 554, 555]
+      544  octet 0x05610C bit 0   bloc ? '1 coins'
+      545  octet 0x05610C bit 1   bloc ? '5 coins'
+      546  octet 0x05610C bit 2   bloc ? '10 coins'
+      547  octet 0x05610C bit 3   bloc ? '1 coins'
+      549  octet 0x05610C bit 5   bloc ? '10 coins'
+      550  octet 0x05610C bit 6   bloc ? 'Mushroom'
+      551  octet 0x05610C bit 7   bloc ? '10 coins'
+      552  octet 0x05610D bit 0   bloc ? '5 coins'
+      553  octet 0x05610D bit 1   bloc ? '5 coins'
+      554  octet 0x05610D bit 2   bloc ? 'Mushroom'
+      555  octet 0x05610D bit 3   bloc ? '1-Up Mushroom'

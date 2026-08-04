@@ -84,9 +84,9 @@ souvent de la progression de l'autre.
 
 - Deux équipes, Mario-Luigi et Bowser, avec inventaires et capacités
   distincts. Plusieurs structures à suivre, pas une seule
-- Écrire en mémoire pendant un combat ou une cinématique fait planter la
-  ROM. Toute injection doit préciser dans quel état du jeu elle
-  s'exécute et comment cet état est détecté
+- **Écrire un compteur d'inventaire pendant un combat est sans risque et
+  survit à la sortie**, vérifié le 4 août 2026. Les cinématiques ne sont
+  pas testées : y écrire reste à considérer comme dangereux
 
 ## Méthode de travail
 
