@@ -1,5 +1,84 @@
 # Journal du projet APWorld BIS
 
+## 4 août 2026, soir, livrer un objet puis tomber sur mieux
+
+Séance ouverte sur une question de reprise, « où on en était », et
+fermée sur deux acquis dont un n'était pas au programme.
+
+### Livrer un objet, mesuré au lieu d'être déduit
+
+`tools/livrer_item.lua` existait depuis la veille et n'avait jamais
+tourné. Un Nut écrit à `0205640D`, index 7, de 0 à 1.
+
+Le `relu : 1` du script ne prouvait rien, la relecture passant par le
+même chemin que l'écriture. Le `run31` l'a vérifié de l'extérieur, et
+mieux : le diff du bloc inventaire contre `run30` ne montre que deux
+octets, notre Nut et le compteur de pièces qui descend de 999 à 948 par
+le jeu normal. Aucun des 25 autres compteurs d'objets, aucun des 127
+emplacements d'équipement.
+
+La preuve qui compte n'est toujours pas venue d'un dump. Le Nut est
+apparu au menu et a été consommé. Comme pour les 999 pièces la veille,
+c'est l'écran qui tranche.
+
+### La question de la portée, posée puis reportée par les faits
+
+Estimation demandée, environ 45 % du projet, avec un écart assumé entre
+le risque levé, à peu près 85 %, et le travail fait. Le reste tient
+surtout dans la logique et le pool d'items, chantier à 5 %.
+
+L'arbitrage à rendre était la portée : treasure shuffle seul, ou
+randomisation des attaques. Il n'a pas été rendu, et c'est très bien,
+parce que l'utilisateur a signalé qu'il était planté devant un bloc à
+pièces d'attaque. Une occasion de mesure vaut mieux qu'un arbitrage pris
+sans données.
+
+### Le protocole amélioré par le joueur, encore une fois
+
+J'avais prévu quatre dumps. Il a expliqué le mécanisme, dix pièces à
+collecter pour un lot, et cette information a changé la mesure du tout
+au tout : une valeur qui suit 0, 1, 2, 3 sur quinze dumps n'a
+pratiquement aucune chance d'être un homonyme, là où un simple 0 vers 1
+en aurait eu des dizaines. Il a ensuite dumpé après chaque pièce sans
+qu'on le lui demande, et un rechargement d'état au `run37` s'est vu dans
+les données sous forme d'un retour à zéro net sur les trois supports.
+
+Deuxième fois de la journée que la connaissance du jeu par le joueur
+produit un meilleur protocole que le mien. La règle du 4 août au matin
+tient : quand la question porte sur ce que fait le jeu, faire faire au
+jeu.
+
+### Trois supports redondants
+
+Deux candidats seulement survivent aux dix filtres. `020562E5`, soit la
+variable `6xxx` numéro `0x601D`, et `02056024`, base du tableau `Cxxx`.
+
+Le second est le registre de message, celui qui affiche le compte à
+l'écran. Il est écarté sans mesure supplémentaire, sur un fait déjà
+vérifié : la fonction de sauvegarde recopie `2xxx`, `Dxxx`, `Exxx`,
+`6xxx` et la plage anonyme, jamais `Cxxx`. Ce qui n'est pas sauvegardé
+ne peut pas porter l'état d'une progression.
+
+Le vrai résultat est ailleurs et n'était pas cherché. Neuf bits contigus
+sont montés dans `Exxx`, `0xE700` à `0xE708`, un par pièce, plus deux
+champs de bits `0x601B` et `0x601C` de cinq bits chacun. Les trois
+supports sont d'accord dans le désordre du ramassage, ce qui interdit la
+coïncidence.
+
+**Une pièce d'attaque est donc une `location` ordinaire**, lisible par le
+mécanisme déjà écrit. Le chantier « trésors hors `TreasureInfo.dat` »,
+qu'on croyait devoir attaquer au désassembleur de scripts, se règle par
+dix sauts dans un jeu.
+
+### Ce qui reste en suspens, et il est important
+
+La dixième pièce débloque l'attaque, et personne ne sait si les bits
+`Exxx` survivent au déblocage ou si le lot est remis à zéro pour le
+suivant. S'ils retombent, tout ce qui précède devient inutilisable comme
+`location`. La partie est laissée devant le dernier bloc, neuf pièces
+ramassées, deux dumps à prendre : un juste après le déblocage même en
+plein combat, un après le combat sur le terrain.
+
 ## 4 août 2026, quand écrire, et la réponse est « quand on veut »
 
 Seize dumps, `run14` à `run30`, pour répondre à la dernière question
