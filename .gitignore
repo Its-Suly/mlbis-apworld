@@ -27,3 +27,6 @@ dumps/
 seeds/*.zip
 seeds/*.archipelago
 seeds/*.apsave
+
+# Journal de progression produit en jouant
+journal_capacites.txt

@@ -41,7 +41,12 @@ local NB_EXXX_OCTETS = 0x200
 local DERNIER_TRESOR = 757
 local DOMAINE = "Main RAM"
 local PERIODE = 60          -- images entre deux controles
-local FICHIER = "journal_capacites.txt"
+
+-- Chemin du journal. Par defaut a cote de BizHawk, mais le lanceur pose
+-- JOURNAL_CHEMIN pour l'ecrire dans le projet : lance depuis un
+-- raccourci, le repertoire courant est celui de l'emulateur et le
+-- fichier finirait perdu au milieu de ses DLL.
+local FICHIER = JOURNAL_CHEMIN or "journal_capacites.txt"
 
 -- Puissances entieres : l'operateur ^ de Lua rend un flottant, ce qui a
 -- deja coute un plantage le 5 aout 2026.
