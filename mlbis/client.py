@@ -9,19 +9,24 @@ suivant, pas celui-ci.
 
 Ce que fait la boucle, a chaque passage :
 
-    lire 95 octets a 0x0560C8 dans le domaine Main RAM
-    pour chaque bit allume d'index N : location BASE_ID + N
+    lire les 0x200 octets a 0x0560C8 dans le domaine Main RAM
+    pour chaque bit allume de rang N : location BASE_ID + N
 
 Il n'y a **aucune table de correspondance** entre un bit et une
-location, et c'est voulu : l'identifiant d'un tresor dans
-TreasureInfo.dat est a la fois son rang de bit dans le tableau Exxx et,
-a BASE_ID pres, son identifiant de location. C'est ce que MLSS n'a pas,
-et qui lui coute une reconstruction d'adresse par pointeurs et
+location, et c'est voulu : le rang du bit est a la fois l'identifiant du
+tresor dans TreasureInfo.dat, ou le numero de variable d'une piece
+d'attaque, et a BASE_ID pres l'identifiant de location. C'est ce que MLSS
+n'a pas, et qui lui coute une reconstruction d'adresse par pointeurs et
 soustractions a chaque check (Client.py:225-238).
 
-Sources des adresses : formats-bis.md, section « Champ de bits des
-tresors ramasses ». Verifie par treize dumps entre le 3 et le 4 aout
-2026.
+Le tableau est lu en entier, donc la plupart des bits allumes ne
+correspondent a rien : drapeaux d'ennemis vaincus, drapeaux d'histoire.
+Ils sont ecartes par l'intersection avec ctx.server_locations, qui est
+la seule liste faisant autorite.
+
+Sources des adresses : formats-bis.md, sections « Champ de bits des
+tresors ramasses » et « Les 78 pieces dont on connait la variable ».
+Verifie par les dumps du 3 au 5 aout 2026.
 """
 from typing import TYPE_CHECKING, Set
 
@@ -84,9 +89,9 @@ class MLBISClient(BizHawkClient):
         except bizhawk.RequestFailedError:
             return
 
-        # Une location inconnue du serveur n'est pas une erreur : le champ
-        # couvre 760 bits pour 647 tresors exploitables, et les
-        # identifiants de bourrage restent a zero.
+        # Une location inconnue du serveur n'est pas une erreur, c'est le
+        # cas courant : le champ couvre 4096 bits pour 725 locations, et
+        # les drapeaux d'histoire y sont nombreux des le debut de partie.
         a_envoyer = (
             locations_du_champ(lu[0], BASE_ID)
             - self.local_checked_locations

@@ -1,4 +1,4 @@
-"""Genere mlbis/data.py depuis data/locations_bis.csv.
+"""Genere mlbis/data.py depuis data/locations_bis.csv et pieces_attaque.csv.
 
 Rien n'est saisi a la main : le monde se regenere entierement depuis la
 ROM, via extract_names.py puis build_location_table.py puis ce script.
@@ -9,11 +9,13 @@ Choix d'identifiants, A FIGER avant la premiere seed publiee :
     location d'un tresor de TreasureInfo.dat  ->  BASE_ID + identifiant
     identifiants 0 a 757 utilises, 758 a 1023 laisses libres
     BASE_ID + 1024 et au-dela  ->  locations hors TreasureInfo.dat
+    piece d'attaque  ->  BASE_ID + rang de bit, 1792 a 2081
 
-Le decalage reproduit volontairement l'espace d'index du tableau Exxx,
-dont les tresors occupent 0 a 1023 d'apres le decoupage de la
-communaute. Un identifiant de location se lit donc directement comme un
-index de bit, sans table de correspondance.
+La regle est la meme pour les deux familles : l'identifiant de location
+vaut BASE_ID plus le rang du bit dans le tableau Exxx. Un identifiant se
+lit donc directement comme un index de bit, sans table de correspondance.
+Les pieces d'attaque tombent naturellement au-dela de la reserve, leur
+plage etant celle de l'histoire.
 
 Usage :
     venv\\Scripts\\python.exe tools\\build_apworld_data.py
@@ -24,10 +26,33 @@ from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
 LOCATIONS = RACINE / "data" / "locations_bis.csv"
+PIECES = RACINE / "data" / "pieces_attaque.csv"
 SORTIE = RACINE / "mlbis" / "data.py"
 
 BASE_ID = 0xB15000
 RESERVE_HORS_TABLE = 1024
+
+# Nom du lot de pieces, lu dans l'overlay 123 -> zone nommee du jeu.
+#
+# Neuf entrees sur dix sont evidentes, le nom du lot reprend celui de la
+# zone. Une seule ne l'est pas et elle est etiquetee comme telle.
+#
+# **Hypothese** pour 'Clinic Pieces' : aucune des 32 zones nommees ne
+# s'appelle Toadley Clinic, et la clinique est un batiment de Toad Town.
+# Rien ne le prouve dans les donnees, aucune access_rule n'en depend, et
+# la corriger ne coutera qu'une ligne ici.
+LOT_VERS_ZONE = {
+    "Trash Pieces": "Trash Pit",
+    "Pump Pieces": "Pump Works",
+    "Flab Pieces": "Flab Zone",
+    "Energy Pieces": "Energy Hold",
+    "Plack Pieces": "Plack Beach",
+    "Dimble Pieces": "Dimble Wood",
+    "Castle Pieces": "Bowser Castle",
+    "Peach Pieces": "Peach's Castle",
+    "Clinic Pieces": "Toad Town",       # Hypothese, voir plus haut
+    "Toad Pieces": "Toad Town",         # Yoo Who Cannon, aucune piece
+}
 
 # Les noms de location sont en anglais, comme la ROM NA et comme les
 # autres mondes Archipelago. Ils sont provisoires tant que la
@@ -77,13 +102,63 @@ if maxi >= RESERVE_HORS_TABLE:
         f"le plan d'identifiants ne tient plus"
     )
 
+# Les regions du monde sont les zones portant au moins un tresor. Une
+# piece d'attaque doit tomber dans l'une d'elles, sinon sa region
+# n'existe pas.
+vues_zones_tresors = []
+for _, _, _, zone in tresors:
+    if zone not in vues_zones_tresors:
+        vues_zones_tresors.append(zone)
+
+# --- pieces d'attaque -------------------------------------------------
+#
+# Meme forme de tuple que les tresors : (rang de bit, nom, item, zone).
+# Le rang de bit tient lieu d'identifiant, comme pour un tresor.
+pieces = []
+with open(PIECES, encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        rang = int(r["rang_bit"])
+        attaque = r["attaque"]
+        zone = LOT_VERS_ZONE.get(r["lot"])
+        if zone is None:
+            raise SystemExit(f"lot inconnu, pas de zone : {r['lot']!r}")
+        if zone not in vues_zones_tresors:
+            raise SystemExit(
+                f"la zone {zone!r} ne porte aucun tresor, elle n'existe pas "
+                f"comme region. Ajouter la region avant de l'utiliser."
+            )
+        nom = f"{zone} - {attaque} Piece {int(r['piece']) + 1}"
+        pieces.append((rang, nom, f"{attaque} Piece", zone))
+
+pieces.sort(key=lambda p: p[0])
+
+if pieces:
+    mini_piece = min(p[0] for p in pieces)
+    if mini_piece < RESERVE_HORS_TABLE:
+        raise SystemExit(
+            f"piece d'attaque au rang {mini_piece}, sous la reserve "
+            f"{RESERVE_HORS_TABLE} : collision avec les tresors"
+        )
+
+collisions = {t[0] for t in tresors} & {p[0] for p in pieces}
+if collisions:
+    raise SystemExit(f"identifiants partages : {sorted(collisions)[:5]}")
+
+noms_pieces = Counter(p[1] for p in pieces)
+doublons = [n for n, c in noms_pieces.items() if c > 1] + \
+           [p[1] for p in pieces if p[1] in noms_vus]
+if doublons:
+    raise SystemExit(f"noms de location en double : {doublons[:5]}")
+
 items = Counter(t[2] for t in tresors)
+items.update(p[2] for p in pieces)
 
 lignes_py = [
     '"""Donnees du monde, GENEREES. Ne pas editer a la main.',
     "",
     "Regenerer avec tools/build_apworld_data.py, qui lit",
-    "data/locations_bis.csv, lui-meme regenere depuis la ROM.",
+    "data/locations_bis.csv et data/pieces_attaque.csv, eux-memes",
+    "regeneres depuis la ROM.",
     '"""',
     "",
     f"BASE_ID = {BASE_ID:#x}",
@@ -96,13 +171,19 @@ for ident, nom, item, zone in tresors:
     lignes_py.append(f"    ({ident}, {nom!r}, {item!r}, {zone!r}),")
 lignes_py.append("]")
 lignes_py.append("")
+lignes_py.append("# (rang de bit dans Exxx, nom de location, item d'origine, zone)")
+lignes_py.append("# Une piece d'attaque ; le rang tient lieu d'identifiant.")
+lignes_py.append("ATTACK_PIECES = [")
+for rang, nom, item, zone in pieces:
+    lignes_py.append(f"    ({rang}, {nom!r}, {item!r}, {zone!r}),")
+lignes_py.append("]")
+lignes_py.append("")
+lignes_py.append("# toutes les locations, tresors puis pieces d'attaque")
+lignes_py.append("LOCATIONS = TREASURES + ATTACK_PIECES")
+lignes_py.append("")
 lignes_py.append("# zones portant au moins un tresor, dans l'ordre d'apparition")
 lignes_py.append("ZONES = [")
-vues = []
-for _, _, _, zone in tresors:
-    if zone not in vues:
-        vues.append(zone)
-for zone in vues:
+for zone in vues_zones_tresors:
     lignes_py.append(f"    {zone!r},")
 lignes_py.append("]")
 lignes_py.append("")
@@ -116,8 +197,14 @@ lignes_py.append("")
 SORTIE.parent.mkdir(exist_ok=True)
 SORTIE.write_text("\n".join(lignes_py), encoding="utf-8")
 
+par_attaque = Counter(p[2] for p in pieces)
+
 print(f"ecrit : {SORTIE.relative_to(RACINE)}")
-print(f"  {len(tresors)} locations, identifiants {tresors[0][0]} a {maxi}")
+print(f"  {len(tresors)} tresors, identifiants {tresors[0][0]} a {maxi}")
+print(f"  {len(pieces)} pieces d'attaque, rangs {pieces[0][0]} a {pieces[-1][0]}")
+for nom, n in sorted(par_attaque.items()):
+    print(f"      {nom:<24} {n:>2}")
+print(f"  {len(tresors) + len(pieces)} locations au total")
 print(f"  {len(items)} items distincts, {sum(items.values())} exemplaires")
-print(f"  plage de location : {BASE_ID:#x} a {BASE_ID + maxi:#x}")
-print(f"  libre pour le hors-table : {BASE_ID + RESERVE_HORS_TABLE:#x} et au-dela")
+print(f"  plage de location : {BASE_ID:#x} a {BASE_ID + pieces[-1][0]:#x}")
+print(f"  reserve hors-table : {BASE_ID + RESERVE_HORS_TABLE:#x} et au-dela")

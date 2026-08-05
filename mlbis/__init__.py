@@ -5,12 +5,12 @@ de logique, pas de client, pas de patch de ROM. Il sert a valider
 l'empaquetage et le branchement des donnees, rien de plus.
 
 Ce qui est vrai ici et le restera :
-  - 647 locations, une par tresor de Treasure/TreasureInfo.dat
-  - l'identifiant d'une location est BASE_ID + l'identifiant du tresor,
-    qui est aussi le rang de son bit dans le tableau Exxx a 020560C8
+  - 725 locations : 647 tresors de Treasure/TreasureInfo.dat et 78 pieces
+    d'attaque
+  - l'identifiant d'une location est BASE_ID + le rang de son bit dans le
+    tableau Exxx a 020560C8, quelle que soit la famille
 
 Ce qui est provisoire et attend une donnee manquante :
-  - une seule region, faute de correspondance salle -> zone nommee
   - aucun item de progression, faute de logique
   - aucune option
 """
@@ -19,7 +19,7 @@ from typing import Any, Dict
 from worlds.AutoWorld import WebWorld, World
 
 from .client import MLBISClient  # noqa: F401  enregistre le client BizHawk
-from .data import TREASURES
+from .data import LOCATIONS
 from .items import MLBISItem, VICTORY, classification, item_name_to_id
 from .locations import GAME_NAME, VANILLA_PLACEMENT, location_name_to_id
 from .options import MLBISOptions
@@ -54,10 +54,11 @@ class MLBISWorld(World):
         )
 
     def create_items(self) -> None:
-        # Un item par location, celui que le tresor contenait a l'origine.
-        # Le compte tombe juste par construction : les deux listes sont
-        # tirees du meme parcours de TreasureInfo.dat.
-        for _, nom_location, _, _ in TREASURES:
+        # Un item par location, celui qui s'y trouve dans le jeu d'origine :
+        # le contenu du tresor, ou une piece de l'attaque du lot. Le compte
+        # tombe juste par construction, les deux listes sortent du meme
+        # tableau.
+        for _, nom_location, _, _ in LOCATIONS:
             self.multiworld.itempool.append(
                 self.create_item(VANILLA_PLACEMENT[nom_location])
             )
