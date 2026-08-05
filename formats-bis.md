@@ -1312,16 +1312,51 @@ Deux entrées de plus, `ml_has_access` et `kp_has_access`, disent que
 chaque trésor appartient à une équipe. Notre découpage en `region` n'en
 tient pas compte pour l'instant.
 
-**Ce que ça ne donne pas, et c'est le point bloquant de la logique** :
-quelle zone exige quoi. Aucune de nos sources ne le porte. Les déduire
-d'un souvenir de joueur ou d'un guide en ligne serait exactement le
-genre d'affirmation plausible que ce projet refuse.
+**Ce que ça ne donne pas** : quelle zone exige quoi. Aucune de nos
+sources de code ne le porte.
 
-`tools/journal_capacites.lua` répond en mesurant : il tourne pendant une
-partie normale et note chaque changement du champ `2xxx`, horodaté par
-le nombre de trésors déjà ramassés. Une partie jouée produit l'ordre
-réel d'acquisition des capacités. `tools/etat_capacites.py --journal`
-met les noms dessus.
+### Où chaque capacité s'obtient, **Hypothèse**
+
+Un guide en ligne n'est pas une source de code, mais `CLAUDE.md` classe
+les discussions communautaires comme des **pistes à vérifier**, pas comme
+rien. Croisées avec ce qu'on lit en mémoire, elles deviennent des
+hypothèses testables. Table dans `data/progression_hypothese.csv`, une
+ligne par capacité avec sa source.
+
+Trois recoupements donnent du crédit à ces sources, et ils ont été faits
+avant de s'en servir :
+
+- Super Mario Wiki attribue les dix lots de pièces d'attaque à dix
+  zones. Notre extraction de l'overlay 123 donne exactement les mêmes,
+  **dix sur dix**, y compris les deux que nous avions étiquetées
+  hypothèse, `Castle Pieces` pour Bowser's Castle et `Clinic Pieces` pour
+  la clinique de Toad Town
+- les quatre zones citées comme lieux d'acquisition qui ne sont pas des
+  `region` chez nous, `Flame Pipe`, `Nerve Cluster`, `Joint Tower` et
+  `Lumbar Nook`, existent toutes les quatre dans la table de 32 noms de
+  la ROM. Une source qui inventerait un nom de zone échouerait ici
+- `FIRE_BREATH_DISABLED` est nommé à l'envers dans mnllib, et le guide
+  dit que Bowser **récupère** son souffle après le Scutlet. Les deux
+  concordent : le bit doit retomber, pas monter. C'est aussi la seule
+  ligne de la table dont le sens est inversé, et il valait mieux le voir
+  maintenant qu'en écrivant une `access_rule`
+
+**Réserve sur l'ordre des zones.** Deux pages du même wiki donnent deux
+séquences qui ne coïncident pas sur la place de Flab Zone et de Bowser's
+Castle. L'ordre reste donc non tranché, et il ne faut pas le figer dans
+une `access_rule` en l'état.
+
+**Ce qui manque encore entièrement** : le prérequis d'un trésor
+particulier. Savoir que le Spin Jump s'obtient dans Flab Zone ne dit pas
+quel bloc de Dimble Wood l'exige.
+
+### La mesure qui tranche
+
+`tools/journal_capacites.lua` tourne pendant une partie normale et note
+chaque changement du champ `2xxx`, horodaté par le nombre de trésors déjà
+ramassés. Une partie jouée produit l'ordre réel d'acquisition, ce qui
+confirme ou casse la table ci-dessus au lieu de la remplacer.
+`tools/etat_capacites.py --journal` met les noms dessus.
 
 ### Contrôle de cohérence au `run51`
 

@@ -1,0 +1,12 @@
+capacite,variable,zone_obtention,zone_est_une_region,declencheur,source,statut
+Hammer,0x2001,Trash Pit,oui,ramasse au sol dans la premiere zone jouable,mariowiki page du jeu,hypothese
+Mini Mario,0x2000,Pump Works,oui,progression de zone,mariowiki + gamefaqs SlickSlicer,hypothese
+Fire Breath,0x2004,Flame Pipe,non,Scutlet vaincu ; le bit est FIRE_BREATH_DISABLED donc il RETOMBE,mariowiki recherche,hypothese
+Sliding Haymaker,0x2005,Nerve Cluster,non,Durmite vaincu,mariowiki page sliding haymaker,hypothese
+Spin Jump,0x2002,Flab Zone,oui,progression de zone,mariowiki + gamefaqs SlickSlicer,hypothese
+Body Slam,0x2006,Joint Tower,non,Wisdurm vaincu dans Energy Hold,mariowiki page Body Slam,hypothese
+Drill Bros,0x2003,Energy Hold,oui,progression de zone,mariowiki + gamefaqs SlickSlicer,hypothese
+Spike Ball,0x2007,Lumbar Nook,non,forage au centre du Lumbar Nook depuis Peach's Castle Garden,mariowiki page Spike Ball,hypothese
+Vacuum,0x200E,Plack Beach,oui,Vacuum Block donne par Broque Monsieur,mariowiki page du jeu,hypothese
+Snack Basket,0x201A,Dimble Wood,oui,lot de dix pieces d'attaque,mariowiki + overlay 123,confirme par la ROM
+Blue Shell,0x2025,Toad Town,oui,maitrise de Shell Mario avant le Yoo Who Cannon,mariowiki page du jeu,hypothese
