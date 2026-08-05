@@ -1,5 +1,5 @@
 capacite,variable,zone_obtention,zone_est_une_region,declencheur,source,statut
-Hammer,0x2001,Trash Pit,oui,ramasse au sol dans la premiere zone jouable,mariowiki page du jeu,hypothese
+Hammer,0x2001,Trash Pit,oui,ramasse au sol dans la premiere zone jouable,mariowiki + mesure run52,confirme en jeu
 Mini Mario,0x2000,Pump Works,oui,progression de zone,mariowiki + gamefaqs SlickSlicer,hypothese
 Fire Breath,0x2004,Flame Pipe,non,Scutlet vaincu ; le bit est FIRE_BREATH_DISABLED donc il RETOMBE,mariowiki recherche,hypothese
 Sliding Haymaker,0x2005,Nerve Cluster,non,Durmite vaincu,mariowiki page sliding haymaker,hypothese

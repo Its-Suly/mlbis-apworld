@@ -1358,14 +1358,43 @@ ramassés. Une partie jouée produit l'ordre réel d'acquisition, ce qui
 confirme ou casse la table ci-dessus au lieu de la remplacer.
 `tools/etat_capacites.py --journal` met les noms dessus.
 
-### Contrôle de cohérence au `run51`
+### Le marteau confirme un nom, **Vérifié**
 
-Les onze prérequis sont tous à zéro dans un dump de tout début de
-partie, où les frères n'ont ni marteau ni Mini Mario et où Bowser n'a
-aucune de ses techniques. Cohérent, mais **preuve faible** : une
-correspondance fausse lirait zéro tout pareil. Ce qui porte réellement,
-ce sont les deux bits vus monter au bon moment, `0x200B` et `0x2010`, et
-celui écrit à la main avec l'effet attendu, `0x2019`.
+Au `run51`, les onze prérequis lisaient zéro. Cohérent avec un début de
+partie, mais **preuve faible** : une correspondance fausse lirait zéro
+tout pareil.
+
+Le `run52`, pris après que le joueur a récupéré le marteau, tranche.
+`0x2001` est levé, et **aucun autre** prérequis n'a bougé. Le nom
+`HAMMER` de mnllib n'est plus une déclaration que personne n'utilise, il
+est confirmé par l'observation, et avec lui la correspondance
+bit → capacité pour toute la plage.
+
+Deux acquis annexes au même dump :
+
+- `0x2019`, le Fire Flower écrit à la main la veille, est **toujours
+  levé** après une session de jeu normale. Un bit posé par nous survit au
+  jeu comme un bit posé par le jeu
+- les 127 compteurs d'équipement valent tous exactement 2 après
+  `tools/donner_gear.lua`, et l'octet du champ des badges juste après le
+  bloc, `020564A6`, est resté à zéro. La primitive tient à 127 écritures
+  sans déborder d'un octet
+
+### Une plage de 80 bits qui monte d'un coup, **non expliqué**
+
+Entre les deux dumps, 88 bits `Exxx` montent et **aucun ne retombe**,
+alors qu'aucun trésor n'a été ramassé. Quatre-vingts d'entre eux forment
+une plage contiguë, `0xEEE1` à `0xEF30`.
+
+Deux raisons de le noter plutôt que de l'oublier. Cette plage est
+au-dessus de `0xEDB4`, la borne haute des écritures de variables trouvées
+dans `FEvent` : elle vient donc du code ARM, pas d'un script. Et un bloc
+contigu de 80 sent la structure indexée, du genre de celles qui portent
+des `location` : boutiques et quêtes restent le dernier chantier de
+locations hors table.
+
+Aucune de nos familles connues ne compte 80 éléments. **À tester**, en
+prenant deux dumps encadrant un achat en boutique.
 
 ### Découpage `Exxx` selon mnllib
 

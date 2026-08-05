@@ -176,6 +176,66 @@ l'index du serveur ne revient qu'au tour suivant, et la boucle repasse
 avant. Sans copie locale avancée dès l'écriture, chaque item aurait été
 livré plusieurs fois.
 
+### Les guides comme sources, après avoir eu tort de les écarter
+
+J'avais écrit qu'un guide en ligne serait « exactement le genre
+d'affirmation plausible que ce projet refuse ». L'utilisateur a fait
+remarquer qu'on pouvait chercher la progression sur internet et la
+croiser avec ce qu'on lit en mémoire. Il avait raison et j'avais tort :
+`CLAUDE.md` classe les discussions communautaires comme des **pistes à
+vérifier**, pas comme rien. Croisées avec une mesure, elles deviennent
+des hypothèses testables.
+
+La différence entre les deux positions n'est pas la source, c'est le
+croisement. Et le croisement a payé trois fois avant que je m'en serve :
+
+- Super Mario Wiki attribue les dix lots de pièces d'attaque à dix
+  zones, notre extraction de l'overlay 123 donne les mêmes, dix sur dix,
+  y compris les deux étiquetées hypothèse la veille
+- les quatre zones d'acquisition qui ne sont pas des `region` chez nous
+  existent toutes dans la table de 32 noms de la ROM
+- le guide dit que Bowser récupère son souffle de feu, mnllib nomme le
+  bit `FIRE_BREATH_DISABLED`. Les deux concordent, et le bit doit donc
+  retomber au lieu de monter. Seule ligne inversée de la table, et il
+  valait mieux la voir maintenant qu'en écrivant une règle à l'envers
+
+Ce qui reste non tranché est écrit comme tel : deux pages du même wiki
+divergent sur la place de Flab Zone, et le prérequis d'un trésor donné
+n'est nulle part.
+
+### Le marteau, et un nom qui cesse d'être une déclaration
+
+Question posée par l'utilisateur : faut-il recommencer la partie depuis
+le début pour que le journal capture tout ? Non, et le raisonnement vaut
+d'être noté. Tout ce qui est encore inconnu est devant lui ; ce qui est
+derrière est la partie la mieux documentée ; et une sauvegarde avancée
+teste mieux le client qu'une neuve, puisqu'elle remontera des centaines
+de checks d'un coup à la connexion.
+
+Le `run52`, pris juste après le marteau, vaut mieux qu'un redémarrage.
+`0x2001` est levé et aucun autre prérequis n'a bougé. Jusque-là les onze
+lisaient zéro, ce qui ne prouvait rien : une correspondance fausse lirait
+zéro pareil. Un seul bit levé au bon moment fait basculer toute la
+plage de « énumération que personne n'utilise » à « vérifié ».
+
+Deux acquis gratuits dans le même dump. Le Fire Flower écrit à la main
+la veille est toujours là après une session de jeu. Et les 127 compteurs
+d'équipement valent tous exactement 2, l'octet des badges juste après le
+bloc restant à zéro : la primitive tient à 127 écritures sans déborder.
+
+### Quatre-vingts bits qui montent ensemble
+
+88 bits `Exxx` montent entre les deux dumps, aucun ne retombe, et aucun
+trésor n'a été ramassé. Quatre-vingts forment une plage contiguë,
+`0xEEE1` à `0xEF30`.
+
+Noté sans être compris, et pas oublié : la plage est au-dessus de
+`0xEDB4`, borne haute des écritures de variables trouvées dans `FEvent`,
+donc elle vient du code ARM. Un bloc contigu de 80 ressemble à une
+structure indexée, et boutiques et quêtes sont justement le dernier
+chantier de locations. Aucune de nos familles connues ne compte 80
+éléments. Deux dumps encadrant un achat trancheraient.
+
 ### Une correction et une limite
 
 Le client lit 95 octets de `Exxx`. La note du 4 août disait qu'il en
