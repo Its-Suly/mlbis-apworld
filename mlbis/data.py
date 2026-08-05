@@ -867,8 +867,8 @@ VANILLA_ITEMS = {
 # nom d'item -> (categorie de livraison, valeur)
 #   'coins'        montant a ajouter au u32 a 02056400   Verifie
 #   'consumable'   index du compteur, 02056406 + index   Verifie
+#   'attack_piece' bit du champ 2xxx a 02056038          Verifie
 #   'gear'         identifiant d'equipement              NON ETABLI
-#   'attack_piece' variable de deblocage de l'attaque    NON ETABLI
 ITEM_DELIVERY = {
     '1 Coins': ('coins', 1),
     '1-Up Deluxe': ('consumable', 17),

@@ -155,9 +155,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
   `02056038` en RAM et à `slot + 0x0124` dans la sauvegarde
 - **Capacités et Bros Attacks** : le champ `2xxx` est l'`ImportantFlags`
   de mnllib, `bis/consts.py:46-93`. Marteau, Drill Bros, badges, les dix
-  Bros Attacks. **C'est par là qu'on livre une capacité**, un bit, pas
-  d'inventaire. Les dix `0x2010` à `0x201B` recoupent la ROM sur 10/10,
-  et `0x200B`, `0x2010` mesurés le 5 août 2026
+  Bros Attacks. **Livrer une capacité est acquis**, 5 août 2026 : le bit
+  `0x2019` levé à `0205603B` fait apparaître Fire Flower au menu, elle se
+  joue en entier, démonstration comprise, sans sa cinématique
+  d'apprentissage. Les dix `0x2010` à `0x201B` recoupent la ROM sur 10/10
 - **Écrire quand on veut** : en combat comme sur le terrain, l'écriture
   prend effet, s'affiche et survit, 4 août 2026. Cinématiques non testées
 - **Inventaire vivant** à `02056400` : pièces en `u32`, consommable `N`
@@ -200,13 +201,11 @@ preuves dans `formats-bis.md`.
 
 Restent ouverts, plus rien de bloquant :
 
-- Recevoir les items : `items_handling` est à `0b000`. **590 sur 725
-  sont livrables** par une adresse vérifiée, `mlbis/delivery.py`.
-  Bloquent 57 équipements, correspondance id → emplacement non mesurée,
-  et 78 pièces d'attaque. L'index du dernier item reçu ira dans le
+- Recevoir les items : `items_handling` est à `0b000`. **668 sur 725
+  sont livrables** par une adresse vérifiée, `mlbis/delivery.py`. Ne
+  bloquent plus que les 57 équipements, correspondance identifiant →
+  compteur non mesurée. L'index du dernier item reçu ira dans le
   `DataStorage` du serveur
-- Écrire dans `2xxx` n'a **jamais été testé**, seulement lu.
-  `tools/livrer_capacite.lua` est prêt, cible Fire Flower `0x2019`
 - Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
   de victoire, les 16 `region` sont reliées sans exigence
 - 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super

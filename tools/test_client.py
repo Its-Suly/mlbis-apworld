@@ -36,8 +36,8 @@ from data import (  # noqa: E402
     ATTACK_PIECES, BASE_ID, ITEM_DELIVERY, LOCATIONS, TREASURES, VANILLA_ITEMS,
 )
 from delivery import (  # noqa: E402
-    BASE_CONSOMMABLES, CATEGORIES_ETABLIES, COMPTEUR_PIECES, NB_CONSOMMABLES,
-    couverture, livraison_de,
+    BASE_CONSOMMABLES, CATEGORIES_ETABLIES, COMPTEUR_PIECES, ecriture_de_flag,
+    couverture, livraison_de, livraison_de_lot, seuils_de_lot,
 )
 
 LOCATION_TO_BIT = {nom: rang for rang, nom, _, _ in LOCATIONS}
@@ -134,6 +134,15 @@ adresses = {}
 mauvaises = []
 for nom, (categorie, _) in sorted(ITEM_DELIVERY.items()):
     ecriture = livraison_de(nom, ITEM_DELIVERY)
+    if categorie == "attack_piece":
+        # Une piece ne se livre pas seule : c'est le lot complet qui leve
+        # le drapeau de l'attaque, via livraison_de_lot.
+        if ecriture is not None:
+            mauvaises.append(f"{nom} : une piece seule ne doit rien ecrire")
+        lot = livraison_de_lot(nom, ITEM_DELIVERY)
+        if len(lot) != 2 or any(e.operation != "bit" for e in lot):
+            mauvaises.append(f"{nom} : lot mal forme, {lot}")
+        continue
     if categorie in CATEGORIES_ETABLIES:
         if ecriture is None:
             mauvaises.append(f"{nom} : categorie etablie mais aucune ecriture")
@@ -162,6 +171,23 @@ else:
         for cat, n in sorted(couverture(ITEM_DELIVERY).items())
     )
     print(f"ecritures de livraison : OK, {detail}")
+
+# Le drapeau de Fire Flower doit retomber sur l'ecriture mesuree en jeu
+# le 5 aout 2026 : adresse 0x05603B, octet 00 -> 02.
+flag = ecriture_de_flag(0x2019, "Fire Flower")
+if (flag.adresse, flag.valeur(0x00)) != (0x05603B, 0x02):
+    print(f"ECHEC : Fire Flower calcule {flag.adresse:#x} valeur "
+          f"{flag.valeur(0):#04x}, mesure 0x5603b et 0x02")
+    echecs += 1
+elif flag.valeur(0x02) != 0x02:
+    print("ECHEC : lever un bit deja leve doit etre sans effet")
+    echecs += 1
+else:
+    seuils = seuils_de_lot(ITEM_DELIVERY, VANILLA_ITEMS)
+    detail = ", ".join(f"{n.removesuffix(' Piece')} {s}"
+                       for n, s in sorted(seuils.items()) if s != 10)
+    print(f"drapeaux 2xxx : OK, Fire Flower retombe sur l'ecriture mesuree ; "
+          f"seuils hors 10 : {detail or 'aucun'}")
 
 # Le plafond doit ecreter au lieu de deborder.
 nut = livraison_de("Nut", ITEM_DELIVERY)

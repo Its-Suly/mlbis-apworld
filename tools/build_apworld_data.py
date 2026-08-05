@@ -163,8 +163,8 @@ items.update(p[2] for p in pieces)
 #
 #   'coins'      montant a ajouter au u32 a 02056400        Verifie
 #   'consumable' index du compteur, 02056406 + index        Verifie
+#   'attack_piece'  variable de deblocage de l'attaque      Verifie
 #   'gear'       identifiant d'equipement                   NON ETABLI
-#   'attack_piece'  variable de deblocage de l'attaque      NON ETABLI
 #
 # Verifie pour les consommables : un Nut ecrit a 02056406 + 7 est apparu
 # au menu et s'est consomme, 4 aout 2026, et l'index 7 est bien celui du
@@ -246,8 +246,8 @@ lignes_py.append("")
 lignes_py.append("# nom d'item -> (categorie de livraison, valeur)")
 lignes_py.append("#   'coins'        montant a ajouter au u32 a 02056400   Verifie")
 lignes_py.append("#   'consumable'   index du compteur, 02056406 + index   Verifie")
+lignes_py.append("#   'attack_piece' bit du champ 2xxx a 02056038          Verifie")
 lignes_py.append("#   'gear'         identifiant d'equipement              NON ETABLI")
-lignes_py.append("#   'attack_piece' variable de deblocage de l'attaque    NON ETABLI")
 lignes_py.append("ITEM_DELIVERY = {")
 for nom in sorted(livraison):
     cat, val = livraison[nom]
@@ -271,7 +271,7 @@ print(f"  plage de location : {BASE_ID:#x} a {BASE_ID + pieces[-1][0]:#x}")
 print(f"  reserve hors-table : {BASE_ID + RESERVE_HORS_TABLE:#x} et au-dela")
 print()
 print("  livraison, par categorie :")
-etabli = {"coins", "consumable"}
+etabli = {"coins", "consumable", "attack_piece"}
 exemplaires_ok = 0
 for cat, n_noms in sorted(couverture.items()):
     n_ex = sum(items[nom] for nom, (c, _) in livraison.items() if c == cat)

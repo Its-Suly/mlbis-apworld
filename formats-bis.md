@@ -1128,6 +1128,32 @@ table de la ROM la recoupe sur **10 sur 10** pour les Bros Attacks, voir
 plus bas, et deux bits ont été mesurés en jeu. Ce n'est plus une
 affirmation de la communauté.
 
+### Écrire dans `2xxx` marche, **Vérifié**
+
+Le 5 août 2026, `tools/livrer_capacite.lua`. Bit `0x2019`, Fire Flower,
+levé à la main dans une partie où l'attaque n'était pas débloquée.
+Octet `0205603B`, `00` vers `02`, un seul octet touché sur les huit.
+
+Résultat à l'écran, testé par le joueur : l'attaque **apparaît** au menu
+Bros Attacks, se **sélectionne**, et se **joue entièrement, y compris sa
+démonstration**. Le jeu n'exige pas que la cinématique d'apprentissage
+ait eu lieu.
+
+C'est exactement le cas qu'un randomizer produit à chaque seed, et il
+passe. Quarante capacités deviennent livrables par une seule primitive,
+un bit dans huit octets, sans compteur ni index ni quantité.
+
+Deux réserves honnêtes. `0x200B`, qui autorise les Bros Attacks en
+général, valait déjà 1 dans la partie de test : rien ne prouve encore
+qu'il soit nécessaire, et `mlbis/delivery.py` le lève par précaution.
+Et un seul des quarante bits a été écrit ; les autres partagent le
+mécanisme, pas la mesure.
+
+Premier essai mort sur une erreur de Lua qui vaut d'être notée :
+l'opérateur `^` rend toujours un flottant, `2^1` vaut `2.0`, et
+`memory.write_bytes_as_array` lève une `InvalidCastException` dessus. Une
+table de puissances entières règle le cas. Rien n'avait été écrit.
+
 Deux autres changements, notés sans être compris :
 
 - `Cxxx` mot 0 monte 7, 8, 9, 10 et mot 1 descend 3, 2, 1, 0. Pièces
