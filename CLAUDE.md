@@ -205,12 +205,11 @@ Restent ouverts, plus rien de bloquant :
   à `0b111`, les 725 exemplaires ont une adresse vérifiée
   (`mlbis/delivery.py`), les tests passent. Reste à valider en jeu, de
   bout en bout, avec un serveur
-- Aucune `access_rule`. Le vocabulaire des prérequis vient de
+- Aucune `access_rule`. Vocabulaire des prérequis dans
   `randoglobin/data_classes.py:11-35`, 11 capacités sur 12 ont un bit
   `2xxx`, et `data/progression_hypothese.csv` dit où chacune s'obtient,
-  **hypothèse** tirée des guides. Manquent l'ordre des zones, non
-  tranché, et le prérequis d'un trésor donné, que rien ne porte.
-  `tools/journal_capacites.lua` mesure en jouant
+  **hypothèse** tirée des guides. Manquent l'ordre des zones et le
+  prérequis d'un trésor donné. `tools/journal_capacites.lua` mesure
 - 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
   Bouncer 4, Yoo Who Cannon 10 qui est octroyée d'un bloc et n'est donc
   pas une `location`. Absentes de `FEvent` et des scripts de combat, à
