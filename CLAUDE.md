@@ -51,19 +51,12 @@ version publiée. Le pourquoi de chaque borne est dans
 
 ## Licences
 
-**Vérifié** dans les fichiers `LICENSE` des dépôts, le 3 août 2026.
-Détail et attributions dans `SOURCES.md`.
-
-- Randoglobin et Cheatoglobin : **GPL-3.0-or-later**. Les lire est
-  libre, en recopier du code imposerait la GPL à l'APWorld
-- `mnllib.py` : **LGPL-3.0**, donc utilisable comme dépendance sans
-  contaminer l'APWorld. C'est déjà le cas dans `tools/extract_names.py`
-- BIS-docs : **GPL-3.0** pour le code, **CC BY-SA 4.0** pour la
-  documentation, qui impose l'attribution
-- Archipelago : **MIT**
-
-Signaler l'implication dès qu'il est question de réutiliser plutôt que
-de s'inspirer.
+**Vérifié** le 3 août 2026, détail et attributions dans `SOURCES.md`.
+Randoglobin et Cheatoglobin **GPL-3.0-or-later**, les lire est libre mais
+en recopier contaminerait l'APWorld ; `mnllib.py` **LGPL-3.0**, donc
+utilisable comme dépendance, pas à recopier ; BIS-docs **GPL-3.0** et sa
+doc **CC BY-SA 4.0**, qui impose l'attribution ; Archipelago **MIT**.
+Signaler l'implication dès qu'il est question de réutiliser.
 
 ## Contraintes d'empaquetage APWorld
 
