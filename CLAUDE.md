@@ -206,7 +206,10 @@ Restent ouverts, plus rien de bloquant :
   (`mlbis/delivery.py`), les tests passent. Reste à valider en jeu, de
   bout en bout, avec un serveur
 - Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
-  de victoire, les 16 `region` sont reliées sans exigence
+  de victoire. Le **vocabulaire** des prérequis est connu,
+  `randoglobin/data_classes.py:11-35`, et 11 capacités sur 12 ont un bit
+  `2xxx`. Manque **quelle zone exige quoi** : personne ne l'a écrit, et
+  `tools/journal_capacites.lua` le mesure en cours de partie
 - 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
   Bouncer 4, Yoo Who Cannon 10 qui est octroyée d'un bloc et n'est donc
   pas une `location`. Absentes de `FEvent` et des scripts de combat, à

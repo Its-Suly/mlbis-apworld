@@ -1276,6 +1276,62 @@ suffisait pour le rang 1792 seulement. Lire les `0x200` octets entiers
 du tableau coûte moins cher que de recalculer cette borne à chaque
 nouvelle famille de `location`.
 
+## Vocabulaire de la progression
+
+**Vérifié** comme lecture de source, le 5 août 2026 :
+`vendor/Randoglobin/randoglobin/data_classes.py:11-35` déclare la liste
+des prérequis d'un trésor. Son auteur a laissé un commentaire à côté :
+il s'est aperçu après coup que la structure ne servirait pas à son
+usage, et l'a gardée « comme ressource pour plus tard ». **Le tableau
+n'est jamais rempli.** Ce qu'on en tire est donc le vocabulaire, pas la
+donnée.
+
+Onze de ces prérequis tombent sur un bit du champ `2xxx`, donc sur
+quelque chose qu'on sait lire et écrire :
+
+| Prérequis Randoglobin | Variable | Nom mnllib |
+|---|---|---|
+| `ml_req_mini_mario` | `0x2000` | `MINI_MARIO` |
+| `ml_req_hammer` | `0x2001` | `HAMMER` |
+| `ml_req_spin_jump` | `0x2002` | `SPIN_JUMP` |
+| `ml_req_drill` | `0x2003` | `DRILL_BROS` |
+| `kp_req_flame` | `0x2004` | `FIRE_BREATH_DISABLED`, inversé |
+| `kp_req_slide_punch` | `0x2005` | `SLIDING_HAYMAKER` |
+| `kp_req_body_slam` | `0x2006` | `BODY_SLAM` |
+| `kp_req_spike_ball` | `0x2007` | `SPIKE_BALL` |
+| `kp_req_vacuum` | `0x200E` | `VACUUM` |
+| `ml_req_snack_basket` | `0x201A` | `BROS_ATTACK_SNACK_BASKET` |
+| `ml_req_blue_shell` | `0x2025` | `BLUE_SHELL_BLOCKS` |
+
+Sans correspondance : `ml_req_balloon`, et les prérequis d'objet
+d'histoire `req_stingler`, `req_banzai_bill`, les trois clés et les trois
+remèdes. Ce sont probablement des drapeaux `Exxx` de la plage histoire,
+**à tester**.
+
+Deux entrées de plus, `ml_has_access` et `kp_has_access`, disent que
+chaque trésor appartient à une équipe. Notre découpage en `region` n'en
+tient pas compte pour l'instant.
+
+**Ce que ça ne donne pas, et c'est le point bloquant de la logique** :
+quelle zone exige quoi. Aucune de nos sources ne le porte. Les déduire
+d'un souvenir de joueur ou d'un guide en ligne serait exactement le
+genre d'affirmation plausible que ce projet refuse.
+
+`tools/journal_capacites.lua` répond en mesurant : il tourne pendant une
+partie normale et note chaque changement du champ `2xxx`, horodaté par
+le nombre de trésors déjà ramassés. Une partie jouée produit l'ordre
+réel d'acquisition des capacités. `tools/etat_capacites.py --journal`
+met les noms dessus.
+
+### Contrôle de cohérence au `run51`
+
+Les onze prérequis sont tous à zéro dans un dump de tout début de
+partie, où les frères n'ont ni marteau ni Mini Mario et où Bowser n'a
+aucune de ses techniques. Cohérent, mais **preuve faible** : une
+correspondance fausse lirait zéro tout pareil. Ce qui porte réellement,
+ce sont les deux bits vus monter au bon moment, `0x200B` et `0x2010`, et
+celui écrit à la main avec l'effet attendu, `0x2019`.
+
 ### Découpage `Exxx` selon mnllib
 
 `vendor/mnllib.py/mnllib/bis/consts.py:96-109` déclare douze plages,
