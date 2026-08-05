@@ -236,6 +236,31 @@ structure indexée, et boutiques et quêtes sont justement le dernier
 chantier de locations. Aucune de nos familles connues ne compte 80
 éléments. Deux dumps encadrant un achat trancheraient.
 
+### La boucle complète, et elle tient du premier coup
+
+Serveur lancé, connecteur chargé, client connecté. Vingt et un checks
+remontent immédiatement : les 11 trésors et les 10 pièces du Green Shell,
+exactement ce que le `run52` mesurait, pas un de plus. Aucun des 125
+drapeaux d'histoire levés n'est passé au travers du filtre par
+`server_locations`.
+
+Les noms sont lisibles côté serveur, `Trash Pit - Green Shell Piece 3`
+à côté de `Peach's Castle - Block 544`. Une pièce d'attaque est
+indiscernable d'un trésor pour Archipelago, ce qui était le but.
+
+La preuve de la livraison ne pouvait pas venir du log serveur, qui ne
+voit que ses envois. Elle tient dans un nombre : 396 pièces d'or
+envoyées, 962 en poche, plafond à 999. Le compteur affiche **999**.
+
+Le jeu détecte, le serveur reçoit, renvoie, le client écrit, le joueur
+voit. C'est la première fois que la chaîne tourne entière, et elle a
+tenu au premier essai sur une rafale de 21 items.
+
+Ce qui a rendu ça possible sans debug, je crois, c'est d'avoir refusé
+d'écrire une adresse plausible. Chaque catégorie de livraison avait été
+mesurée separement avant d'etre branchee, et `delivery.py` rendait `None`
+plutot qu'une adresse devinee tant que la mesure manquait.
+
 ### Une correction et une limite
 
 Le client lit 95 octets de `Exxx`. La note du 4 août disait qu'il en

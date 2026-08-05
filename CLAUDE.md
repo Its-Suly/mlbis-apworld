@@ -1,11 +1,12 @@
 # Projet APWorld BIS
 
 Développement d'un APWorld Archipelago pour Mario & Luigi : Voyage au
-Centre de Bowser, version NDS de 2009. Faisabilité acquise : lecture des
-checks, écriture d'items et sauvegarde vérifiées. Le monde vit dans
+Centre de Bowser, version NDS de 2009. **La boucle complète tourne**,
+validée en jeu le 5 août 2026 : 21 checks remontés au serveur, 21 items
+renvoyés, écrits en mémoire et vus à l'écran. Le monde vit dans
 `mlbis/` : **725 `location`**, 647 trésors et 78 pièces d'attaque,
-16 `region`, un client BizHawk en lecture seule **validé en jeu le
-4 août 2026**. Tests `tools/test_generation.py` et `test_client.py`.
+16 `region`. Tests `tools/test_generation.py` et `test_client.py`.
+Ce qui manque est la **logique**, pas la technique.
 
 ## Version de ROM, figée
 
@@ -194,10 +195,10 @@ preuves dans `formats-bis.md`.
 
 Restent ouverts, plus rien de bloquant :
 
-- Recevoir les items : **écrit mais jamais joué**. `items_handling` est
-  à `0b111`, les 725 exemplaires ont une adresse vérifiée
-  (`mlbis/delivery.py`), les tests passent. Reste à valider en jeu, de
-  bout en bout, avec un serveur
+- Rien de bloquant côté technique. Le seul contrôle non fait est la
+  **reconnexion** : l'index des items livrés vit dans le `DataStorage`
+  du serveur, donc recharger un savestate lui fera croire livrés des
+  items que le jeu n'a plus. Défaut connu, écrit dans `client.py`
 - Aucune `access_rule`. Vocabulaire des prérequis dans
   `randoglobin/data_classes.py:11-35`, 11 capacités sur 12 ont un bit
   `2xxx`, et `data/progression_hypothese.csv` dit où chacune s'obtient,
