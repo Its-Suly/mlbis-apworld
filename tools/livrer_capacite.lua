@@ -52,6 +52,12 @@ local ATTAQUES = {
 -- dans la partie en cours depuis le deblocage du Green Shell.
 local AUTORISATION = 0x200B
 
+-- Puissances de deux en ENTIERS. L'operateur ^ de Lua rend toujours un
+-- flottant, et memory.write_bytes_as_array leve une InvalidCastException
+-- sur un flottant, meme quand il vaut 2.0. Mesure du 5 aout 2026, le
+-- premier essai de ce script est mort la.
+local PUISSANCES = { 1, 2, 4, 8, 16, 32, 64, 128 }
+
 local function lire_champ()
     return memory.read_bytes_as_array(BASE_2XXX, 8, DOMAINE)
 end
@@ -60,7 +66,7 @@ local function bit_de(champ, variable)
     local n = variable - 0x2000
     -- read_bytes_as_array rend un tableau indexe a partir de 1.
     local octet = champ[math.floor(n / 8) + 1]
-    return math.floor(octet / 2 ^ (n % 8)) % 2
+    return math.floor(octet / PUISSANCES[(n % 8) + 1]) % 2
 end
 
 console.clear()
@@ -99,8 +105,8 @@ end
 local n = VARIABLE - 0x2000
 local index = math.floor(n / 8) + 1
 local adresse = BASE_2XXX + math.floor(n / 8)
-local masque = 2 ^ (n % 8)
-local nouveau = avant[index] + masque
+local masque = PUISSANCES[(n % 8) + 1]
+local nouveau = math.floor(avant[index] + masque)
 
 console.log(string.format("\ncible   : %s, variable 0x%04X, bit %d", NOM, VARIABLE, n))
 console.log(string.format("adresse : 0x%05X en %s, absolu %08X, bit %d",
