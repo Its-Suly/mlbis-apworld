@@ -80,14 +80,6 @@ transition qu'une fois pendant le parcours du graphe, et une transition
 réévaluée. Ce cas est probable sur BIS, où l'accès d'un duo dépend
 souvent de la progression de l'autre.
 
-## Particularités du jeu
-
-- Deux équipes, Mario-Luigi et Bowser, avec inventaires et capacités
-  distincts. Plusieurs structures à suivre, pas une seule
-- **Écrire un compteur d'inventaire pendant un combat est sans risque et
-  survit à la sortie**, vérifié le 4 août 2026. Les cinématiques ne sont
-  pas testées : y écrire reste à considérer comme dangereux
-
 ## Méthode de travail
 
 - Préférer la plus petite étape testable au plan complet
@@ -161,6 +153,13 @@ enfin les discussions communautaires, à traiter comme des pistes.
 - **Flags** : dans `Exxx`, les trésors partent de `0xE000`, les ennemis
   de `0xE400`, l'histoire de `0xE700`. Les `0x2xxx` sont 64 bits, à
   `02056038` en RAM et à `slot + 0x0124` dans la sauvegarde
+- **Capacités et Bros Attacks** : le champ `2xxx` est l'`ImportantFlags`
+  de mnllib, `bis/consts.py:46-93`. Marteau, Drill Bros, badges, les dix
+  Bros Attacks. **C'est par là qu'on livre une capacité**, un bit, pas
+  d'inventaire. Les dix `0x2010` à `0x201B` recoupent la ROM sur 10/10,
+  et `0x200B`, `0x2010` mesurés le 5 août 2026
+- **Écrire quand on veut** : en combat comme sur le terrain, l'écriture
+  prend effet, s'affiche et survit, 4 août 2026. Cinématiques non testées
 - **Inventaire vivant** à `02056400` : pièces en `u32`, consommable `N`
   à `02056406 + N`, équipement `M` à `02056427 + M`. `slot + 0x0054 + X`
   correspond à `02056400 + X + 2`. **Livrer un objet est acquis**,
@@ -188,22 +187,16 @@ Régénérables par `tools/extract_names.py` puis
 - `noms_items.csv` : 191 objets. L'identifiant indexe une table de
   l'arm9 décompressé, pas la table de texte. Corrigé le 4 août 2026
 - `noms_zones.csv` : les 32 zones
+- `bros_attacks.csv` : les 10 Bros Attacks, variable de pièces, variable
+  de déblocage, coût en SP, zone. `tools/extract_bros_attacks.py`
+- `pieces_attaque.csv` : **78 pièces d'attaque sur 100**, une variable
+  `Exxx` chacune. `tools/pieces_attaque_fevent.py`
 
 ## Non résolu
 
-**Le point bloquant est levé, et vérifié.** Les trésors ramassés sont
-suivis par les index bas du tableau de bits `Exxx` des variables de
-script, 4096 bits, `0x200` octets à `020560C8` en `Main RAM` :
-
-```
-bit du trésor d'identifiant N  ->  octet 020560C8 + N // 8, bit N % 8
-```
-
-Le tableau vit dans le BSS de l'ARM9, `02055FE0` à `02063B00`, donc à
-adresse fixe quelle que soit la salle chargée. Sur un bloc multi-coups,
-le bit monte dès la **première** pièce, pas à l'épuisement. Vérifié par
-dix dumps du 3 août 2026 et par `inf.gg/mlbis/manual`. Détail dans
-`formats-bis.md`.
+Le point bloquant est levé : un trésor d'identifiant `N` est le bit
+`N` du tableau `Exxx`, `octet 020560C8 + N // 8, bit N % 8`. Détail et
+preuves dans `formats-bis.md`.
 
 Restent ouverts, plus rien de bloquant :
 
@@ -212,7 +205,13 @@ Restent ouverts, plus rien de bloquant :
   `DataStorage` du serveur, pas dans la sauvegarde
 - Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
   de victoire, les 16 `region` sont reliées sans exigence
-- Trésors hors `TreasureInfo.dat` : **pièces d'attaque réglées**, un bit
-  `Exxx` chacune, set Green Shell en `0xE700` à `0xE708`, ce sont des
-  `location` ordinaires. Restent boutiques et quêtes. Le client ne lit
-  que 95 octets, il en faut 225 pour voir le bit 1792
+- Le client ne lit que 95 octets de `Exxx`. La dernière pièce d'attaque
+  est au rang 2081, octet 260 : lire les `0x200` octets du tableau
+- 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
+  Bouncer 4, Yoo Who Cannon 10 qui est octroyée d'un bloc et n'est donc
+  pas une `location`. Absentes de `FEvent` et des scripts de combat, à
+  mesurer en jeu
+- Aucune `region` pour une pièce d'attaque : les sous-routines de bloc
+  sont dupliquées dans 13 ou 18 chunks, la salle n'est pas exploitable.
+  Le nom du lot, `Trash Pieces`, donne la zone du set
+- Trésors hors `TreasureInfo.dat` : restent boutiques et quêtes

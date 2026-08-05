@@ -1,5 +1,127 @@
 # Journal du projet APWorld BIS
 
+## 5 août 2026, la question qui décidait de tout, et ce qu'elle a ouvert
+
+Séance ouverte sur une reprise, cinq dumps déjà pris par l'utilisateur
+avant que je dise quoi que ce soit, et fermée sur trois acquis dont deux
+n'étaient pas au programme.
+
+### Les bits survivent, et la mesure était bien posée
+
+`run47` à `run51`, la chaîne complète : avant le saut, à la dixième
+pièce, à l'annonce de l'étoile, pendant le combat, après le combat porte
+ouverte. Les dix bits `0xE700` à `0xE709` restent levés partout, `0x601D`
+reste à 10. Rien ne retombe.
+
+Ce qui rendait la mesure concluante, c'est qu'elle avait été préparée la
+veille : la partie avait été laissée devant le dernier bloc, à neuf
+pièces. Le protocole tenait en une phrase, et l'utilisateur a pris cinq
+dumps là où j'en avais demandé deux, dont celui de la discussion et celui
+de l'annonce. Ce sont précisément ces deux-là qui ont isolé le déblocage.
+
+Détail que la veille avait raté : la dixième pièce est `0xE709`. La note
+parlait de neuf bits parce que neuf pièces seulement avaient été
+ramassées, et j'avais écrit la plage `0xE700` à `0xE708` comme si elle
+était complète. Décrire un état partiel comme un résultat, c'est la même
+faute que le `max_hits` du 3 août, en plus discret.
+
+### Le vrai gain n'était pas la réponse, mais deux bits voisins
+
+Entre `run48` et `run49`, deux octets seulement changent dans tout le
+bloc de variables, et ils ne sont pas dans `Exxx` : `0x200B` et `0x2010`
+montent dans le champ `2xxx`, au moment exact où l'étoile annonce le
+Green Shell.
+
+`mnllib` les nomme, `consts.py:60` et `:65`, `BROS_ATTACKS` et
+`BROS_ATTACK_GREEN_SHELL`. Randoglobin nomme le premier de son côté,
+`patch.py:342`, « bros attacks block ». La mesure et deux sources qui ne
+se citent pas tombent d'accord sur les deux mêmes bits.
+
+Ce que ça ouvre dépasse largement les pièces. `2xxx` est l'énumération
+`ImportantFlags` : marteau, Drill Bros, Spin Jump, badges, vacuum, les
+dix Bros Attacks, les améliorations de boutique. Quarante capacités dans
+huit octets à `02056038`, sauvegardés. **Livrer une capacité, c'est
+lever un bit.** Le chemin d'item le plus simple du projet est apparu par
+la bande, en cherchant autre chose.
+
+### Extraire plutôt que croire
+
+`ImportantFlags` n'est utilisé nulle part ailleurs dans mnllib. Rien ne
+le teste chez eux, donc rien ne garantit qu'il soit à jour. Plutôt que
+de le prendre pour argent comptant ou de l'écarter, j'ai cherché ce que
+la ROM en dit.
+
+`special.py:26` de Randoglobin décrit une table de 10 Bros Attacks dans
+l'overlay 123, avec pour chacune sa variable de pièces et sa variable de
+déblocage. `tools/extract_bros_attacks.py` la lit. Les dix variables de
+déblocage sont exactement les dix `BROS_ATTACK_*` de mnllib, dans le même
+ordre. Dix sur dix.
+
+Le script vérifie aussi que le pointeur arm9 de la table d'objets
+d'attaque vaut bien l'offset annoncé par Randoglobin. Une ligne de
+recoupement qui coûte deux minutes et qui, si elle avait échoué, aurait
+évité de publier une table fausse.
+
+Sortie bonus : les noms de lots, `Trash Pieces`, `Pump Pieces`. Ils
+donnent la zone d'un set, ce que les scripts ne donnent pas.
+
+### Le balayage, et trois versions dont deux fausses
+
+Objectif : la variable `Exxx` des 100 pièces, pas seulement des dix
+mesurées. Trois tentatives.
+
+La première groupait par salle. Résultat inutilisable, une salle de
+cinématique cite des dizaines de variables sans rien ramasser.
+
+La deuxième descendait à la sous-routine, en exigeant qu'elle touche une
+variable de pièces et pose un `Exxx`. Mieux, mais encore pollué : la
+cinématique de déblocage lit le compteur. J'ai resserré sur l'écriture
+plutôt que la lecture, sans que ça suffise.
+
+La troisième a marché parce que j'ai arrêté de deviner la signature et
+que je suis allé la lire. Un diagnostic de dix lignes sur la salle témoin
+montre la structure exacte : commande `0x0020`, `base+k |= masque`, un
+seul bit par bloc, masques 1, 2, 4, 8, 16. L'indice de la pièce se calcule,
+il ne se suppose pas.
+
+Même leçon que le 4 août sous une autre forme. Quand une question porte
+sur ce que fait le jeu, faire faire au jeu ; quand elle porte sur ce que
+fait un script, aller lire le script au lieu d'inférer sa forme.
+
+### 78 pièces sur 100, et le trou est instructif
+
+Six attaques rendent dix pièces contiguës. Le Fire Flower en rend dix
+aussi, mais deux d'entre elles, `0xE749` et `0xE754`, sont hors de la
+plage de ses huit autres.
+
+Ce détail vaut mieux que les six plages propres : il interdit de combler
+les trous par arithmétique. J'allais le faire pour le Jump Helmet, dont
+on ne connaît que les pièces 0 et 9, et j'aurais produit huit variables
+fausses avec l'air d'être juste.
+
+Le Yoo Who Cannon n'est pas une chasse. Une seule sous-routine écrit ses
+deux champs, `|= 31` sur chacun, salle `0x0CF`. Les dix pièces sont
+données d'un coup, ce ne sont pas des `location`. Une absence qui
+explique une absence.
+
+Restent 12 pièces sans variable, Jump Helmet 8 et Super Bouncer 4.
+Vérifié qu'elles ne sont ni dans `FEvent`, ni dans les 268 161 commandes
+des scripts de combat, et qu'aucun masque n'est calculé à l'exécution.
+Elles se mesureront en jeu.
+
+### Une correction et une limite
+
+Le client lit 95 octets de `Exxx`. La note du 4 août disait qu'il en
+fallait 225 ; c'était le compte pour le rang 1792. La dernière pièce
+connue est au rang 2081, octet 260. Autant lire les `0x200` octets du
+tableau et ne plus recalculer cette borne.
+
+Limite assumée : les sous-routines de bloc sont dupliquées dans 13 ou 18
+chunks de `FEvent`. La salle ne peut pas servir à assigner une `region`
+à une pièce. J'ai failli publier la colonne « salle » avec la dernière
+salle rencontrée, ce qui aurait ressemblé à une donnée. Le script liste
+maintenant toutes les salles et affiche leur nombre.
+
 ## 4 août 2026, soir, livrer un objet puis tomber sur mieux
 
 Séance ouverte sur une question de reprise, « où on en était », et

@@ -1086,11 +1086,146 @@ critère déjà vérifié et non sur une intuition : la fonction de
 sauvegarde ne recopie que `2xxx`, `Dxxx`, `Exxx`, `6xxx` et la plage
 anonyme. `Cxxx` n'est pas sauvegardé, donc il ne peut pas porter l'état.
 
-**Non tranché**, et c'est la question qui décide de tout : au ramassage
-de la dixième pièce, l'attaque se débloque. Les bits `Exxx` restent-ils
-levés, ou le jeu remet-il le lot à zéro pour le suivant ? S'ils
-retombent, les pièces d'attaque ne peuvent pas servir de `location` en
-l'état.
+### Les bits survivent au déblocage, et le déblocage a sa propre marque
+
+**Vérifié** le 5 août 2026, cinq dumps `run47` à `run51` pris en chaîne :
+avant le saut, à la réception de la dixième pièce, à l'annonce de
+l'étoile, pendant le combat qui suit, après le combat une fois la porte
+ouverte.
+
+Les dix bits `0xE700` à `0xE709` sont levés et **aucun ne retombe**, ni
+au déblocage, ni pendant le combat, ni après. `0x601B` et `0x601C`
+valent `00011111` chacun, `0x601D` vaut 10, du `run48` au `run51`.
+La question qui décidait de tout est réglée dans le bon sens : **une
+pièce d'attaque est une `location` utilisable**.
+
+La dixième pièce est `0xE709`, pas `0xE708`. La note du 4 août parlait
+de neuf bits parce que neuf pièces seulement avaient été ramassées.
+
+Deux bits montent au moment exact de l'annonce, et à ce moment seulement,
+dans le champ `2xxx` :
+
+| Variable | Bit | Nom mnllib | Source |
+|---|---|---|---|
+| `0x200B` | 11 | `BROS_ATTACKS` | `mnllib/bis/consts.py:60` |
+| `0x2010` | 16 | `BROS_ATTACK_GREEN_SHELL` | `mnllib/bis/consts.py:65` |
+
+`0x200B` est nommé « bros attacks block » par
+`vendor/randoglobin/randoglobin/patch.py:342`, qui le force à 1 pour
+débloquer l'usage des Bros Attacks. Le `2xxx` est sauvegardé, à
+`slot + 0x0124`, donc ces bits portent bien l'état durable.
+
+**Conséquence majeure, au-delà des pièces.** Le champ `2xxx` est
+l'énumération `ImportantFlags` de mnllib, `consts.py:46-93` : marteau,
+Mini Mario, Drill Bros, Spin Jump, badges, vacuum, les dix Bros Attacks,
+les six Brawl Attacks, sept améliorations de boutique. **Livrer une
+capacité, c'est lever un bit dans huit octets à `02056038`**, sans
+toucher à l'inventaire. C'est le chemin d'item le plus simple du projet.
+
+Ce qui rend la correspondance solide : `ImportantFlags` n'est utilisé
+nulle part ailleurs dans mnllib, donc rien ne la teste chez eux. Mais la
+table de la ROM la recoupe sur **10 sur 10** pour les Bros Attacks, voir
+plus bas, et deux bits ont été mesurés en jeu. Ce n'est plus une
+affirmation de la communauté.
+
+Deux autres changements, notés sans être compris :
+
+- `Cxxx` mot 0 monte 7, 8, 9, 10 et mot 1 descend 3, 2, 1, 0. Pièces
+  ramassées et pièces restantes, l'affichage. Confirme que `Cxxx` est le
+  registre de message et non un état
+- `0xD3FB`, un bit `Dxxx`, monte à l'ouverture de la porte, après le
+  combat. `0xD3FA` était monté à la neuvième pièce. Non expliqué
+
+### Les dix Bros Attacks, table de l'overlay 123
+
+**Vérifié** le 5 août 2026, `tools/extract_bros_attacks.py`, sortie
+`data/bros_attacks.csv`. Table à l'offset `0x000304D4` de l'overlay 123,
+10 entrées de 18 octets, structure lue dans
+`vendor/randoglobin/randoglobin/special.py:26`, offsets NA dans
+`main.py:1196-1197`.
+
+| Attaque | Item | Pièces | Déblocage | SP | Lot |
+|---|---|---|---|---|---|
+| Green Shell | `0x1000` | `0x601B` | `0x2010` | 3 | Trash Pieces |
+| Fire Flower | `0x1001` | `0x6000` | `0x2019` | 4 | Pump Pieces |
+| Jump Helmet | `0x1002` | `0x6006` | `0x2016` | 6 | Flab Pieces |
+| Yoo Who Cannon | `0x1003` | `0x6010` | `0x2012` | 7 | Toad Pieces |
+| Super Bouncer | `0x1004` | `0x600A` | `0x2017` | 7 | Energy Pieces |
+| Mighty Meteor | `0x1005` | `0x600D` | `0x2018` | 8 | Clinic Pieces |
+| Spin Pipe | `0x1006` | `0x6003` | `0x2011` | 10 | Plack Pieces |
+| Snack Basket | `0x1007` | `0x6012` | `0x201A` | 14 | Dimble Pieces |
+| Magic Window | `0x1008` | `0x6018` | `0x201B` | 18 | Castle Pieces |
+| Falling Star | `0x1010` | `0x6015` | `0x2013` | 20 | Peach Pieces |
+
+Les dix variables de déblocage sont exactement les dix
+`BROS_ATTACK_*` de `ImportantFlags`, dans le même ordre de bits. Deux
+sources indépendantes, la ROM et mnllib, qui ne se citent pas.
+
+Le triplet d'une attaque est base, base+1 en champs de bits de 5 bits,
+base+2 en compteur. Vérifié pour le Green Shell par la mesure et par les
+scripts ; les bases se chevauchent entre `0x6010` et `0x6012`, donc
+**ne pas supposer le triplet** pour Yoo Who Cannon.
+
+Le nom du lot vient de `MData/mfset_MenuMes.dat`, table 2 pour l'anglais.
+Il donne la zone du set, ce que la salle du script ne donne pas.
+
+### Les 78 pièces dont on connaît la variable
+
+**Vérifié** le 5 août 2026, `tools/pieces_attaque_fevent.py`, sortie
+`data/pieces_attaque.csv`. Balayage des 534 548 commandes de `FEvent`,
+fichiers de `vendor/BIS-docs/data` dont l'identité octet pour octet avec
+notre ROM est vérifiée par le script avant tout traitement.
+
+Signature d'un bloc à pièce, lue dans les scripts et non supposée :
+
+```
+commande 0x0020   base+k |= masque      masque a un seul bit
+commande 0x0008   Exxx   = 1            une seule variable
+piece = 5 * k + log2(masque)
+```
+
+Témoin : le Green Shell rend `0xE700` à `0xE709` dans l'ordre des pièces
+0 à 9, ce que les dumps mesurent indépendamment.
+
+| Attaque | Pièces trouvées | Variables |
+|---|---|---|
+| Green Shell | 10 | `0xE700` à `0xE709` |
+| Spin Pipe | 10 | `0xE76C` à `0xE775` |
+| Mighty Meteor | 10 | `0xE7C4` à `0xE7CD` |
+| Snack Basket | 10 | `0xE7FE` à `0xE807` |
+| Falling Star | 10 | `0xE80E` à `0xE817` |
+| Magic Window | 10 | `0xE818` à `0xE821` |
+| Fire Flower | 10 | `0xE757` à `0xE75E`, plus `0xE749` et `0xE754` |
+| Super Bouncer | 6 | `0xE7B4` à `0xE7B9` |
+| Jump Helmet | 2 | `0xE781` et `0xE783` |
+| Yoo Who Cannon | 0 | octroi en bloc |
+
+**Le Fire Flower interdit de deviner le reste.** Sa pièce 3 est `0xE749`
+et sa pièce 6 est `0xE754`, hors de la plage contiguë de ses huit autres
+pièces. L'ordre des bits ne suit ni la géographie ni l'indice, donc
+combler les trous par arithmétique produirait des variables fausses.
+
+Le Yoo Who Cannon n'est pas une chasse : l'unique sous-routine qui écrit
+`0x6010` et `0x6011` fait `|= 31` sur les deux, salle `0x0CF`. Les dix
+pièces sont données d'un coup, ce ne sont pas des `location`.
+
+Les 12 pièces manquantes, Jump Helmet 8 et Super Bouncer 4, ne sont ni
+dans `FEvent` ni dans les scripts de combat, 268 161 commandes
+parcourues, zéro écriture sur une variable de pièces. Aucun masque n'est
+calculé à l'exécution, la recherche a été faite. Elles viennent donc
+d'ailleurs, minijeu ou code ARM. **À mesurer en jeu**, c'est la méthode
+qui a déjà réglé le reste.
+
+**Salle inexploitable.** Les sous-routines de bloc sont dupliquées dans
+13 ou 18 chunks de `FEvent` selon le groupe d'attaques. La salle ne peut
+pas servir à assigner une `region` ; le nom du lot le peut.
+
+**Fenêtre de lecture du client.** La dernière pièce connue est
+`0xE821`, rang 2081, soit l'octet `2081 // 8 = 260`, bit 1. Le client
+lit 95 octets, il lui en faut **261**. La valeur de 225 notée le 4 août
+suffisait pour le rang 1792 seulement. Lire les `0x200` octets entiers
+du tableau coûte moins cher que de recalculer cette borne à chaque
+nouvelle famille de `location`.
 
 ### Découpage `Exxx` selon mnllib
 
