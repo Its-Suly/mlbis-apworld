@@ -4,9 +4,8 @@ Développement d'un APWorld Archipelago pour Mario & Luigi : Voyage au
 Centre de Bowser, version NDS de 2009. Faisabilité acquise : lecture des
 checks, écriture d'items et sauvegarde vérifiées. Le monde vit dans
 `mlbis/` : **725 `location`**, 647 trésors et 78 pièces d'attaque,
-16 `region`, un client BizHawk en lecture seule, **validé en jeu le
-4 août 2026**, les checks remontent au serveur.
-Tests `tools/test_generation.py` et `tools/test_client.py`.
+16 `region`, un client BizHawk en lecture seule **validé en jeu le
+4 août 2026**. Tests `tools/test_generation.py` et `test_client.py`.
 
 ## Version de ROM, figée
 
@@ -201,13 +200,12 @@ preuves dans `formats-bis.md`.
 
 Restent ouverts, plus rien de bloquant :
 
-- Recevoir les items côté client : `items_handling` est encore à
-  `0b000`. **590 exemplaires sur 725 sont livrables** par une adresse
-  vérifiée, `mlbis/delivery.py`. Bloquent les 57 équipements, dont la
-  correspondance identifiant → emplacement n'est pas mesurée, et les
-  78 pièces d'attaque. L'index du dernier item reçu ira dans le
-  `DataStorage` du serveur, pas dans la sauvegarde
-- Écrire dans le champ `2xxx` n'a **jamais été testé**, seulement lu.
+- Recevoir les items : `items_handling` est à `0b000`. **590 sur 725
+  sont livrables** par une adresse vérifiée, `mlbis/delivery.py`.
+  Bloquent 57 équipements, correspondance id → emplacement non mesurée,
+  et 78 pièces d'attaque. L'index du dernier item reçu ira dans le
+  `DataStorage` du serveur
+- Écrire dans `2xxx` n'a **jamais été testé**, seulement lu.
   `tools/livrer_capacite.lua` est prêt, cible Fire Flower `0x2019`
 - Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
   de victoire, les 16 `region` sont reliées sans exigence
