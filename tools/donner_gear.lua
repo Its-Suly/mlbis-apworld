@@ -1,105 +1,93 @@
--- Donne le meilleur equipement des trois personnages.
+-- Donne TOUT l'equipement du jeu, deux exemplaires de chaque.
 --
--- Double usage. Pour le joueur, avancer plus vite dans la partie de
--- test. Pour le projet, c'est la premiere livraison d'equipement en
--- volume : quatorze compteurs d'un coup au lieu du seul compteur 4 qui a
--- servi a etablir le decalage le 5 aout 2026.
+-- Deux exemplaires couvrent Mario et Luigi, qui portent chacun le leur et
+-- que l'inventaire ne distingue pas. Bowser est seul, son deuxieme
+-- exemplaire ne sert a rien mais ne coute rien non plus, et une regle
+-- unique vaut mieux qu'une exception a retenir.
+--
+-- Double usage. Pour le joueur, avancer sans se soucier du materiel.
+-- Pour le projet, c'est la livraison d'equipement a pleine echelle : le
+-- decalage avait ete etabli sur un seul compteur le 5 aout 2026, celui-ci
+-- ecrit les 127.
 --
 -- ADRESSES, Verifie. Compteur d'un equipement d'identifiant I :
 --   0x056427 + I - 1, un octet, 127 compteurs pour les identifiants
 --   1 a 127. Mesure : 1 ecrit au compteur 4 fait apparaitre Heart Wear,
 --   qui porte l'identifiant 5. Detail dans formats-bis.md.
 --
--- STATISTIQUES. Lues dans
--- vendor/Cheatoglobin/cheatoglobin/constants.py:114, GPL-3.0, lu et non
--- recopie. Les 129 noms de cette table recoupent notre propre extraction
--- de la ROM, data/noms_items.csv, sur 128 sur 129 : seul l'identifiant 0
--- differe par son libelle, « None » contre « No gear ».
+-- CE QUI RESTE DEHORS, et ce n'est pas un choix : l'identifiant 0,
+-- « No gear », et le 128, « Rental Shell », n'ont pas de compteur. Le
+-- bloc s'arrete a 020564A5, juste devant le champ de bits des badges.
 --
--- LES FRERES EN RECOIVENT DEUX. Mario et Luigi portent chacun le leur, et
--- l'inventaire ne distingue pas a qui appartient une piece.
+-- IDEMPOTENT. Le script porte chaque compteur A deux, il n'ajoute pas
+-- deux. Le relancer ne fait rien, et il ne touche pas aux compteurs qui
+-- valent deja deux ou plus.
 --
--- CE QUI N'EST PAS DONNE, ET POURQUOI. Les 21 accessoires des freres,
--- type 11, n'ont aucune statistique dans la table : leur effet est
--- special et n'est ecrit nulle part que nous ayons lu. Deduire l'effet
--- d'un nom serait exactement ce que la regle du projet interdit, et le
--- « Challenge Medal » montre le risque : son nom suggere une difficulte
--- accrue, donc l'inverse du service rendu.
+-- ATTENTION AUX PIEGES A L'EQUIPEMENT. Tout arrive dans l'inventaire, y
+-- compris ce dont personne ici ne connait l'effet : les 21 accessoires
+-- des freres n'ont aucune statistique dans les tables lues, et un nom
+-- comme « Challenge Medal » suggere une difficulte accrue plutot qu'une
+-- aide. Poser un objet dans l'inventaire est sans effet ; l'equiper, non.
+-- Dans le doute, ne pas equiper ce qu'on ne connait pas.
 --
 -- ETAT DE JEU. Savestate avant, terrain, hors dialogue.
 -- Usage : Tools > Lua Console, Ctrl+O sur ce fichier.
+--
+-- Les noms se lisent dans data/noms_items.csv, colonne id_item : le
+-- compteur N correspond a l'identifiant N + 1.
 
 local BASE_EQUIPEMENT = 0x056427
 local DOMAINE = "Main RAM"
 local NB_COMPTEURS = 127
-local PLAFOND = 99
-
--- { identifiant, quantite, nom, effet }
-local A_DONNER = {
-    -- Freres : deux exemplaires, un par frere.
-    {  16, 2, "A-OK Wear",       "HP+30 SP+10 POW+20 DEF+150 SPEED+20 STACHE+20" },
-    {  37, 2, "DX POW Gloves",   "POW x1.2" },
-    {  49, 2, "DX POW Boots",    "POW x1.2" },
-    {  19, 2, "Deluxe HP Socks", "HP x1.3" },
-    {  21, 2, "DX SP Socks",     "SP x1.3, si tu preferes les Bros Attacks" },
-
-    -- Bowser : un exemplaire, il est seul.
-    {  90, 1, "Ironclad Shell",  "DEF +300, le plus defensif" },
-    {  92, 1, "King Shell",      "SP+20 POW+20 DEF+260, le plus complet" },
-    { 105, 1, "Power Fangs X",   "POW x1.2" },
-    { 107, 1, "Special Fangs X", "SP x1.4" },
-    {  94, 1, "Power Band +",    "POW x1.2" },
-    { 102, 1, "Block Band",      "DEF x1.2" },
-    {  91, 1, "Block Ring",      "DEF x1.3" },
-    { 126, 1, "Safety Ring",     "HP x1.2" },
-}
+local QUANTITE = 2
 
 local function lire(adr)
     return memory.read_bytes_as_array(adr, 1, DOMAINE)[1]
 end
 
 console.clear()
-console.log("=== donner_gear.lua ===")
+console.log("=== donner_gear.lua, tout l'equipement ===")
 
-local ecrits, ignores, refuses = 0, 0, 0
+-- Etat avant, pour pouvoir dire ce que le joueur possedait deja.
+local deja = {}
+for M = 0, NB_COMPTEURS - 1 do
+    local v = lire(BASE_EQUIPEMENT + M)
+    if v ~= 0 then
+        table.insert(deja, string.format("compteur %d x%d", M, v))
+    end
+end
+if #deja == 0 then
+    console.log("compteurs non nuls avant : aucun")
+else
+    console.log("compteurs non nuls avant : " .. table.concat(deja, ", "))
+end
 
-for _, entree in ipairs(A_DONNER) do
-    local ident, quantite, nom, effet = entree[1], entree[2], entree[3], entree[4]
-    local index = ident - 1
-
-    if index < 0 or index >= NB_COMPTEURS then
-        console.log(string.format("REFUS %-16s identifiant %d sans compteur", nom, ident))
-        refuses = refuses + 1
+local ecrits, intacts, echecs = 0, 0, 0
+for M = 0, NB_COMPTEURS - 1 do
+    local adresse = BASE_EQUIPEMENT + M
+    local avant = lire(adresse)
+    if avant >= QUANTITE then
+        intacts = intacts + 1
     else
-        local adresse = BASE_EQUIPEMENT + index
-        local avant = lire(adresse)
-        local vise = avant + quantite
-        if vise > PLAFOND then
-            console.log(string.format("REFUS %-16s %d + %d depasse %d",
-                nom, avant, quantite, PLAFOND))
-            refuses = refuses + 1
-        elseif avant >= quantite then
-            console.log(string.format("deja  %-16s x%d, rien a faire", nom, avant))
-            ignores = ignores + 1
+        memory.write_bytes_as_array(adresse, { QUANTITE }, DOMAINE)
+        if lire(adresse) == QUANTITE then
+            ecrits = ecrits + 1
         else
-            memory.write_bytes_as_array(adresse, { math.floor(vise) }, DOMAINE)
-            local apres = lire(adresse)
-            if apres == vise then
-                console.log(string.format("+%d    %-16s id %3d, compteur %3d, %s",
-                    quantite, nom, ident, index, effet))
-                ecrits = ecrits + 1
-            else
-                console.log(string.format("ECHEC %-16s ecrit %d, relu %d", nom, vise, apres))
-                refuses = refuses + 1
-            end
+            echecs = echecs + 1
+            console.log(string.format("ECHEC compteur %d, relu %d", M, lire(adresse)))
         end
     end
 end
 
-console.log(string.format("\n%d livre(s), %d deja present(s), %d refuse(s)",
-    ecrits, ignores, refuses))
-console.log("\nA verifier a l'ecran : menu, section equipement.")
-console.log("Les frusques des freres apparaissent en double, une par frere.")
-console.log("Bowser garde les siennes meme s'il n'est pas encore jouable.")
-console.log("\nPenser a EQUIPER : le compteur ne fait que poser l'objet dans")
-console.log("l'inventaire, il ne le porte pas.")
+console.log(string.format("\n%d compteur(s) portes a %d, %d deja au moins a %d, %d echec(s)",
+    ecrits, QUANTITE, intacts, QUANTITE, echecs))
+
+-- Controle de debordement : le compteur suivant le dernier appartient au
+-- champ de bits des badges. S'il a bouge, l'adresse de fin est fausse.
+local apres_bloc = lire(BASE_EQUIPEMENT + NB_COMPTEURS)
+console.log(string.format("octet suivant le bloc, 0x%05X : %d  (champ des badges, doit etre inchange)",
+    BASE_EQUIPEMENT + NB_COMPTEURS, apres_bloc))
+
+console.log("\nA verifier a l'ecran : menu, section equipement des freres,")
+console.log("puis celle de Bowser. Tout doit y etre, en double.")
+console.log("Le script pose les objets, il ne les equipe pas.")
