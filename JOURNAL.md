@@ -109,6 +109,73 @@ Vérifié qu'elles ne sont ni dans `FEvent`, ni dans les 268 161 commandes
 des scripts de combat, et qu'aucun masque n'est calculé à l'exécution.
 Elles se mesureront en jeu.
 
+### Écrire une capacité marche, et ça change le projet
+
+Le dernier chemin d'écriture non testé était le champ `2xxx`. Bit
+`0x2019` levé à la main, Fire Flower apparaît au menu Bros Attacks, se
+sélectionne, et **se joue en entier, démonstration comprise**, sans que
+sa cinématique d'apprentissage ait jamais eu lieu.
+
+C'est exactement le cas qu'un randomizer produit à chaque seed, et le
+jeu ne bronche pas. Quarante capacités, du marteau aux améliorations de
+boutique, deviennent livrables par une seule primitive : un bit.
+
+Le premier essai est mort sur une erreur de Lua qui mérite d'être
+retenue. L'opérateur `^` rend toujours un flottant, `2^1` vaut `2.0`, et
+`memory.write_bytes_as_array` lève une `InvalidCastException` dessus.
+Le script précédent, `livrer_item.lua`, n'avait jamais rencontré le
+problème parce que toutes ses valeurs venaient de lectures entières.
+Rien n'avait été écrit, et le champ relu était identique au `run51`.
+
+### L'équipement, ou construire un test qui répond seul
+
+Dernier trou de la livraison, 57 exemplaires. Le `run51` donnait déjà la
+réponse à qui la cherchait : deux compteurs non nuls, index 0 à deux
+exemplaires et index 80 à un. Sous le décalage `identifiant - 1`, ça se
+lit « deux Thin Wear et un Shabby Shell », une tenue par frère et la
+carapace de départ. Sous l'autre, « deux No gear et un Challenge
+Medal », ce qui n'a aucun sens.
+
+Plutôt que de conclure là-dessus, j'ai construit le test pour qu'il soit
+discriminant. Écrire au compteur 4 fait apparaître Heart Wear sous une
+hypothèse et Fighter Wear sous l'autre, deux tenues de frères visibles
+au même endroit. Le nom affiché tranchait à lui seul, sans que
+j'interprète quoi que ce soit. Réponse : **Heart Wear**.
+
+Deux recoupements sont tombés après coup, et c'est le bon ordre. Les
+deux objets sans compteur sont `No gear` et `Rental Shell`, une carapace
+prêtée par l'histoire, ce qui explique les 129 objets pour 127
+compteurs. Et le dernier compteur tombe à `020564A5`, exactement devant
+le champ des badges. Le bloc se ferme sans reste.
+
+**725 exemplaires sur 725 sont livrables.** Le client passe à
+`items_handling = 0b111`.
+
+### Deux sortes de livraison, et une seule a besoin d'un index
+
+En écrivant la boucle de réception, une distinction s'est imposée qui
+n'était pas prévue.
+
+Les compteurs se consomment, donc la mémoire ne dit pas ce qui a déjà
+été livré : il faut un index. Les capacités sont des bits qui ne
+redescendent jamais, donc l'état visé se déduit entièrement de
+`items_received` et de la mémoire. **Cette moitié n'a besoin d'aucun
+index**, se recalcule à chaque passage, et rejouer une livraison est
+sans effet. Elle est insensible aux déconnexions par construction.
+
+Correction d'une hypothèse du 4 août au passage : MLSS ne range pas son
+index dans le `DataStorage`, il l'écrit dans la RAM du jeu,
+`Client.py:158`. Le `DataStorage` ne lui sert que pour les flags
+d'événement. Les deux choix n'ont pas le même défaut, et le nôtre est
+écrit dans l'en-tête de `client.py` plutôt que laissé à découvrir : un
+rechargement de savestate laissera le serveur croire des items livrés
+que le jeu n'a plus.
+
+Un piège évité de justesse, celui-là par relecture et non par test :
+l'index du serveur ne revient qu'au tour suivant, et la boucle repasse
+avant. Sans copie locale avancée dès l'écriture, chaque item aurait été
+livré plusieurs fois.
+
 ### Une correction et une limite
 
 Le client lit 95 octets de `Exxx`. La note du 4 août disait qu'il en

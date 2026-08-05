@@ -9,14 +9,13 @@ C'est pour cela que la table de correspondance est passee en argument au
 lieu d'etre importee : data.py est genere, il n'a aucune dependance, et
 un test peut le charger seul.
 
-Trois categories sur quatre sont etablies. Ce module refuse net la
-derniere plutot que d'ecrire a une adresse plausible. Une adresse
-plausible mais fausse coute des heures.
+Les quatre categories du pool sont etablies, chacune par une mesure en
+jeu et non par une deduction.
 
     coins        u32 a 02056400                            Verifie
     consumable   octet a 02056406 + index                  Verifie
+    gear         octet a 02056427 + identifiant - 1        Verifie
     attack_piece bit du champ 2xxx a 02056038              Verifie
-    gear         emplacement d'equipement                  NON ETABLI
 
 Verifie pour les consommables, 4 aout 2026 : un Nut ecrit a
 02056406 + 7 apparait au menu et se consomme normalement, et l'index 7
@@ -30,6 +29,15 @@ demonstration comprise. Le jeu n'a pas besoin que sa cinematique
 d'apprentissage ait eu lieu, ce qui est exactement le cas que produit un
 randomizer.
 
+Verifie pour l'equipement, 5 aout 2026 : 1 ecrit au compteur d'index 4
+fait apparaitre Heart Wear, qui porte l'identifiant 5. Le compteur d'un
+equipement est donc a 02056427 + identifiant - 1, et les 127 compteurs
+couvrent les identifiants 1 a 127. Trois recoupements : l'inventaire
+mesure au run51 se lit alors « deux Thin Wear et un Shabby Shell », soit
+une tenue par frere et la carapace de depart ; l'identifiant 0 est
+« No gear », qui n'a pas a etre stocke ; et le dernier compteur tombe a
+020564A5, exactement devant le champ de bits des badges.
+
 Toutes les ecritures sont des lectures-modifications-ecritures : le jeu
 tient la valeur courante et nous n'en gardons pas de copie. Une copie
 qui deriverait du jeu serait pire qu'aucune copie.
@@ -42,6 +50,14 @@ DOMAINE = "Main RAM"
 COMPTEUR_PIECES = 0x056400
 BASE_CONSOMMABLES = 0x056406
 NB_CONSOMMABLES = 26
+
+# Les compteurs d'equipement couvrent les identifiants 1 a 127, donc
+# l'index vaut identifiant - 1. L'identifiant 0 est « No gear » et le
+# 128 « Rental Shell », une carapace pretee par l'histoire ; ni l'un ni
+# l'autre ne se stocke, et aucun des deux n'est dans le pool.
+BASE_EQUIPEMENT = 0x056427
+NB_EQUIPEMENTS = 127
+DECALAGE_EQUIPEMENT = 1
 
 # Champ 2xxx, 64 drapeaux importants, 8 octets. Le bit de la variable
 # 0x2000 + N est a l'octet N // 8, bit N % 8.
@@ -66,8 +82,9 @@ AUTORISATION_BROS = 0x200B
 # que debordement silencieux.
 PLAFOND_PIECES = 999
 PLAFOND_CONSOMMABLE = 99
+PLAFOND_EQUIPEMENT = 99
 
-CATEGORIES_ETABLIES: Set[str] = {"coins", "consumable", "attack_piece"}
+CATEGORIES_ETABLIES: Set[str] = {"coins", "consumable", "gear", "attack_piece"}
 
 Table = Mapping[str, Tuple[str, int]]
 
@@ -124,6 +141,16 @@ def livraison_de(nom: str, table: Table) -> Optional[Ecriture]:
             )
         return Ecriture(
             BASE_CONSOMMABLES + valeur, 1, "ajout", 1, PLAFOND_CONSOMMABLE, nom
+        )
+    if categorie == "gear":
+        index = valeur - DECALAGE_EQUIPEMENT
+        if not 0 <= index < NB_EQUIPEMENTS:
+            raise ValueError(
+                f"{nom} : identifiant d'equipement {valeur} sans compteur, "
+                f"les compteurs couvrent 1 a {NB_EQUIPEMENTS}"
+            )
+        return Ecriture(
+            BASE_EQUIPEMENT + index, 1, "ajout", 1, PLAFOND_EQUIPEMENT, nom
         )
     return None
 

@@ -163,18 +163,18 @@ items.update(p[2] for p in pieces)
 #
 #   'coins'      montant a ajouter au u32 a 02056400        Verifie
 #   'consumable' index du compteur, 02056406 + index        Verifie
+#   'gear'       identifiant, compteur a 02056427 + id - 1  Verifie
 #   'attack_piece'  variable de deblocage de l'attaque      Verifie
-#   'gear'       identifiant d'equipement                   NON ETABLI
 #
 # Verifie pour les consommables : un Nut ecrit a 02056406 + 7 est apparu
 # au menu et s'est consomme, 4 aout 2026, et l'index 7 est bien celui du
 # Nut dans data/noms_items.csv. Recoupement independant au run13, index 0
 # a 3 et index 16 a 1, soit trois Mushroom et un 1-Up Mushroom.
 #
-# Non etabli pour l'equipement : formats-bis.md compte 127 emplacements a
-# 02056427 quand la table de l'arm9 donne 129 objets. Deux de plus, donc
-# la correspondance identifiant -> emplacement n'est pas une identite et
-# n'a pas ete mesuree.
+# Verifie pour l'equipement, 5 aout 2026 : 1 ecrit au compteur 4 fait
+# apparaitre Heart Wear, identifiant 5. Les 127 compteurs couvrent donc
+# les identifiants 1 a 127, et les deux objets sans compteur sont
+# « No gear » et « Rental Shell », qui n'ont pas a etre stockes.
 par_nom = {}
 with open(NOMS_ITEMS, encoding="utf-8") as f:
     for r in csv.DictReader(f):
@@ -246,8 +246,8 @@ lignes_py.append("")
 lignes_py.append("# nom d'item -> (categorie de livraison, valeur)")
 lignes_py.append("#   'coins'        montant a ajouter au u32 a 02056400   Verifie")
 lignes_py.append("#   'consumable'   index du compteur, 02056406 + index   Verifie")
+lignes_py.append("#   'gear'         compteur a 02056427 + id - 1          Verifie")
 lignes_py.append("#   'attack_piece' bit du champ 2xxx a 02056038          Verifie")
-lignes_py.append("#   'gear'         identifiant d'equipement              NON ETABLI")
 lignes_py.append("ITEM_DELIVERY = {")
 for nom in sorted(livraison):
     cat, val = livraison[nom]
@@ -271,7 +271,7 @@ print(f"  plage de location : {BASE_ID:#x} a {BASE_ID + pieces[-1][0]:#x}")
 print(f"  reserve hors-table : {BASE_ID + RESERVE_HORS_TABLE:#x} et au-dela")
 print()
 print("  livraison, par categorie :")
-etabli = {"coins", "consumable", "attack_piece"}
+etabli = {"coins", "consumable", "gear", "attack_piece"}
 exemplaires_ok = 0
 for cat, n_noms in sorted(couverture.items()):
     n_ex = sum(items[nom] for nom, (c, _) in livraison.items() if c == cat)

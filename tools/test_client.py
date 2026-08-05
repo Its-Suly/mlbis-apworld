@@ -172,6 +172,15 @@ else:
     )
     print(f"ecritures de livraison : OK, {detail}")
 
+# L'equipement doit retomber sur l'ecriture mesuree en jeu le 5 aout
+# 2026 : 1 ecrit au compteur 0x05642B fait apparaitre Heart Wear.
+heart = livraison_de("Heart Wear", ITEM_DELIVERY)
+if heart is None or heart.adresse != 0x05642B:
+    print(f"ECHEC : Heart Wear calcule {heart}, mesure 0x5642b")
+    echecs += 1
+else:
+    print("equipement : OK, Heart Wear retombe sur l'ecriture mesuree")
+
 # Le drapeau de Fire Flower doit retomber sur l'ecriture mesuree en jeu
 # le 5 aout 2026 : adresse 0x05603B, octet 00 -> 02.
 flag = ecriture_de_flag(0x2019, "Fire Flower")

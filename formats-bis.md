@@ -165,7 +165,30 @@ Adresses utiles, **la primitive de livraison d'items** :
 |---|---|---|
 | pièces | `02056400` | `u32` |
 | 26 compteurs de consommables | `02056406 + N` | 1 octet chacun |
-| 127 compteurs d'équipement | `02056427 + M` | 1 octet chacun |
+| 127 compteurs d'équipement | `02056427 + I - 1` | 1 octet chacun |
+
+**Décalage de l'équipement, Vérifié** le 5 août 2026,
+`tools/livrer_equipement.lua`. Le compteur d'un équipement est à
+`02056427 + identifiant - 1`, et les 127 compteurs couvrent les
+identifiants 1 à 127. Mesure : `1` écrit au compteur d'index 4 fait
+apparaître **Heart Wear**, qui porte l'identifiant 5.
+
+Le test avait été construit pour être discriminant plutôt que
+confirmatoire : les deux hypothèses de décalage donnaient deux tenues de
+frères différentes au même index, donc le nom affiché tranchait à lui
+seul, sans interprétation.
+
+Trois recoupements indépendants, tous obtenus après coup :
+
+- l'inventaire du `run51` se lit alors « deux `Thin Wear` et un
+  `Shabby Shell` », une tenue par frère et la carapace de départ de
+  Bowser. Sous l'autre décalage il se lisait « deux `No gear` et un
+  `Challenge Medal` », ce qui n'a aucun sens en début de partie
+- l'identifiant 0 est `No gear` et le 128 `Rental Shell`, une carapace
+  prêtée par l'histoire. Ni l'un ni l'autre ne se stocke, ce qui explique
+  les 129 objets pour 127 compteurs
+- le dernier compteur tombe à `020564A5`, soit exactement devant le champ
+  de bits des badges à `020564A6`. Le bloc se ferme sans reste
 
 Contrôle de cohérence au `run13` : deux compteurs non nuls seulement,
 `3` à l'index 0 et `1` à l'index 16, soit trois `Mushroom` et un

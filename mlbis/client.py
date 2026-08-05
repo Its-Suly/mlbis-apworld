@@ -1,16 +1,10 @@
-"""Client BizHawk : detecte les tresors ramasses et les signale au serveur.
-
-LECTURE SEULE POUR L'INSTANT. Il ne recoit aucun item et n'ecrit rien en
-memoire. L'ecriture est techniquement acquise, mesuree le 3 aout 2026,
-mais le moment sur pour ecrire n'est pas defini : CLAUDE.md impose de
-considerer une ecriture pendant un combat ou une cinematique comme
-dangereuse tant que rien ne prouve le contraire. C'est le chantier
-suivant, pas celui-ci.
+"""Client BizHawk : signale les checks au serveur et livre les items recus.
 
 Ce que fait la boucle, a chaque passage :
 
     lire les 0x200 octets a 0x0560C8 dans le domaine Main RAM
     pour chaque bit allume de rang N : location BASE_ID + N
+    livrer les items recus qui ne l'ont pas encore ete
 
 Il n'y a **aucune table de correspondance** entre un bit et une
 location, et c'est voulu : le rang du bit est a la fois l'identifiant du
@@ -24,17 +18,45 @@ correspondent a rien : drapeaux d'ennemis vaincus, drapeaux d'histoire.
 Ils sont ecartes par l'intersection avec ctx.server_locations, qui est
 la seule liste faisant autorite.
 
+LES DEUX SORTES DE LIVRAISON. Elles n'ont pas la meme nature, et les
+traiter pareil serait une erreur.
+
+  - Les compteurs, pieces d'or, consommables, equipement. Le joueur les
+    consomme, donc la memoire ne dit pas ce qui a deja ete livre. Il faut
+    un index, et il vit dans le DataStorage du serveur.
+  - Les capacites, un bit du champ 2xxx. Le bit ne redescend jamais.
+    L'etat a atteindre se deduit entierement de ctx.items_received et de
+    la memoire, donc **aucun index n'est necessaire** : on relit, on
+    compare, on ecrit ce qui manque. Une livraison rejouee est sans
+    effet, ce qui rend cette moitie insensible aux deconnexions.
+
+DEFAUT CONNU DE L'INDEX. MLSS range le sien dans la RAM du jeu,
+`Client.py:158`, ce qui le garde synchrone avec la sauvegarde : recharger
+un savestate rejoue les items. Le notre est cote serveur, donc un
+rechargement de savestate laisse le serveur croire des items livres que
+le jeu n'a plus. C'est le prix assume de ne rien ecrire dans une zone de
+sauvegarde qu'on ne comprend pas. La moitie « capacites » n'a pas ce
+defaut.
+
 Sources des adresses : formats-bis.md, sections « Champ de bits des
-tresors ramasses » et « Les 78 pieces dont on connait la variable ».
-Verifie par les dumps du 3 au 5 aout 2026.
+tresors ramasses », « Les 78 pieces dont on connait la variable » et
+« Adresses utiles, la primitive de livraison d'items ». Verifie par les
+dumps du 3 au 5 aout 2026.
 """
-from typing import TYPE_CHECKING, Set
+from typing import TYPE_CHECKING, Dict, List, Set
 
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
 
 from .bitfield import CHAMP_TAILLE, CHAMP_TRESORS, DOMAINE, locations_du_champ
-from .data import BASE_ID
+from .data import BASE_ID, ITEM_DELIVERY, VANILLA_ITEMS
+from .delivery import (
+    Ecriture,
+    livraison_de,
+    livraison_de_lot,
+    seuils_de_lot,
+)
+from .items import item_name_to_id
 from .locations import GAME_NAME
 
 if TYPE_CHECKING:
@@ -46,6 +68,11 @@ ENTETE_TAILLE = 0x10
 TITRE_ATTENDU = b"MARIO&LUIGI3"
 CODE_ATTENDU = b"CLJE"
 
+# identifiant d'item -> nom, pour retrouver la livraison depuis le reseau
+NOM_PAR_ID: Dict[int, str] = {i: nom for nom, i in item_name_to_id.items()}
+
+SEUILS = seuils_de_lot(ITEM_DELIVERY, VANILLA_ITEMS)
+
 
 class MLBISClient(BizHawkClient):
     game = GAME_NAME
@@ -55,10 +82,18 @@ class MLBISClient(BizHawkClient):
     system = "NDS"
 
     local_checked_locations: Set[int]
+    cle_index: str
+    index_local: int
 
     def __init__(self) -> None:
         super().__init__()
         self.local_checked_locations = set()
+        self.cle_index = ""
+        # Copie locale de l'index, avancee des que l'ecriture est faite.
+        # Le serveur ne renvoie sa valeur qu'au tour suivant, et la boucle
+        # repasse avant : sans ce garde-fou, le meme item serait livre
+        # plusieurs fois.
+        self.index_local = 0
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         try:
@@ -72,11 +107,19 @@ class MLBISClient(BizHawkClient):
             return False
 
         ctx.game = self.game
-        # 0b000 : le serveur ne nous envoie aucun item. Passera a 0b111
-        # quand le client saura les livrer sans risquer le plantage.
-        ctx.items_handling = 0b000
+        # 0b111 : items de depart, les notres, et ceux des autres. Les 95
+        # items du pool ont tous une adresse d'ecriture verifiee.
+        ctx.items_handling = 0b111
         ctx.want_slot_data = True
         return True
+
+    def on_package(self, ctx: "BizHawkClientContext", cmd: str, args: dict) -> None:
+        if cmd == "Connected":
+            # ctx.team et ctx.slot sont poses avant cet appel,
+            # CommonClient.py:1005-1006 puis 1123.
+            self.cle_index = f"mlbis_livres_{ctx.team}_{ctx.slot}"
+            self.index_local = 0
+            ctx.set_notify(self.cle_index)
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         if ctx.server is None or ctx.slot is None:
@@ -102,3 +145,90 @@ class MLBISClient(BizHawkClient):
             await ctx.send_msgs(
                 [{"cmd": "LocationChecks", "locations": sorted(a_envoyer)}]
             )
+
+        await self.livrer_capacites(ctx)
+        await self.livrer_compteurs(ctx)
+
+    # --- livraison ----------------------------------------------------
+
+    async def appliquer(
+        self, ctx: "BizHawkClientContext", ecritures: List[Ecriture]
+    ) -> bool:
+        """Lire, modifier, ecrire. Vrai si tout est passe.
+
+        Une ecriture par appel, sequentielle : le jeu peut modifier la
+        meme adresse entre la lecture et l'ecriture, et grouper ne
+        reduirait pas ce risque, seulement la lisibilite.
+        """
+        for e in ecritures:
+            try:
+                brut = (await bizhawk.read(
+                    ctx.bizhawk_ctx, [(e.adresse, e.taille, DOMAINE)]
+                ))[0]
+                actuel = int.from_bytes(brut, "little")
+                nouveau = e.valeur(actuel)
+                if nouveau == actuel:
+                    continue
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [(e.adresse, list(nouveau.to_bytes(e.taille, "little")), DOMAINE)],
+                )
+            except bizhawk.RequestFailedError:
+                return False
+        return True
+
+    async def livrer_capacites(self, ctx: "BizHawkClientContext") -> None:
+        """Lever les bits 2xxx que les items recus impliquent.
+
+        Sans index et sans etat local : le bit ne redescend jamais, donc
+        l'etat vise se recalcule a chaque passage. Rejouer est sans effet.
+        """
+        recues: Dict[str, int] = {}
+        for item in ctx.items_received:
+            nom = NOM_PAR_ID.get(item.item)
+            if nom in SEUILS:
+                recues[nom] = recues.get(nom, 0) + 1
+
+        ecritures: List[Ecriture] = []
+        for nom, compte in recues.items():
+            if compte >= SEUILS[nom]:
+                ecritures.extend(livraison_de_lot(nom, ITEM_DELIVERY))
+        if ecritures:
+            await self.appliquer(ctx, ecritures)
+
+    async def livrer_compteurs(self, ctx: "BizHawkClientContext") -> None:
+        """Livrer les items a compteur qui n'ont pas encore ete livres.
+
+        L'index est cote serveur. Il n'avance que si l'ecriture a
+        reellement eu lieu, donc une lecture BizHawk qui echoue fait
+        retenter au passage suivant au lieu de perdre l'item.
+        """
+        if not self.cle_index:
+            return
+        index = max(ctx.stored_data.get(self.cle_index) or 0, self.index_local)
+        if index >= len(ctx.items_received):
+            return
+
+        livres = 0
+        for item in ctx.items_received[index:]:
+            nom = NOM_PAR_ID.get(item.item)
+            if nom is None:
+                # Item d'un autre monde recu par erreur, ou pool modifie
+                # entre la seed et le client. On ne devine pas.
+                break
+            ecriture = livraison_de(nom, ITEM_DELIVERY)
+            if ecriture is not None and not await self.appliquer(ctx, [ecriture]):
+                break
+            # Une piece d'attaque n'a pas d'ecriture propre : c'est le lot
+            # complet qui compte, et livrer_capacites s'en charge.
+            livres += 1
+
+        if livres:
+            self.index_local = index + livres
+            await ctx.send_msgs([{
+                "cmd": "Set",
+                "key": self.cle_index,
+                "default": 0,
+                "want_reply": True,
+                "operations": [{"operation": "replace", "value": index + livres}],
+            }])

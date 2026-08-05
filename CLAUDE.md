@@ -162,11 +162,11 @@ enfin les discussions communautaires, à traiter comme des pistes.
 - **Écrire quand on veut** : en combat comme sur le terrain, l'écriture
   prend effet, s'affiche et survit, 4 août 2026. Cinématiques non testées
 - **Inventaire vivant** à `02056400` : pièces en `u32`, consommable `N`
-  à `02056406 + N`, équipement `M` à `02056427 + M`. `slot + 0x0054 + X`
-  correspond à `02056400 + X + 2`. **Livrer un objet est acquis**,
-  4 août 2026 : un Nut écrit à `02056406 + 7` apparaît au menu et se
-  consomme normalement, un seul octet touché sur les 164 du bloc.
-  Pièces de même, 999 écrit puis sauvegardé
+  à `02056406 + N`, équipement d'identifiant `I` à `02056427 + I - 1`,
+  127 compteurs pour les identifiants 1 à 127. `slot + 0x0054 + X`
+  correspond à `02056400 + X + 2`. **Livrer un objet est acquis** :
+  un Nut à `02056406 + 7` le 4 août 2026, un Heart Wear au compteur 4
+  le 5 août, tous deux vus au menu. Pièces de même, 999 sauvegardé
 - **Identifiants de location**, à figer avant la première seed publiée :
   `BASE_ID = 0xB15000`, location d'un trésor = `BASE_ID + identifiant`,
   qui est aussi son rang de bit dans `Exxx`. `BASE_ID + 1024` et au-delà
@@ -201,11 +201,10 @@ preuves dans `formats-bis.md`.
 
 Restent ouverts, plus rien de bloquant :
 
-- Recevoir les items : `items_handling` est à `0b000`. **668 sur 725
-  sont livrables** par une adresse vérifiée, `mlbis/delivery.py`. Ne
-  bloquent plus que les 57 équipements, correspondance identifiant →
-  compteur non mesurée. L'index du dernier item reçu ira dans le
-  `DataStorage` du serveur
+- Recevoir les items : **écrit mais jamais joué**. `items_handling` est
+  à `0b111`, les 725 exemplaires ont une adresse vérifiée
+  (`mlbis/delivery.py`), les tests passent. Reste à valider en jeu, de
+  bout en bout, avec un serveur
 - Aucune `access_rule` : `mlbis/__init__.py:65` ne pose que la condition
   de victoire, les 16 `region` sont reliées sans exigence
 - 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
