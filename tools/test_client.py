@@ -32,7 +32,13 @@ RACINE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RACINE / "mlbis"))
 
 from bitfield import CHAMP_TAILLE, CHAMP_TRESORS, locations_du_champ  # noqa: E402
-from data import ATTACK_PIECES, BASE_ID, LOCATIONS, TREASURES  # noqa: E402
+from data import (  # noqa: E402
+    ATTACK_PIECES, BASE_ID, ITEM_DELIVERY, LOCATIONS, TREASURES, VANILLA_ITEMS,
+)
+from delivery import (  # noqa: E402
+    BASE_CONSOMMABLES, CATEGORIES_ETABLIES, COMPTEUR_PIECES, NB_CONSOMMABLES,
+    couverture, livraison_de,
+)
 
 LOCATION_TO_BIT = {nom: rang for rang, nom, _, _ in LOCATIONS}
 location_name_to_id = {nom: BASE_ID + rang for rang, nom, _, _ in LOCATIONS}
@@ -110,6 +116,65 @@ if rang_max // 8 >= CHAMP_TAILLE:
 else:
     print(f"fenetre de lecture : OK, rang max {rang_max} a l'octet "
           f"{rang_max // 8}, fenetre de {CHAMP_TAILLE} octets")
+
+# --- livraison des items ----------------------------------------------
+#
+# Chaque item du pool doit avoir une categorie, et chaque categorie
+# etablie doit produire une adresse dans le bloc d'inventaire.
+
+sans_categorie = [nom for nom in VANILLA_ITEMS if nom not in ITEM_DELIVERY]
+if sans_categorie:
+    print(f"ECHEC : {len(sans_categorie)} item(s) sans categorie de "
+          f"livraison : {sans_categorie[:5]}")
+    echecs += 1
+else:
+    print(f"categorie de livraison : OK sur {len(VANILLA_ITEMS)} items")
+
+adresses = {}
+mauvaises = []
+for nom, (categorie, _) in sorted(ITEM_DELIVERY.items()):
+    ecriture = livraison_de(nom, ITEM_DELIVERY)
+    if categorie in CATEGORIES_ETABLIES:
+        if ecriture is None:
+            mauvaises.append(f"{nom} : categorie etablie mais aucune ecriture")
+            continue
+        if categorie == "consumable":
+            attendu = BASE_CONSOMMABLES + ITEM_DELIVERY[nom][1]
+            if ecriture.adresse != attendu:
+                mauvaises.append(f"{nom} : adresse {ecriture.adresse:#x}")
+            # Deux consommables ne peuvent pas partager un compteur.
+            if ecriture.adresse in adresses:
+                mauvaises.append(
+                    f"{nom} partage {ecriture.adresse:#x} avec {adresses[ecriture.adresse]}"
+                )
+            adresses[ecriture.adresse] = nom
+        elif categorie == "coins" and ecriture.adresse != COMPTEUR_PIECES:
+            mauvaises.append(f"{nom} : adresse {ecriture.adresse:#x}")
+    elif ecriture is not None:
+        mauvaises.append(f"{nom} : categorie non etablie mais une ecriture produite")
+
+if mauvaises:
+    print(f"ECHEC sur la livraison : {mauvaises[:5]}")
+    echecs += 1
+else:
+    detail = ", ".join(
+        f"{cat} {n}{'' if cat in CATEGORIES_ETABLIES else ' (non etabli)'}"
+        for cat, n in sorted(couverture(ITEM_DELIVERY).items())
+    )
+    print(f"ecritures de livraison : OK, {detail}")
+
+# Le plafond doit ecreter au lieu de deborder.
+nut = livraison_de("Nut", ITEM_DELIVERY)
+if nut is None or nut.valeur(0) != 1 or nut.valeur(99) != 99:
+    print(f"ECHEC : plafond du consommable, {nut}")
+    echecs += 1
+else:
+    exemplaires_ok = sum(
+        n for nom, n in VANILLA_ITEMS.items()
+        if ITEM_DELIVERY[nom][0] in CATEGORIES_ETABLIES
+    )
+    print(f"plafonds : OK, {exemplaires_ok} exemplaires sur "
+          f"{sum(VANILLA_ITEMS.values())} livrables aujourd'hui")
 
 print()
 if echecs:

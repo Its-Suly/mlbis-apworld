@@ -27,6 +27,8 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parent.parent
 LOCATIONS = RACINE / "data" / "locations_bis.csv"
 PIECES = RACINE / "data" / "pieces_attaque.csv"
+NOMS_ITEMS = RACINE / "data" / "noms_items.csv"
+ATTAQUES = RACINE / "data" / "bros_attacks.csv"
 SORTIE = RACINE / "mlbis" / "data.py"
 
 BASE_ID = 0xB15000
@@ -153,6 +155,54 @@ if doublons:
 items = Counter(t[2] for t in tresors)
 items.update(p[2] for p in pieces)
 
+# --- comment livrer chaque item ---------------------------------------
+#
+# Trois familles seulement dans le pool actuel, et deux d'entre elles ont
+# une adresse verifiee. La categorie dit ce que le client doit ecrire, la
+# valeur dit ou. Ce qui n'est pas etabli est marque, pas devine.
+#
+#   'coins'      montant a ajouter au u32 a 02056400        Verifie
+#   'consumable' index du compteur, 02056406 + index        Verifie
+#   'gear'       identifiant d'equipement                   NON ETABLI
+#   'attack_piece'  variable de deblocage de l'attaque      NON ETABLI
+#
+# Verifie pour les consommables : un Nut ecrit a 02056406 + 7 est apparu
+# au menu et s'est consomme, 4 aout 2026, et l'index 7 est bien celui du
+# Nut dans data/noms_items.csv. Recoupement independant au run13, index 0
+# a 3 et index 16 a 1, soit trois Mushroom et un 1-Up Mushroom.
+#
+# Non etabli pour l'equipement : formats-bis.md compte 127 emplacements a
+# 02056427 quand la table de l'arm9 donne 129 objets. Deux de plus, donc
+# la correspondance identifiant -> emplacement n'est pas une identite et
+# n'a pas ete mesuree.
+par_nom = {}
+with open(NOMS_ITEMS, encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        par_nom.setdefault(r["type_item"], {})[r["nom"]] = int(r["id_item"])
+
+deblocage = {}
+with open(ATTAQUES, encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        deblocage[f"{r['nom']} Piece"] = int(r["var_attaque"], 16)
+
+livraison = {}
+for nom in sorted(items):
+    if nom.endswith(" Coins"):
+        livraison[nom] = ("coins", int(nom.split(" ", 1)[0]))
+    elif nom in deblocage:
+        livraison[nom] = ("attack_piece", deblocage[nom])
+    elif nom in par_nom.get("consommable", {}):
+        livraison[nom] = ("consumable", par_nom["consommable"][nom])
+    elif nom in par_nom.get("equipement", {}):
+        livraison[nom] = ("gear", par_nom["equipement"][nom])
+    else:
+        raise SystemExit(
+            f"item {nom!r} d'aucune famille connue : le pool a change sans "
+            f"que la table de livraison suive"
+        )
+
+couverture = Counter(cat for cat, _ in livraison.values())
+
 lignes_py = [
     '"""Donnees du monde, GENEREES. Ne pas editer a la main.',
     "",
@@ -193,6 +243,17 @@ for nom, n in sorted(items.items()):
     lignes_py.append(f"    {nom!r}: {n},")
 lignes_py.append("}")
 lignes_py.append("")
+lignes_py.append("# nom d'item -> (categorie de livraison, valeur)")
+lignes_py.append("#   'coins'        montant a ajouter au u32 a 02056400   Verifie")
+lignes_py.append("#   'consumable'   index du compteur, 02056406 + index   Verifie")
+lignes_py.append("#   'gear'         identifiant d'equipement              NON ETABLI")
+lignes_py.append("#   'attack_piece' variable de deblocage de l'attaque    NON ETABLI")
+lignes_py.append("ITEM_DELIVERY = {")
+for nom in sorted(livraison):
+    cat, val = livraison[nom]
+    lignes_py.append(f"    {nom!r}: ({cat!r}, {val}),")
+lignes_py.append("}")
+lignes_py.append("")
 
 SORTIE.parent.mkdir(exist_ok=True)
 SORTIE.write_text("\n".join(lignes_py), encoding="utf-8")
@@ -208,3 +269,14 @@ print(f"  {len(tresors) + len(pieces)} locations au total")
 print(f"  {len(items)} items distincts, {sum(items.values())} exemplaires")
 print(f"  plage de location : {BASE_ID:#x} a {BASE_ID + pieces[-1][0]:#x}")
 print(f"  reserve hors-table : {BASE_ID + RESERVE_HORS_TABLE:#x} et au-dela")
+print()
+print("  livraison, par categorie :")
+etabli = {"coins", "consumable"}
+exemplaires_ok = 0
+for cat, n_noms in sorted(couverture.items()):
+    n_ex = sum(items[nom] for nom, (c, _) in livraison.items() if c == cat)
+    statut = "verifie" if cat in etabli else "NON ETABLI"
+    if cat in etabli:
+        exemplaires_ok += n_ex
+    print(f"    {cat:<14} {n_noms:>3} noms, {n_ex:>4} exemplaires   {statut}")
+print(f"    livrables aujourd'hui : {exemplaires_ok} sur {sum(items.values())}")
