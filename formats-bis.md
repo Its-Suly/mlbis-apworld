@@ -1476,6 +1476,82 @@ La même prudence vaut pour toute capacité dont le bit sert aussi d'état.
 Le journal en jouant est le seul moyen de les repérer : un balayage
 statique ne distingue pas un octroi d'un basculement.
 
+### Le code ARM est lisible, et par où y entrer, **Vérifié**
+
+7 août 2026. Tout ce qui reste inconnu vit dans le code ARM, et la
+question n'était pas de savoir le lire mais d'y entrer. Deux mesures
+suffisent à répondre.
+
+**Les adresses connues sont dans les pools littéraux.** Le code ARM
+charge ses constantes 32 bits depuis des mots posés après la fonction, ce
+qui rend une adresse cherchable telle quelle, quatre octets en petit
+boutiste. Résultat sur la ROM : `0x02056038`, le champ des capacités, en
+six endroits, dont trois dans l'arm9 et deux dans l'overlay 129 ;
+`0x020560C8`, le tableau `Exxx`, en treize endroits, dont l'overlay 4 qui
+est celui des trésors.
+
+En revanche `0x02056400`, les pièces, et `0x02056427`, l'équipement, n'y
+apparaissent **pas** : ces deux-là sont atteints par un décalage depuis
+un pointeur, pas par une constante. Une recherche d'adresse ne les
+trouvera jamais.
+
+**La carte des stockages de variables**, lue dans les pools de la plage
+`0x02005840` à `0x02005D00`, qui est la primitive d'accès aux variables :
+
+| adresse | ce qu'on en sait |
+|---|---|
+| `0x02055FE4` | non identifié |
+| `0x02056024` | non identifié |
+| `0x02056038` | champ `2xxx`, les capacités, **connu** |
+| `0x02056040` | champ de bits, juste après les capacités |
+| `0x020560C8` | tableau `Exxx`, **connu** |
+| `0x020562C8` | exactement `0x020560C8 + 0x200`, donc la fin du tableau |
+| `0x02056360` | non identifié |
+| `0x020564BC` | non identifié |
+| `0x020564CC` | non identifié |
+
+La ligne `0x020562C8` vaut à elle seule le détour : elle **confirme par
+le code** que le tableau `Exxx` fait bien `0x200` octets, ce qui n'était
+jusque-là qu'une borne de prudence choisie le 5 août.
+
+**La forme du lecteur de bit**, à `0x020059B8`, se lit sans effort :
+
+```
+lsr  r2, r0, #5          index / 32
+ldr  r1, [r1, r2, lsl #2]   le mot correspondant
+and  r0, r0, #0x1f       index % 32
+lsr  r0, r1, r0
+and  r0, r0, #1          le bit
+```
+
+C'est exactement l'arithmétique que notre `bitfield.py` applique, écrite
+par les développeurs du jeu.
+
+**Outil** : `ndspy` pour extraire arm9 et les 141 overlays, `capstone`
+pour désassembler, mode ARM et non Thumb. Installé dans le venv de la
+racine le 7 août 2026.
+
+### Le type d'un trésor n'est pas son prérequis, **non tranché**
+
+Hypothèse tentante : un bloc brique se casse au marteau, un haricot se
+déterre, donc le type dirait la capacité exigée, et la logique passerait
+au grain du bloc sans lire d'ARM.
+
+La distribution par zone ne tranche pas. Les 20 touffes d'herbe sont dans
+Dimble Wood et Bumpsy Plains, les 197 haricots sont absents de toutes les
+zones intérieures au corps de Bowser, Trash Pit, Pump Works, Flab Zone,
+Airway. Ça s'explique aussi bien par le décor que par une capacité : il
+n'y a pas de terre à creuser dans un estomac.
+
+Le seul point de mesure est que le Trash Pit, seule zone d'avant toute
+capacité, ne porte **que** des blocs `?`, 11 sur 11. Compatible avec
+l'hypothèse, mais compatible aussi avec le hasard.
+
+**Le test qui trancherait**, et il ne coûte rien maintenant qu'on sait
+retirer une capacité : abaisser le bit du marteau et essayer de casser un
+bloc brique dans une zone déjà visitée. S'il résiste, 144 locations
+gagnent un prérequis mesuré.
+
 ### Le marteau confirme un nom, **Vérifié**
 
 Au `run51`, les onze prérequis lisaient zéro. Cohérent avec un début de

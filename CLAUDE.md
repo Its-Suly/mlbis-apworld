@@ -197,7 +197,8 @@ l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
 - **Le drapeau de fin d'histoire reste introuvable.** L'unique combat
   marqué `final battle`, chunk 557, n'écrit que des variables génériques.
   Le but est donc « réunir les neuf capacités », lu dans `items_received`
-  sans adresse mémoire. Le vrai but attend une lecture du code ARM
+  sans adresse mémoire. Le vrai but attend une lecture du code ARM, dont
+  l'entrée est trouvée : pools littéraux, `capstone`, `formats-bis.md`
 - **Reconnexion** jamais testée : l'index des items livrés vit dans le
   `DataStorage` du serveur, donc recharger un savestate lui fera croire
   livrés des items que le jeu n'a plus. Défaut écrit dans `client.py`

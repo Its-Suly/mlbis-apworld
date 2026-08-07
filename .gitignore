@@ -30,3 +30,6 @@ seeds/*.apsave
 
 # Journal de progression produit en jouant
 journal_capacites.txt
+
+# Paquet construit, regenerable par tools/build_apworld.py
+dist/
