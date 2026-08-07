@@ -12,7 +12,7 @@ Usage :
     venv\\Scripts\\python.exe tools\\test_generation.py
 
 Sortie attendue, en fin de course :
-    Mario & Luigi Bowser's Inside Story  : ... | Items: 95 | Locations: 725
+    Mario & Luigi Bowser's Inside Story  : ... | Items: 104 | Locations: 728
     seed generee : AP_....zip
 """
 import shutil

@@ -28,12 +28,12 @@ class FillerVariety(Range):
     """How much of the duplicated filler to redraw, as a percentage.
 
     The vanilla pool is lopsided because the game is: it has 197 bean
-    spots, so 197 of the 725 items are beans, and 109 of those are Heart
+    spots, so 197 of the 728 items are beans, and 109 of those are Heart
     Beans alone. Left alone, one item in four that reaches you is a bean.
 
     At 0 the pool is exactly what the game contains. Higher values take
     that share of the duplicated items and redraw them across every other
-    filler name, so the same 725 items become more varied without any
+    filler name, so the same 728 items become more varied without any
     item name disappearing from the pool.
     """
 
@@ -54,7 +54,7 @@ class SafeAbilityPlacement(Toggle):
 
     That only endangers a run when an ability lands somewhere you cannot
     actually get to. With this on, the nine abilities are confined to the
-    first five areas, 213 of the 725 locations. Those five are the part
+    first five areas, 213 of the 728 locations. Those five are the part
     of the order the walkthrough states outright, and a real save file
     independently confirms them: every location reached in the opening
     hours of a test playthrough sits in exactly those five.

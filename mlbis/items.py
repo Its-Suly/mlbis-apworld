@@ -2,8 +2,8 @@
 
 Deux familles, et une seule porte la logique.
 
-  - le contenu d'origine des tresors et des pieces d'attaque, 725
-    exemplaires pour 725 locations. Tout est filler : recevoir un
+  - le contenu d'origine des tresors et des pieces d'attaque, 728
+    exemplaires pour 728 locations. Tout est filler : recevoir un
     champignon n'ouvre aucune porte
   - les neuf capacites, seuls items de progression. Elles n'existent
     dans le pool que si l'option `shuffle_abilities` est active, et

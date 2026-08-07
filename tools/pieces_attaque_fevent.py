@@ -52,6 +52,7 @@ DATA_DIR = RACINE / "vendor" / "BIS-docs" / "data"
 COMMANDE_SET = 0x0008     # bis_docs_commands.yml:80-86
 COMMANDE_OR = 0x0020      # deduit des scripts, voir en-tete
 NB_PIECES = 10
+SALLES_DEV = {0, 1, 2}
 TEMOIN = ("Green Shell", [0xE700 + k for k in range(NB_PIECES)])
 
 rom = ndspy.rom.NintendoDSRom.fromFile(str(ROM))
@@ -89,6 +90,12 @@ octrois = defaultdict(list)       # attaque -> (salle, moitie, masque)
 nb_commandes = 0
 
 for idx, triple in enumerate(manager.fevent_chunks):
+    if idx in SALLES_DEV:
+        # Ces trois chunks posent 20, 27 et 46 capacites d'un coup et
+        # donnent toutes les pieces de plusieurs attaques : ce sont des
+        # initialisations ou du debug, mesure du 7 aout 2026. Les garder
+        # attribuerait un faux drapeau a des pieces deja resolues.
+        continue
     for script in triple[:2]:
         if script is None:
             continue
@@ -114,14 +121,22 @@ for idx, triple in enumerate(manager.fevent_chunks):
 
             for var, masque in ors:
                 nom, moitie = champ_vers_attaque[var]
-                if not un_seul_bit(masque):
+                if len(exxx) != 1:
+                    # Sans drapeau unique, rien a attribuer. C'est le cas
+                    # du Yoo Who Cannon, dont les dix pieces sont
+                    # octroyees d'un bloc en cinematique.
                     octrois[nom].append((idx, moitie, masque))
                     continue
-                if len(exxx) != 1:
-                    conflits[(nom, -1)].add(idx)
-                    continue
-                indice = moitie * 5 + masque.bit_length() - 1
-                cle = (nom, indice)
+                # Un masque a plusieurs bits n'est PAS un octroi en bloc a
+                # ecarter : c'est un bloc qui rend plusieurs pieces d'un
+                # coup, et il porte un drapeau bien a lui. Le filtre
+                # precedent exigeait un seul bit, ce qui a fait passer
+                # 12 pieces pour introuvables pendant trois jours.
+                # Verifie le 8 aout 2026 : sur les dix attaques, chaque
+                # couple (moitie, masque) tombe sur un drapeau et un seul,
+                # sur 13 ou 18 salles dupliquees.
+                indices = tuple(moitie * 5 + i for i in range(5) if masque >> i & 1)
+                cle = (nom, indices)
                 # Une meme piece peut etre definie dans plusieurs chunks.
                 # On garde toutes les salles plutot que la derniere vue.
                 if cle in pieces:
@@ -132,33 +147,64 @@ for idx, triple in enumerate(manager.fevent_chunks):
                 else:
                     pieces[cle] = (exxx[0], {idx})
 
-print(f"{nb_commandes} commandes parcourues, {len(pieces)} pieces identifiees")
+print(f"{nb_commandes} commandes parcourues, {len(pieces)} entrees brutes")
+
+# Ne garder qu'un decoupage SANS RECOUVREMENT des dix pieces, en
+# preferant le grain le plus fin.
+#
+# Pourquoi. Certaines attaques ont, en plus de leurs blocs, une
+# sous-routine de cinematique qui octroie cinq pieces d'un coup, masque
+# 31 sur chaque moitie et un seul drapeau : Magic Window salle 0x28F,
+# Spin Pipe 0x287, Mighty Meteor 0x0F2. Ce n'est pas une `location`, et
+# la garder ferait compter deux fois les memes pieces.
+#
+# Le test qui les separe n'est pas la valeur du masque mais le
+# recouvrement : les vrais blocs partitionnent les dix pieces, l'octroi
+# de cinematique les recouvre. Jump Helmet le montre, ses quatre blocs
+# 0b00001, 0b11110, 0b01111, 0b10000 sont disjoints et couvrent tout.
+ecartes = defaultdict(list)
+retenues = {}
+for a in attaques:
+    nom = a["nom"]
+    candidates = sorted(((ind, pieces[(n, ind)]) for (n, ind) in pieces if n == nom),
+                        key=lambda t: (len(t[0]), t[0]))
+    prises = set()
+    for indices, valeur in candidates:
+        if prises & set(indices):
+            ecartes[nom].append((indices, valeur[0], sorted(valeur[1])))
+            continue
+        prises |= set(indices)
+        retenues[(nom, indices)] = valeur
+pieces = retenues
+print(f"{len(pieces)} blocs retenus, "
+      f"{sum(len(v) for v in ecartes.values())} entrees ecartees pour recouvrement")
 
 lignes = []
 print()
-print(f"{'attaque':<16} {'trouvees':>8}  plage Exxx            rangs de bit      salles")
+print(f"{'attaque':<16} {'blocs':>6} {'pieces':>7}  plage Exxx        salles")
 for a in attaques:
     nom = a["nom"]
-    trouvees = [(i, *pieces[(nom, i)]) for i in range(NB_PIECES) if (nom, i) in pieces]
+    trouvees = sorted((ind, *pieces[(n, ind)]) for (n, ind) in pieces if n == nom)
     if not trouvees:
         n_octrois = len(octrois.get(nom, []))
-        note = f"octroi en bloc, {n_octrois} commande(s) a masque multiple" if n_octrois \
-            else "aucune trace"
-        print(f"{nom:<16} {0:>8}  {note}")
+        note = f"octroi en bloc, {n_octrois} commande(s) sans drapeau propre" \
+            if n_octrois else "aucune trace"
+        print(f"{nom:<16} {0:>6} {0:>7}  {note}")
         continue
     bits = [t[1] for t in trouvees]
     salles = sorted(set().union(*(t[2] for t in trouvees)))
-    ordonne = all(trouvees[j][1] < trouvees[j + 1][1] for j in range(len(trouvees) - 1))
-    contigu = (max(bits) - min(bits) + 1) == len(bits) and ordonne
-    print(f"{nom:<16} {len(trouvees):>8}  0x{min(bits):04X}..0x{max(bits):04X}"
-          f"{'  ' if contigu else ' *'}      "
-          f"{min(bits) - 0xE000}..{max(bits) - 0xE000}      "
-          f"{len(salles)} salle(s) : {', '.join(f'0x{s:03X}' for s in salles[:6])}"
-          f"{' ...' if len(salles) > 6 else ''}")
-    for indice, exxx, ou in trouvees:
+    couvertes = sorted(set().union(*(set(t[0]) for t in trouvees)))
+    complet = couvertes == list(range(NB_PIECES))
+    print(f"{nom:<16} {len(trouvees):>6} {len(couvertes):>6}{'  ' if complet else ' *'}"
+          f"  0x{min(bits):04X}..0x{max(bits):04X}    "
+          f"{len(salles)} salle(s) : {', '.join(f'0x{s:03X}' for s in salles[:5])}"
+          f"{' ...' if len(salles) > 5 else ''}")
+    for indices, exxx, ou in trouvees:
         lignes.append({
             "attaque": nom,
-            "piece": indice,
+            "piece": indices[0],
+            "nb_pieces": len(indices),
+            "pieces": " ".join(str(i) for i in indices),
             "variable": f"0x{exxx:04X}",
             "rang_bit": exxx - 0xE000,
             "salle": " ".join(f"0x{s:03X}" for s in sorted(ou)),
@@ -168,7 +214,7 @@ for a in attaques:
             "lot": a["zone_a"],
         })
 
-print("\n* plage non contigue ou pieces manquantes")
+print("\n* les dix pieces ne sont pas toutes couvertes")
 
 print("\noctrois en bloc, masque a plusieurs bits :")
 for nom, liste in sorted(octrois.items()):
@@ -180,11 +226,10 @@ for nom, liste in sorted(octrois.items()):
 if conflits:
     print("\nconflits, une meme piece vue avec deux variables :")
     for cle, vals in sorted(conflits.items()):
-        if cle[1] >= 0:
-            print(f"  {cle[0]} piece {cle[1]} : {[hex(v) for v in sorted(vals)]}")
+        print(f"  {cle[0]} pieces {cle[1]} : {[hex(v) for v in sorted(vals)]}")
 
 nom_t, attendu = TEMOIN
-obtenu = [pieces.get((nom_t, i), (None,))[0] for i in range(NB_PIECES)]
+obtenu = [pieces.get((nom_t, (i,)), (None,))[0] for i in range(NB_PIECES)]
 print()
 if obtenu == attendu:
     print(f"temoin {nom_t} : les 10 pieces dans l'ordre, 0xE700 a 0xE709, "
@@ -195,9 +240,10 @@ else:
 (RACINE / "data").mkdir(exist_ok=True)
 sortie = RACINE / "data" / "pieces_attaque.csv"
 with open(sortie, "w", newline="", encoding="utf-8") as f:
-    w = csv.DictWriter(f, fieldnames=["attaque", "piece", "variable", "rang_bit",
-                                      "salle", "var_pieces", "var_attaque",
-                                      "item_brut", "lot"])
+    w = csv.DictWriter(f, fieldnames=["attaque", "piece", "nb_pieces", "pieces",
+                                      "variable", "rang_bit", "salle",
+                                      "var_pieces", "var_attaque", "item_brut",
+                                      "lot"])
     w.writeheader()
     w.writerows(lignes)
 print(f"\necrit : data/pieces_attaque.csv  ({len(lignes)} pieces)")

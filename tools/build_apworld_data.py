@@ -129,7 +129,14 @@ with open(PIECES, encoding="utf-8") as f:
                 f"la zone {zone!r} ne porte aucun tresor, elle n'existe pas "
                 f"comme region. Ajouter la region avant de l'utiliser."
             )
-        nom = f"{zone} - {attaque} Piece {int(r['piece']) + 1}"
+        # Un bloc peut rendre plusieurs pieces d'un coup : Jump Helmet en
+        # a deux qui en donnent quatre, Super Bouncer un. Le nom le dit,
+        # sinon un joueur croirait avoir perdu six pieces en route.
+        indices = [int(x) for x in r["pieces"].split()]
+        if len(indices) == 1:
+            nom = f"{zone} - {attaque} Piece {indices[0] + 1}"
+        else:
+            nom = f"{zone} - {attaque} Pieces {indices[0] + 1}-{indices[-1] + 1}"
         pieces.append((rang, nom, f"{attaque} Piece", zone))
 
 pieces.sort(key=lambda p: p[0])

@@ -3,7 +3,7 @@
 Deux familles, une seule regle :
 
   - 647 tresors de Treasure/TreasureInfo.dat, rangs 0 a 757
-  - 78 pieces d'attaque, rangs 1792 a 2081
+  - 81 blocs de pieces d'attaque, rangs 1792 a 2081
 
 L'identifiant Archipelago d'une location vaut BASE_ID plus le rang de son
 bit dans le tableau Exxx a 020560C8. Pour un tresor ce rang est

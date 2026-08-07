@@ -8,7 +8,7 @@ config file.
 ## What does randomization do to this game?
 
 Every treasure the game hides in a block, a bean patch or a patch of grass becomes a check, and so does every attack
-piece scattered through the ten Special Attack sets. There are 725 of them. What comes out of a block is no longer what
+piece scattered through the ten Special Attack sets. There are 728 of them. What comes out of a block is no longer what
 the game put there: it is whatever the multiworld decided, and it may belong to another player entirely.
 
 Nine abilities are shuffled into the item pool as well: the hammer, Spin Jump, Drill Bros, Sliding Haymaker, Body Slam,
@@ -30,7 +30,7 @@ is ever found, finishing the story will be offered as a goal option.
 
 ## What items and locations get shuffled?
 
-Locations are the 647 usable entries of the game's treasure table and the 78 attack pieces whose flag is known. Items
+Locations are the 647 usable entries of the game's treasure table and the 81 attack-piece blocks, three of which hand over four pieces at once. Items
 are the vanilla contents of those treasures, coins, consumables and gear, plus the nine abilities, which replace nine
 of the smallest coin rewards so that the counts still match.
 
@@ -55,7 +55,7 @@ comes from a walkthrough rather than from the game's data. Worse, this game send
 already cleared, so a treasure in a late corner of an early area looks reachable long before it is.
 
 That only strands a run when an ability lands somewhere you cannot yet get to, which is why **Safe ability placement**
-is on by default: the nine abilities stay in the first five areas, 213 of the 725 locations, the part of the order the
+is on by default: the nine abilities stay in the first five areas, 213 of the 728 locations, the part of the order the
 walkthrough states outright and that a real save file independently confirms. Everything else is free to go anywhere,
 since an ordinary item found late costs nothing.
 

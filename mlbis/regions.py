@@ -57,7 +57,7 @@ from .locations import MLBISLocation, ZONE_DE_LOCATION, location_name_to_id
 # est actif. Cinq parce que c'est la partie de l'ordre que le guide
 # enonce explicitement, et que les 43 locations mesurees comme atteintes
 # en debut de partie tombent toutes dans ces cinq zones, plus quatre du
-# prologue de Peach's Castle. 213 locations sur 725.
+# prologue de Peach's Castle. 213 locations sur 728.
 RANG_SUR = 5
 
 MENU = "Menu"

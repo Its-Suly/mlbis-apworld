@@ -1,8 +1,8 @@
 """APWorld Archipelago pour Mario & Luigi : Voyage au Centre de Bowser.
 
 Ce qui est vrai ici et le restera :
-  - 725 locations : 647 tresors de Treasure/TreasureInfo.dat et 78 pieces
-    d'attaque
+  - 728 locations : 647 tresors de Treasure/TreasureInfo.dat et 81 blocs
+    de pieces d'attaque
   - l'identifiant d'une location est BASE_ID + le rang de son bit dans le
     tableau Exxx a 020560C8, quelle que soit la famille
   - la ROM n'est pas patchee. Tout passe par la memoire, en lecture pour
@@ -105,7 +105,7 @@ class MLBISWorld(World):
         variete = int(self.options.filler_variety)
         if variete:
             # Le sac d'origine est desequilibre parce que le jeu l'est :
-            # 197 emplacements de haricot, donc 197 haricots sur 725
+            # 197 emplacements de haricot, donc 197 haricots sur 728
             # items, dont 109 Heart Bean. Un item sur quatre recu en est
             # un. On redistribue une part des exemplaires dupliques.
             #

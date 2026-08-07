@@ -142,7 +142,7 @@ class MLBISClient(BizHawkClient):
             return
 
         # Une location inconnue du serveur n'est pas une erreur, c'est le
-        # cas courant : le champ couvre 4096 bits pour 725 locations, et
+        # cas courant : le champ couvre 4096 bits pour 728 locations, et
         # les drapeaux d'histoire y sont nombreux des le debut de partie.
         a_envoyer = (
             locations_du_champ(lu[0], BASE_ID)

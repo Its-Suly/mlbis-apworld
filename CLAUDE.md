@@ -3,11 +3,11 @@
 Développement d'un APWorld Archipelago pour Mario & Luigi : Voyage au
 Centre de Bowser, version NDS de 2009. **La boucle complète tourne**,
 validée en jeu le 5 août 2026 : 21 checks remontés, 21 items renvoyés,
-vus à l'écran. Le monde vit dans `mlbis/` : **725 `location`**, 647
-trésors et 78 pièces d'attaque, 16 `region`, et depuis le 7 août une
-**logique**, neuf capacités en items de progression. Trois suites de
-tests, `tools/test_generation.py`, `test_client.py`, et
-`test_archipelago.py` qui passe les 206 tests généraux d'Archipelago.
+vus à l'écran. Le monde vit dans `mlbis/` : **728 `location`**, 647
+trésors et 81 blocs de pièces, 16 `region`, et une **logique**, neuf
+capacités en items de progression. Trois suites de tests,
+`tools/test_generation.py`, `test_client.py`, et `test_archipelago.py`
+qui passe les 206 tests généraux d'Archipelago.
 
 ## Version de ROM, figée
 
@@ -187,10 +187,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
 Régénérables par le script de `tools/` qui porte le même thème, dans le
 venv `venv/` de la racine : `locations_bis.csv` les 685 entrées de
 trésor, `noms_zones.csv` les 32 zones, `bros_attacks.csv` les 10
-attaques, `pieces_attaque.csv` 78 pièces sur 100, `capacites_fevent.csv`
-les 48 variables `2xxx` avec leur salle et leur zone d'octroi. Enfin
-`noms_items.csv`, 191 objets, dont l'identifiant indexe une table de
-l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
+attaques, `pieces_attaque.csv` 81 blocs pour 90 pièces,
+`capacites_fevent.csv` les 48 variables `2xxx` et leur zone d'octroi.
+Enfin `noms_items.csv`, 191 objets, dont l'identifiant indexe une table
+de l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
 
 ## Non résolu
 
@@ -208,10 +208,10 @@ l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
   un trésor tardif d'une zone précoce paraît accessible trop tôt. Parade
   en place, `safe_ability_placement` confine les 9 capacités aux rangs
   ≤ 5. Quatre pistes statiques ont échoué, listées dans `formats-bis.md`
-- 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
-  Bouncer 4, Yoo Who Cannon 10 qui est octroyée d'un bloc et n'est donc
-  pas une `location`. Absentes de `FEvent` et des scripts de combat, à
-  mesurer en jeu
+- **Résolu le 8 août** : les 12 pièces dites manquantes sont données par
+  groupes de quatre, un drapeau par groupe. Neuf attaques sur dix sont
+  couvertes 10/10. Seul le Yoo Who Cannon reste hors jeu, octroyé d'un
+  bloc en cinématique, donc jamais une `location`
 - Aucune `region` pour une pièce d'attaque : les sous-routines de bloc
   sont dupliquées dans 13 ou 18 chunks, la salle n'est pas exploitable.
   Le nom du lot, `Trash Pieces`, donne la zone du set

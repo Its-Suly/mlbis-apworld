@@ -1476,6 +1476,41 @@ La même prudence vaut pour toute capacité dont le bit sert aussi d'état.
 Le journal en jouant est le seul moyen de les repérer : un balayage
 statique ne distingue pas un octroi d'un basculement.
 
+### Les 12 pièces manquantes ne manquaient pas, **Vérifié**
+
+8 août 2026. Trois jours durant, Jump Helmet 8 et Super Bouncer 4
+étaient portées « absentes de `FEvent` et des scripts de combat, à
+mesurer en jeu ». Elles y étaient depuis le début, et c'est **notre
+propre filtre** qui les cachait.
+
+`pieces_attaque_fevent.py` exigeait un masque à **un seul bit**, au motif
+qu'un masque multiple serait un octroi de cinématique. Faux : un bloc
+peut rendre plusieurs pièces d'un coup, et il porte alors son drapeau.
+
+```
+sub 99  masque 0b00001 moitie 0  -> piece 0        0xE781
+sub 100 masque 0b11110 moitie 0  -> pieces 1 a 4   0xE780
+sub 101 masque 0b01111 moitie 1  -> pieces 5 a 8   0xE782
+sub 102 masque 0b10000 moitie 1  -> piece 9        0xE783
+```
+
+`0xE780` et `0xE782` étaient justement dans les trous relevés le 5 août.
+
+**Contrôle sur les dix attaques** : chaque couple (moitié, masque) tombe
+sur un drapeau et un seul, sur les 13 ou 18 salles où la sous-routine est
+dupliquée. Neuf attaques sur dix sont couvertes 10/10.
+
+**Deux filtres restaient nécessaires**, et les deux se justifient par une
+mesure antérieure. Les chunks 0, 1 et 2 sont écartés, ce sont les salles
+d'initialisation qui posent tout d'un coup. Et une entrée qui **recouvre**
+des pièces déjà couvertes est écartée : Magic Window, Spin Pipe et Mighty
+Meteor ont, en plus de leurs blocs, une cinématique à masque 31 sur les
+deux moitiés. Le test qui sépare n'est pas la valeur du masque mais le
+recouvrement, puisque les vrais blocs **partitionnent** les dix pièces.
+
+Résultat : **81 blocs pour 90 pièces**, contre 78 avant. Le Yoo Who
+Cannon reste hors jeu, ses dix pièces étant octroyées d'un bloc.
+
 ### Les récompenses de quête, le gisement est petit, **Vérifié**
 
 8 août 2026. On espérait une centaine de locations neuves sans patcher
