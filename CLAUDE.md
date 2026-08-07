@@ -203,11 +203,11 @@ l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
   monde, envoyé vers lui, checks ramassés client fermé envoyés à la
   reconnexion, rien de redonné. **Reste** : une partie jouée dans la
   durée, et le rechargement d'un savestate, défectueux par construction
-- Les `access_rule` existent depuis le 7 août : une zone de rang `r`
-  exige les capacités octroyées avant elle, `data/ordre_zones.csv`.
-  **L'ordre vient d'un guide**, rangs 11 à 16 marqués faibles, et le
-  journal en jouant est ce qui les confirmera. Manque le prérequis d'un
-  trésor donné : aucun bloc ne lit de capacité dans `FEvent`, c'est ARM
+- Les `access_rule` sont au grain de la zone et **l'ordre vient d'un
+  guide**, `data/ordre_zones.csv`. Les revisites sont l'angle bloquant :
+  un trésor tardif d'une zone précoce paraît accessible trop tôt. Parade
+  en place, `safe_ability_placement` confine les 9 capacités aux rangs
+  ≤ 5. Quatre pistes statiques ont échoué, listées dans `formats-bis.md`
 - 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
   Bouncer 4, Yoo Who Cannon 10 qui est octroyée d'un bloc et n'est donc
   pas une `location`. Absentes de `FEvent` et des scripts de combat, à

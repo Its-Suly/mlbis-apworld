@@ -1476,6 +1476,41 @@ La même prudence vaut pour toute capacité dont le bit sert aussi d'état.
 Le journal en jouant est le seul moyen de les repérer : un balayage
 statique ne distingue pas un octroi d'un basculement.
 
+### Quatre pistes mortes vers l'ordre de progression, à ne pas refaire
+
+L'ordre des zones, et surtout le fait qu'une zone soit revisitée, ne se
+lit dans aucune donnée statique trouvée à ce jour. Quatre tentatives,
+toutes tuées le 7 ou le 8 août 2026, chacune par une mesure et non par
+un abandon.
+
+**Le numéro de variable n'encode pas l'ordre de l'histoire.** Trier les
+drapeaux `Exxx` par numéro et prendre la première zone nouvelle donne
+Airway en premier et Cavi Cape en avant-dernier.
+
+**La table de révélation des cartes de Bowser ne donne pas des cartes.**
+Randoglobin désigne `0x605C` comme le compteur de déblocage, et le chunk
+27 contient bien neuf sous-routines qui l'incrémentent de 2 à 10. Mais
+leur premier argument vaut 30, 139, 134, 124, tous sous 256 : ce sont
+des positions à l'écran. La lecture en zones qu'on en tirait était
+crédible et fausse.
+
+**Lire un drapeau n'est pas l'exiger.** Tentation forte : une salle qui
+lit le drapeau `F` ne serait atteignable qu'après `F`, et on sait où
+chaque drapeau est posé, donc on aurait un rang par salle. Réfutée par
+une mesure déjà au dossier : la carte 6 de Pump Works sortirait au rang
+15, alors que la sauvegarde de test y porte des trésors ramassés dans les
+premières heures. Une salle lit des drapeaux pour choisir quoi afficher.
+
+**Les 20 octets par carte ne portent pas les sorties.** La structure de
+`MAP_GROUP`, overlay 3, contient quatre index croissants qui indexent la
+table de fichiers, plus l'index de trésor qu'on utilisait déjà. Le graphe
+des portes ordinaires vit dans les fichiers de carte, format que ni
+Randoglobin ni BIS-docs ne documentent.
+
+**Ce qui reste** : lire le code ARM, ou mesurer en jouant. En attendant,
+la conséquence est bornée plutôt que le risque nié, voir
+`safe_ability_placement` dans `mlbis/options.py`.
+
 ### Le code ARM est lisible, et par où y entrer, **Vérifié**
 
 7 août 2026. Tout ce qui reste inconnu vit dans le code ARM, et la
