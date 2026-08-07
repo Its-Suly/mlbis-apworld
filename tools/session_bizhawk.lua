@@ -14,11 +14,33 @@
 --
 -- Charger le connecteur en premier laisserait le journal mort.
 --
+-- OU CE FICHIER DOIT TOURNER. Dans vendor\Archipelago\data\lua, pas
+-- ici. Le connecteur resout ses quatre require et le chemin de sa DLL
+-- socket a partir du repertoire courant, socket.lua:44-47, et ces
+-- fichiers vivent tous dans data\lua. Lance depuis tools\, il meurt sur
+-- "module 'lua_5_3_compat' not found" alors que le journal survit :
+-- session a moitie vivante, client qui attend BizHawk sans fin, mesure
+-- le 7 aout 2026. tools/jouer.cmd copie donc ce fichier dans data\lua
+-- avant de le passer a BizHawk.
+--
 -- Usage normal : lance par tools/jouer.cmd, jamais a la main.
--- A la main : Tools > Lua Console, Ctrl+O sur ce fichier.
+-- A la main : Tools > Lua Console, Ctrl+O sur la copie, celle qui est
+-- dans vendor\Archipelago\data\lua.
 
 local RACINE = "C:\\Users\\sulyv\\Documents\\Projet BIS"
 local AP = RACINE .. "\\vendor\\Archipelago"
+
+-- Garde-fou. Un fichier temoin ouvert en relatif repond a la seule
+-- question qui compte, et remplace une trace NLua de quatorze lignes
+-- par une phrase qui dit quoi faire.
+local temoin = io.open("lua_5_3_compat.lua", "r")
+if temoin == nil then
+    console.log("ARRET : le repertoire courant n'est pas " .. AP .. "\\data\\lua")
+    console.log("Le connecteur n'y trouverait ni ses modules ni sa DLL socket.")
+    console.log("Passer par tools\\jouer.cmd, qui copie ce fichier au bon endroit.")
+    return
+end
+temoin:close()
 
 -- Lu par journal_capacites.lua. Sans ca, le journal atterrirait dans le
 -- repertoire de travail de BizHawk.
