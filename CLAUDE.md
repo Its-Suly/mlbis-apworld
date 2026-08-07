@@ -128,6 +128,12 @@ enfin les discussions communautaires, à traiter comme des pistes.
 
 ## Acquis à ne pas redécouvrir
 
+- **Les capacités sont des `item`**, décidé le 7 août 2026. Marteau,
+  Drill Bros, vacuum, Bros Attacks entrent dans la pool et se livrent par
+  un bit. Deux conséquences : il faut de vraies `access_rule`, et
+  `FIRE_BREATH_DISABLED` se livre en **abaissant** son bit, pas en le
+  levant. `0x2000` est un état, pas un déblocage, il ne peut pas servir
+  de prérequis : Mario prend la forme miniature où il veut, à volonté
 - **Commandes de script** : table dans `overlay_0006.bin`, plage
   commune, commandes d'objets `0x0043` et `0x0044`, injection ARM.
   Détail et sources dans `formats-bis.md`
@@ -178,20 +184,14 @@ enfin les discussions communautaires, à traiter comme des pistes.
 
 ### Tables déjà extraites, dans `data/`
 
-Régénérables par `tools/extract_names.py` puis
-`tools/build_location_table.py`, dans le venv `venv/` de la racine.
+Régénérables par le script de `tools/` qui porte le même thème, dans le
+venv `venv/` de la racine : `locations_bis.csv` les 685 entrées de
+trésor, `noms_zones.csv` les 32 zones, `bros_attacks.csv` les 10
+attaques, `pieces_attaque.csv` 78 pièces sur 100, `capacites_fevent.csv`
+les 48 variables `2xxx` avec leur salle et leur zone d'octroi.
 
-- `locations_bis.csv` : les 685 entrées de trésor décodées, avec
-  identifiant, type, objet nommé, quantité, salle et coordonnées
 - `noms_items.csv` : 191 objets. L'identifiant indexe une table de
   l'arm9 décompressé, pas la table de texte. Corrigé le 4 août 2026
-- `noms_zones.csv` : les 32 zones
-- `bros_attacks.csv` : les 10 Bros Attacks, variable de pièces, variable
-  de déblocage, coût en SP, zone. `tools/extract_bros_attacks.py`
-- `pieces_attaque.csv` : **78 pièces d'attaque sur 100**, une variable
-  `Exxx` chacune. `tools/pieces_attaque_fevent.py`
-- `capacites_fevent.csv` : les 48 variables `2xxx`, la salle et la zone
-  où chacune est posée ou retirée. `tools/capacites_fevent.py`
 
 ## Non résolu
 
