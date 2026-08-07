@@ -207,10 +207,19 @@ else:
     print(f"drapeaux 2xxx : OK, Fire Flower retombe sur l'ecriture mesuree ; "
           f"seuils hors 10 : {detail or 'aucun'}")
 
-# Le plafond doit ecreter au lieu de deborder.
+# Le plafond doit ecreter au lieu de deborder, et surtout ne jamais
+# confisquer : la partie de test portait 1154 pieces le 8 aout 2026,
+# au-dessus de notre plafond de prudence. Un `min` seul l'aurait ramenee
+# a 999, soit 155 pieces perdues en recevant un item.
 nut = livraison_de("Nut", ITEM_DELIVERY)
+pieces = livraison_de("50 Coins", ITEM_DELIVERY)
 if nut is None or nut.valeur(0) != 1 or nut.valeur(99) != 99:
     print(f"ECHEC : plafond du consommable, {nut}")
+    echecs += 1
+elif nut.valeur(120) != 120 or pieces is None or pieces.valeur(1154) != 1154:
+    print("ECHEC : le plafond confisque au lieu d'ecreter, "
+          f"consommable a 120 -> {nut.valeur(120)}, "
+          f"pieces a 1154 -> {pieces and pieces.valeur(1154)}")
     echecs += 1
 else:
     exemplaires_ok = sum(

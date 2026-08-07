@@ -111,7 +111,13 @@ class Ecriture(NamedTuple):
             return actuel | self.valeur_operande
         if self.operation == "bit_off":
             return actuel & ~self.valeur_operande & 0xFF
-        return min(actuel + self.valeur_operande, self.plafond)
+        # Le plafond ecrete, il ne confisque jamais. Un joueur qui porte
+        # deja plus que le plafond le garde : `min` seul le ramenerait au
+        # plafond, et livrer 50 pieces a quelqu'un qui en a 1154 lui en
+        # ferait perdre 155. Mesure du 8 aout 2026, la partie de test
+        # etait a 1154 pieces alors que notre plafond vaut 999, valeur de
+        # prudence et non maximum mesure du jeu.
+        return max(actuel, min(actuel + self.valeur_operande, self.plafond))
 
 
 def ecriture_de_flag(variable: int, libelle: str, pose: bool = True) -> Ecriture:
