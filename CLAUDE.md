@@ -193,16 +193,15 @@ l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
 
 ## Non résolu
 
-Le point bloquant est levé : un trésor d'identifiant `N` est le bit
-`N` du tableau `Exxx`, `octet 020560C8 + N // 8, bit N % 8`. Détail et
-preuves dans `formats-bis.md`.
-
-Restent ouverts, plus rien de bloquant :
-
-- Rien de bloquant côté technique. Le seul contrôle non fait est la
-  **reconnexion** : l'index des items livrés vit dans le `DataStorage`
-  du serveur, donc recharger un savestate lui fera croire livrés des
-  items que le jeu n'a plus. Défaut connu, écrit dans `client.py`
+- **Le client ne signale jamais la victoire.** `StatusUpdate` avec
+  `CLIENT_GOAL` est une exigence dure d'Archipelago, `adding games.md`.
+  Modèle : `worlds/mlss/Client.py:243-244`. Il faut le drapeau `Exxx` de
+  Dark Bowser vaincu, cherchable dans `FEvent`, salle finale
+- **Manquent les deux docs exigées** pour entrer dans le cœur : un
+  `en_*.md` d'info de jeu et un guide d'installation, dans `mlbis/docs/`
+- **Reconnexion** jamais testée : l'index des items livrés vit dans le
+  `DataStorage` du serveur, donc recharger un savestate lui fera croire
+  livrés des items que le jeu n'a plus. Défaut écrit dans `client.py`
 - Les `access_rule` existent depuis le 7 août : une zone de rang `r`
   exige les capacités octroyées avant elle, `data/ordre_zones.csv`.
   **L'ordre vient d'un guide**, rangs 11 à 16 marqués faibles, et le
