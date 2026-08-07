@@ -21,12 +21,18 @@ patched copy to keep around.
 
 ## What is the goal?
 
-Gather all nine shuffled abilities. Since they are scattered across the multiworld, the road there depends on where
-they landed, and the last area of the game is only reachable in logic once you hold them all.
+Two ways to finish, and you choose which one you use.
 
-The goal is not "defeat Dark Bowser", and that is a deliberate limitation rather than a design choice: the game does
-not appear to leave a usable flag when the final battle is won, so a client cannot tell that it happened. If that flag
-is ever found, finishing the story will be offered as a goal option.
+The run completes on its own once you have gathered all nine shuffled abilities. Since they are scattered across the
+multiworld, the road there depends on where they landed, and the last area of the game is only reachable in logic once
+you hold them all.
+
+Or you declare it finished yourself, with `/bis_goal` in the client. Type it when you beat Dark Bowser, or whenever
+you consider the run over.
+
+That second option exists because the game leaves no readable mark when the story ends: over 800,000 script commands
+were read, field and battle alike, and the final fight writes nothing that distinguishes it. Rather than have the
+client guess at a memory address it cannot justify, the decision is handed to you.
 
 ## What items and locations get shuffled?
 

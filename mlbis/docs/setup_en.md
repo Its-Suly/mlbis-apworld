@@ -58,6 +58,11 @@ If abilities are shuffled, expect the game to hand you an ability during a cutsc
 immediately afterwards. That is the intended behaviour: you keep an ability when the multiworld sends it, not when the
 story would have given it.
 
+## Finishing
+
+Your run completes on its own when the ninth ability reaches you. If you would rather play the story to its end, type
+`/bis_goal` in the client whenever you decide the run is over, for instance once Dark Bowser is down.
+
 ## Known issues
 
 - Reloading a savestate can desynchronise items that use counters, since the delivered-item index lives on the server.

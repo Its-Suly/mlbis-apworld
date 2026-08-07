@@ -45,6 +45,8 @@ dumps du 3 au 5 aout 2026.
 """
 from typing import TYPE_CHECKING, Dict, List, Set
 
+import logging
+
 import worlds._bizhawk as bizhawk
 from NetUtils import ClientStatus
 from worlds._bizhawk.client import BizHawkClient
@@ -74,6 +76,50 @@ CODE_ATTENDU = b"CLJE"
 NOM_PAR_ID: Dict[int, str] = {i: nom for nom, i in item_name_to_id.items()}
 
 SEUILS = seuils_de_lot(ITEM_DELIVERY, VANILLA_ITEMS)
+
+
+logger = logging.getLogger("Client")
+
+
+def _cmd_bis_goal(self) -> None:
+    """Declare this Bowser's Inside Story run finished.
+
+    The game leaves no readable mark when the story ends, so the player
+    decides instead of the client guessing.
+    """
+    if getattr(self.ctx, "game", None) != GAME_NAME:
+        logger.info("This command belongs to Mario & Luigi Bowser's Inside Story.")
+        return
+    if self.ctx.finished_game:
+        logger.info("Already finished.")
+        return
+    from Utils import async_start
+
+    self.ctx.finished_game = True
+    async_start(self.ctx.send_msgs(
+        [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+    ))
+    logger.info("Run declared finished. Nice one.")
+
+
+def enregistrer_commande() -> None:
+    """Greffer /bis_goal sur le processeur de commandes du client BizHawk.
+
+    POURQUOI UNE GREFFE. Ce client est partage par tous les jeux BizHawk
+    et impose son propre processeur, `worlds/_bizhawk/context.py:121` ; un
+    monde qui s'y branche n'a aucun point d'extension. La commande refuse
+    donc d'agir si le jeu en cours n'est pas le notre.
+
+    POURQUOI TARDIVEMENT. Importer le contexte du client depuis le module
+    du monde tire toute la pile du client dans le generateur : la
+    generation passait de cinq secondes a plus de deux minutes, mesure du
+    8 aout 2026. L'import vit donc ici, appele depuis validate_rom, donc
+    uniquement dans le processus client.
+    """
+    from worlds._bizhawk.context import BizHawkClientCommandProcessor
+
+    if not hasattr(BizHawkClientCommandProcessor, "_cmd_bis_goal"):
+        BizHawkClientCommandProcessor._cmd_bis_goal = _cmd_bis_goal
 
 
 class MLBISClient(BizHawkClient):
@@ -113,6 +159,7 @@ class MLBISClient(BizHawkClient):
         if entete[0x0C:0x10] != CODE_ATTENDU:
             return False
 
+        enregistrer_commande()
         ctx.game = self.game
         # 0b111 : items de depart, les notres, et ceux des autres. Les 95
         # items du pool ont tous une adresse d'ecriture verifiee.
