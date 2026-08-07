@@ -139,4 +139,9 @@ class MLBISWorld(World):
         # Le client doit savoir si les capacites sont melangees : sinon
         # il abaisserait des bits que le jeu vient d'octroyer et que
         # personne ne rendrait. Absent, le client suppose non melange.
-        return {"shuffle_abilities": int(bool(self.options.shuffle_abilities))}
+        return {
+            "shuffle_abilities": int(bool(self.options.shuffle_abilities)),
+            # 1 = le joueur declare la fin lui-meme avec /bis_goal. Le
+            # client ne doit alors rien conclure tout seul.
+            "manual_goal": int(self.options.goal == 1),
+        }

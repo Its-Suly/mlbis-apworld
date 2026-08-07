@@ -1,10 +1,12 @@
 """Les options du monde.
 
-Une seule, et elle commande la logique entiere.
+Quatre, et chacune existe parce qu'une mesure a montre qu'elle manquait :
+melanger les capacites, borner ou elles atterrissent, choisir ce qui
+termine la partie, et corriger un sac que le jeu d'origine desequilibre.
 """
 from dataclasses import dataclass
 
-from Options import PerGameCommonOptions, Range, Toggle
+from Options import Choice, PerGameCommonOptions, Range, Toggle
 
 
 class ShuffleAbilities(Toggle):
@@ -22,6 +24,28 @@ class ShuffleAbilities(Toggle):
 
     display_name = "Shuffle abilities"
     default = 1
+
+
+class Goal(Choice):
+    """What ends your run.
+
+    `abilities`: the client declares the run finished the moment the
+    ninth shuffled ability reaches you. Nothing to remember, but the run
+    can end well before the story does, since the abilities are placed
+    early on purpose.
+
+    `manual`: nothing ends on its own, and you type `/bis_goal` in the
+    client when you decide the run is over, for instance once Dark
+    Bowser is down. Choose this to play the whole game.
+
+    Either way the generator still requires the nine abilities to be
+    reachable, so a seed is completable in both.
+    """
+
+    display_name = "Goal"
+    option_abilities = 0
+    option_manual = 1
+    default = 0
 
 
 class FillerVariety(Range):
@@ -71,4 +95,5 @@ class SafeAbilityPlacement(Toggle):
 class MLBISOptions(PerGameCommonOptions):
     shuffle_abilities: ShuffleAbilities
     safe_ability_placement: SafeAbilityPlacement
+    goal: Goal
     filler_variety: FillerVariety

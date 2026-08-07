@@ -21,14 +21,13 @@ patched copy to keep around.
 
 ## What is the goal?
 
-Two ways to finish, and you choose which one you use.
+Two ways to finish, picked with the **Goal** option.
 
-The run completes on its own once you have gathered all nine shuffled abilities. Since they are scattered across the
-multiworld, the road there depends on where they landed, and the last area of the game is only reachable in logic once
-you hold them all.
+`abilities`, the default: the run completes on its own once all nine shuffled abilities have reached you. Since safe
+placement keeps them in the opening areas, expect the run to end well before the story does.
 
-Or you declare it finished yourself, with `/bis_goal` in the client. Type it when you beat Dark Bowser, or whenever
-you consider the run over.
+`manual`: nothing ends on its own, and you type `/bis_goal` in the client when you decide the run is over, for
+instance once Dark Bowser is down. Choose this to play the whole game.
 
 That second option exists because the game leaves no readable mark when the story ends: over 800,000 script commands
 were read, field and battle alike, and the final fight writes nothing that distinguishes it. Rather than have the

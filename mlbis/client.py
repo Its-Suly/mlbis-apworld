@@ -147,6 +147,8 @@ class MLBISClient(BizHawkClient):
         # les octroyer, et les abaisser retirerait au joueur le marteau
         # que rien ne lui rendrait.
         self.melange_capacites = False
+        # Vrai si la seed laisse la fin a la main du joueur.
+        self.but_manuel = False
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         try:
@@ -176,6 +178,7 @@ class MLBISClient(BizHawkClient):
             ctx.set_notify(self.cle_index)
             slot_data = args.get("slot_data") or {}
             self.melange_capacites = bool(slot_data.get("shuffle_abilities"))
+            self.but_manuel = bool(slot_data.get("manual_goal"))
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         if ctx.server is None or ctx.slot is None:
@@ -229,7 +232,7 @@ class MLBISClient(BizHawkClient):
         Sans melange des capacites il n'y a pas de but detectable, et le
         client se tait plutot que d'en inventer un.
         """
-        if ctx.finished_game or not self.melange_capacites:
+        if ctx.finished_game or self.but_manuel or not self.melange_capacites:
             return
         recues = {NOM_PAR_ID.get(item.item) for item in ctx.items_received}
         if not set(VARIABLE_DE_CAPACITE).issubset(recues):
