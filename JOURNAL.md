@@ -1,5 +1,31 @@
 # Journal du projet APWorld BIS
 
+## 8 août 2026, le multiworld tourne pour de vrai
+
+Trou rappelé par l'utilisateur : la boucle avait toujours été validée en
+solo. Un item venu d'un autre monde, jamais.
+
+Testable sans deuxième humain, parce qu'Archipelago livre `apquest`, un
+monde de démonstration dont le client Python contient le jeu entier. Une
+seed à deux slots, l'utilisateur tenant les deux rôles.
+
+Le tirage a bien fait les choses : six objets du Compagnon dans nos
+blocs, et **le marteau, un de nos neuf items de progression, dans son
+Bottom Left Chest**. Aucune des six locations concernées n'était déjà
+cochée dans la sauvegarde, donc rien ne partait par accident à la
+connexion.
+
+Résultat : coffre ouvert dans APQuest, marteau arrivé dans BIS. La chaîne
+complète tient, un objet trouvé dans un jeu, expédié par le serveur,
+écrit dans la mémoire d'un autre. Deux clients sur le même serveur, rien
+n'a bronché.
+
+Le sens inverse reste à faire, et il est contraint par une chose qu'on a
+apprise la veille : les six blocs porteurs d'un objet du Compagnon sont
+soit dans des zones non atteintes, soit des touffes d'herbe, et l'herbe
+n'existe que dans le monde de Bowser. Le test se fera donc avec Bowser,
+carte 46, l'entrée de Dimble Wood.
+
 ## 7 août 2026, le raccourci ne démarrait rien, et il l'affirmait
 
 Reprise deux jours après la boucle complète. Première utilisation réelle
