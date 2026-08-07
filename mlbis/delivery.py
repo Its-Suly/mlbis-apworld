@@ -9,13 +9,14 @@ C'est pour cela que la table de correspondance est passee en argument au
 lieu d'etre importee : data.py est genere, il n'a aucune dependance, et
 un test peut le charger seul.
 
-Les quatre categories du pool sont etablies, chacune par une mesure en
+Les cinq categories du pool sont etablies, chacune par une mesure en
 jeu et non par une deduction.
 
     coins        u32 a 02056400                            Verifie
     consumable   octet a 02056406 + index                  Verifie
     gear         octet a 02056427 + identifiant - 1        Verifie
     attack_piece bit du champ 2xxx a 02056038              Verifie
+    capability   bit du champ 2xxx, pose ET retire         Verifie
 
 Verifie pour les consommables, 4 aout 2026 : un Nut ecrit a
 02056406 + 7 apparait au menu et se consomme normalement, et l'index 7
@@ -84,7 +85,8 @@ PLAFOND_PIECES = 999
 PLAFOND_CONSOMMABLE = 99
 PLAFOND_EQUIPEMENT = 99
 
-CATEGORIES_ETABLIES: Set[str] = {"coins", "consumable", "gear", "attack_piece"}
+CATEGORIES_ETABLIES: Set[str] = {"coins", "consumable", "gear", "attack_piece",
+                                 "capability"}
 
 Table = Mapping[str, Tuple[str, int]]
 
@@ -107,17 +109,51 @@ class Ecriture(NamedTuple):
         """Valeur a ecrire, connaissant celle que le jeu porte."""
         if self.operation == "bit":
             return actuel | self.valeur_operande
+        if self.operation == "bit_off":
+            return actuel & ~self.valeur_operande & 0xFF
         return min(actuel + self.valeur_operande, self.plafond)
 
 
-def ecriture_de_flag(variable: int, libelle: str) -> Ecriture:
-    """Lever le bit d'une variable 0x2xxx du champ des drapeaux importants."""
+def ecriture_de_flag(variable: int, libelle: str, pose: bool = True) -> Ecriture:
+    """Poser ou retirer le bit d'une variable 0x2xxx.
+
+    Le retrait est ce qui rend une capacite echangeable. Sans patch de
+    ROM le jeu octroie le marteau au moment prevu, que le serveur l'ait
+    envoye ou non ; c'est donc au client d'abaisser ce qui n'a pas ete
+    recu. **Verifie le 7 aout 2026** : le bit du marteau abaisse a la
+    main, le marteau disparait de la commande de combat, et il revient
+    quand le bit remonte.
+    """
     n = variable - 0x2000
     if not 0 <= n < NB_FLAGS:
         raise ValueError(f"variable {variable:#06x} hors du champ 2xxx")
     return Ecriture(
-        BASE_FLAGS + n // 8, 1, "bit", 1 << (n % 8), 0xFF, libelle
+        BASE_FLAGS + n // 8, 1, "bit" if pose else "bit_off",
+        1 << (n % 8), 0xFF, libelle,
     )
+
+
+def ecritures_capacites(
+    recues: Set[str], table: Table, capacites: Mapping[str, int]
+) -> List[Ecriture]:
+    """L'etat vise du champ des capacites, en une ecriture par capacite.
+
+    Ni index ni memoire d'un passage a l'autre : l'etat se deduit
+    entierement de ce que le serveur a envoye. Une capacite recue est
+    posee, une capacite non recue est retiree, et rejouer la sequence ne
+    change rien. C'est ce qui rend cette moitie insensible aux
+    deconnexions.
+
+    Ce qui n'est pas gere ici est laisse tranquille : seules les
+    variables de `capacites` sont touchees, les autres bits du champ
+    appartiennent au jeu.
+    """
+    ecritures = []
+    for nom, variable in sorted(capacites.items(), key=lambda kv: kv[1]):
+        if table.get(nom, (None, None))[0] != "capability":
+            raise ValueError(f"{nom} n'est pas une capacite dans la table")
+        ecritures.append(ecriture_de_flag(variable, nom, pose=nom in recues))
+    return ecritures
 
 
 def livraison_de(nom: str, table: Table) -> Optional[Ecriture]:

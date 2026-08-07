@@ -52,11 +52,12 @@ from .bitfield import CHAMP_TAILLE, CHAMP_TRESORS, DOMAINE, locations_du_champ
 from .data import BASE_ID, ITEM_DELIVERY, VANILLA_ITEMS
 from .delivery import (
     Ecriture,
+    ecritures_capacites,
     livraison_de,
     livraison_de_lot,
     seuils_de_lot,
 )
-from .items import item_name_to_id
+from .items import VARIABLE_DE_CAPACITE, item_name_to_id
 from .locations import GAME_NAME
 
 if TYPE_CHECKING:
@@ -94,6 +95,11 @@ class MLBISClient(BizHawkClient):
         # repasse avant : sans ce garde-fou, le meme item serait livre
         # plusieurs fois.
         self.index_local = 0
+        # Faux tant que la seed n'a pas dit le contraire. C'est le sens
+        # sur : une seed generee sans melange des capacites laisse le jeu
+        # les octroyer, et les abaisser retirerait au joueur le marteau
+        # que rien ne lui rendrait.
+        self.melange_capacites = False
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
         try:
@@ -120,6 +126,8 @@ class MLBISClient(BizHawkClient):
             self.cle_index = f"mlbis_livres_{ctx.team}_{ctx.slot}"
             self.index_local = 0
             ctx.set_notify(self.cle_index)
+            slot_data = args.get("slot_data") or {}
+            self.melange_capacites = bool(slot_data.get("shuffle_abilities"))
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         if ctx.server is None or ctx.slot is None:
@@ -193,6 +201,21 @@ class MLBISClient(BizHawkClient):
         for nom, compte in recues.items():
             if compte >= SEUILS[nom]:
                 ecritures.extend(livraison_de_lot(nom, ITEM_DELIVERY))
+
+        # Les capacites, l'autre moitie sans index. Elles sont posees ou
+        # RETIREES selon ce que le serveur a envoye : sans patch de ROM,
+        # le jeu octroie le marteau au moment prevu, et c'est ici qu'il
+        # est repris. Retrait Verifie en jeu le 7 aout 2026.
+        if self.melange_capacites:
+            noms_recus = {
+                NOM_PAR_ID.get(item.item) for item in ctx.items_received
+            }
+            ecritures.extend(ecritures_capacites(
+                {n for n in noms_recus if n in VARIABLE_DE_CAPACITE},
+                ITEM_DELIVERY,
+                VARIABLE_DE_CAPACITE,
+            ))
+
         if ecritures:
             await self.appliquer(ctx, ecritures)
 

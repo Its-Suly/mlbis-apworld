@@ -765,6 +765,41 @@ ZONES = [
     'Trash Pit',
 ]
 
+# les regions dans l'ordre du parcours, avec la confiance
+# qu'on a dans ce rang. Source : data/ordre_zones.csv
+ZONE_ORDER = [
+    (1, 'Trash Pit', 'guide'),
+    (2, 'Cavi Cape', 'guide'),
+    (3, 'Plack Beach', 'guide'),
+    (4, 'Pump Works', 'guide'),
+    (5, 'Dimble Wood', 'guide'),
+    (6, 'Bumpsy Plains', 'guide'),
+    (7, 'Bowser Path', 'guide'),
+    (8, 'Flab Zone', 'guide'),
+    (9, 'Tunnel', 'guide'),
+    (10, 'Toad Town', 'guide'),
+    (11, 'Blubble Lake', 'faible'),
+    (12, 'Tower of Yikk', 'faible'),
+    (13, 'Energy Hold', 'faible'),
+    (14, 'Bowser Castle', 'faible'),
+    (15, 'Airway', 'faible'),
+    (16, "Peach's Castle", 'faible'),
+]
+
+# (nom d'item, variable 2xxx, zone ou le jeu l'octroie)
+# Les seuls items de progression du monde.
+CAPABILITIES = [
+    ('Hammer', 0x2001, 'Trash Pit'),
+    ('Spin Jump', 0x2002, 'Flab Zone'),
+    ('Drill Bros', 0x2003, 'Energy Hold'),
+    ('Sliding Haymaker', 0x2005, 'Dimble Wood'),
+    ('Body Slam', 0x2006, 'Tower of Yikk'),
+    ('Spike Ball', 0x2007, "Peach's Castle"),
+    ('Vacuum Block', 0x200e, 'Plack Beach'),
+    ('Blue Shell Blocks', 0x2025, 'Toad Town'),
+    ('Air Vents', 0x202d, 'Toad Town'),
+]
+
 # nom d'item -> nombre d'exemplaires dans le jeu d'origine
 VANILLA_ITEMS = {
     '1 Coins': 14,
@@ -881,7 +916,10 @@ ITEM_DELIVERY = {
     '5 Coins': ('coins', 5),
     '50 Coins': ('coins', 50),
     '500 Coins': ('coins', 500),
+    'Air Vents': ('capability', 8237),
     'Big Stomp Boots': ('gear', 59),
+    'Blue Shell Blocks': ('capability', 8229),
+    'Body Slam': ('capability', 8198),
     'Brawny Wear': ('gear', 6),
     'Budget Charm': ('gear', 63),
     'Burning Fangs': ('gear', 109),
@@ -893,6 +931,7 @@ ITEM_DELIVERY = {
     'DX SP Socks': ('gear', 21),
     'Delicious Gloves': ('gear', 41),
     'Deluxe HP Socks': ('gear', 19),
+    'Drill Bros': ('capability', 8195),
     'Drumstick Ring': ('gear', 120),
     'EXP Socks': ('gear', 29),
     'Economy Ring': ('gear', 116),
@@ -906,6 +945,7 @@ ITEM_DELIVERY = {
     'Giant Shell': ('gear', 70),
     'Green Shell Piece': ('attack_piece', 8208),
     'Guardian Socks': ('gear', 35),
+    'Hammer': ('capability', 8193),
     'Hard Ring': ('gear', 127),
     'Heart Bean': ('consumable', 20),
     'Heart Wear': ('gear', 5),
@@ -944,11 +984,14 @@ ITEM_DELIVERY = {
     'Rock Shell': ('gear', 85),
     'Rugged Socks': ('gear', 28),
     'Safety Ring': ('gear', 126),
+    'Sliding Haymaker': ('capability', 8197),
     'Snack Basket Piece': ('attack_piece', 8218),
     'Special Bean': ('consumable', 21),
     'Special Boots': ('gear', 51),
     'Special Fangs': ('gear', 106),
     'Special Fangs X': ('gear', 107),
+    'Spike Ball': ('capability', 8199),
+    'Spin Jump': ('capability', 8194),
     'Spin Pipe Piece': ('attack_piece', 8209),
     'Stamina Band': ('gear', 99),
     'Star Candy': ('consumable', 15),
@@ -964,5 +1007,6 @@ ITEM_DELIVERY = {
     'Ultra Mushroom': ('consumable', 2),
     'Ultra Nut': ('consumable', 9),
     'Ultrasyrup Jar': ('consumable', 13),
+    'Vacuum Block': ('capability', 8206),
     'Wicked Shell': ('gear', 89),
 }

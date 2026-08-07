@@ -201,6 +201,91 @@ for nom in sorted(items):
             f"que la table de livraison suive"
         )
 
+# --- capacites, les seuls items de progression ------------------------
+#
+# Une capacite est un bit du champ 2xxx. Deux mesures la rendent
+# utilisable comme `item` :
+#
+#   5 aout 2026  lever le bit donne la capacite, sans sa cinematique
+#   7 aout 2026  l'abaisser la retire proprement, le marteau disparait
+#                de la commande de combat puis revient
+#
+# La seconde est celle qui compte. Sans patch de ROM, le jeu octroie la
+# capacite au moment prevu de toute facon ; c'est le client qui doit
+# abaisser ce que le serveur n'a pas encore envoye. Une capacite qui ne
+# se retire pas ne peut pas etre un item.
+#
+# LA LISTE EST VOLONTAIREMENT COURTE. Neuf capacites de deplacement et de
+# combat, celles qui ouvrent des passages. Sont ecartees, et pourquoi :
+#
+#   0x2000 MINI_MARIO      etat, pas deblocage : le joueur prend et quitte
+#                          la forme a volonte, temoignage du 7 aout 2026
+#   0x2004 FIRE_BREATH     sens inverse, et sa salle d'octroi est ambigue,
+#                          8 salles la posent et 9 la retirent
+#   0x200B 0x200C 0x200D   menus, pas passages
+#   0x2026 a 0x202C        ameliorations de boutique
+#   0x2010 a 0x2022        attaques, deja livrees par leurs pieces
+CAPACITES = {
+    "Hammer": 0x2001,
+    "Spin Jump": 0x2002,
+    "Drill Bros": 0x2003,
+    "Sliding Haymaker": 0x2005,
+    "Body Slam": 0x2006,
+    "Spike Ball": 0x2007,
+    "Vacuum Block": 0x200E,
+    "Blue Shell Blocks": 0x2025,
+    "Air Vents": 0x202D,
+}
+
+FEVENT = RACINE / "data" / "capacites_fevent.csv"
+ORDRE = RACINE / "data" / "ordre_zones.csv"
+
+zone_octroi = {}
+with open(FEVENT, encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        zone_octroi[int(r["variable"], 16)] = r["zones_octroi"]
+
+ordre_zones = []
+with open(ORDRE, encoding="utf-8") as f:
+    for r in csv.DictReader(f):
+        ordre_zones.append((int(r["rang"]), r["zone"], r["confiance"]))
+ordre_zones.sort()
+
+zones_ordonnees = [z for _, z, _ in ordre_zones]
+manquantes = [z for z in vues_zones_tresors if z not in zones_ordonnees]
+if manquantes:
+    raise SystemExit(
+        f"zones sans rang dans data/ordre_zones.csv : {manquantes}. "
+        f"Une region sans rang n'a pas de place dans la chaine."
+    )
+
+capacites = []
+for nom, variable in sorted(CAPACITES.items(), key=lambda kv: kv[1]):
+    zones = zone_octroi.get(variable, "")
+    # Une capacite posee dans plusieurs zones n'a pas de rang unique. On
+    # retient LA PLUS PRECOCE, et le sens de l'erreur est ce qui decide.
+    #
+    # La regle d'acces dit : une zone de rang r exige les capacites de
+    # rang < r. Ce qui est demontre par le jeu d'origine, c'est qu'on
+    # traverse les zones jusqu'a Z SANS la capacite octroyee en Z ; au
+    # dela, on ne sait pas, donc on exige, par prudence.
+    #
+    # Situer l'octroi trop tot ajoute des exigences : le placement est
+    # plus contraint, le joueur ne l'est jamais. Le situer trop tard en
+    # retire, et la un item necessaire peut atterrir derriere le mur
+    # qu'il ouvre. Une seule des deux erreurs bloque une partie.
+    candidates = [z.strip() for z in zones.split("|") if z.strip() in zones_ordonnees]
+    if not candidates:
+        raise SystemExit(
+            f"capacite {nom!r} : aucune de ses zones d'octroi {zones!r} "
+            f"n'a de rang. Completer data/ordre_zones.csv."
+        )
+    zone = min(candidates, key=zones_ordonnees.index)
+    capacites.append((nom, variable, zone))
+
+for nom, variable, _ in capacites:
+    livraison[nom] = ("capability", variable)
+
 couverture = Counter(cat for cat, _ in livraison.values())
 
 lignes_py = [
@@ -235,6 +320,20 @@ lignes_py.append("# zones portant au moins un tresor, dans l'ordre d'apparition"
 lignes_py.append("ZONES = [")
 for zone in vues_zones_tresors:
     lignes_py.append(f"    {zone!r},")
+lignes_py.append("]")
+lignes_py.append("")
+lignes_py.append("# les regions dans l'ordre du parcours, avec la confiance")
+lignes_py.append("# qu'on a dans ce rang. Source : data/ordre_zones.csv")
+lignes_py.append("ZONE_ORDER = [")
+for rang, zone, confiance in ordre_zones:
+    lignes_py.append(f"    ({rang}, {zone!r}, {confiance!r}),")
+lignes_py.append("]")
+lignes_py.append("")
+lignes_py.append("# (nom d'item, variable 2xxx, zone ou le jeu l'octroie)")
+lignes_py.append("# Les seuls items de progression du monde.")
+lignes_py.append("CAPABILITIES = [")
+for nom, variable, zone in capacites:
+    lignes_py.append(f"    ({nom!r}, {variable:#06x}, {zone!r}),")
 lignes_py.append("]")
 lignes_py.append("")
 lignes_py.append("# nom d'item -> nombre d'exemplaires dans le jeu d'origine")

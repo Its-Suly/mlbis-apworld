@@ -2,11 +2,11 @@
 
 Développement d'un APWorld Archipelago pour Mario & Luigi : Voyage au
 Centre de Bowser, version NDS de 2009. **La boucle complète tourne**,
-validée en jeu le 5 août 2026 : 21 checks remontés au serveur, 21 items
-renvoyés, écrits en mémoire et vus à l'écran. Le monde vit dans
-`mlbis/` : **725 `location`**, 647 trésors et 78 pièces d'attaque,
-16 `region`. Tests `tools/test_generation.py` et `test_client.py`.
-Ce qui manque est la **logique**, pas la technique.
+validée en jeu le 5 août 2026 : 21 checks remontés, 21 items renvoyés,
+vus à l'écran. Le monde vit dans `mlbis/` : **725 `location`**, 647
+trésors et 78 pièces d'attaque, 16 `region`, et depuis le 7 août une
+**logique**, neuf capacités en items de progression. Tests
+`tools/test_generation.py` et `test_client.py`.
 
 ## Version de ROM, figée
 
@@ -66,13 +66,11 @@ dans `empaquetage-apworld.md`. À relire avant le premier empaquetage.
 
 ## Piège de logique connu
 
-Si une règle d'accès de transition dépend de l'accessibilité d'une
-autre région, enregistrer une condition indirecte avec
-`multiworld.register_indirect_condition`. Archipelago n'évalue chaque
-transition qu'une fois pendant le parcours du graphe, et une transition
-évaluée trop tôt sera considérée comme infranchissable sans jamais être
-réévaluée. Ce cas est probable sur BIS, où l'accès d'un duo dépend
-souvent de la progression de l'autre.
+Si une règle d'accès lit l'accessibilité d'une autre région, enregistrer
+`multiworld.register_indirect_condition` : Archipelago n'évalue chaque
+transition qu'une fois, et une transition évaluée trop tôt reste
+infranchissable sans être réévaluée. Nos règles actuelles ne lisent que
+des items, donc le piège ne se pose pas encore.
 
 ## Méthode de travail
 
@@ -159,6 +157,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
   `0x2019` levé à `0205603B` fait apparaître Fire Flower au menu, elle se
   joue en entier, démonstration comprise, sans sa cinématique
   d'apprentissage. Les dix `0x2010` à `0x201B` recoupent la ROM sur 10/10
+- **Retirer une capacité marche**, 7 août 2026 : le bit `0x2001` abaissé
+  fait disparaître le marteau de la commande de combat, et il revient
+  quand le bit remonte. C'est ce qui rend une capacité échangeable sans
+  patcher la ROM, le client abaissant ce que le serveur n'a pas envoyé
 - **Où une capacité est octroyée**, 7 août 2026 : un script `FEvent`,
   commande `0x0008` valeur 1, et **l'index de chunk est l'index de
   carte**, 681 des deux côtés. 29 capacités ont une salle unique. Le
@@ -202,11 +204,11 @@ Restent ouverts, plus rien de bloquant :
   **reconnexion** : l'index des items livrés vit dans le `DataStorage`
   du serveur, donc recharger un savestate lui fera croire livrés des
   items que le jeu n'a plus. Défaut connu, écrit dans `client.py`
-- Aucune `access_rule` écrite, mais la zone d'octroi de chaque capacité
-  est mesurée, `data/capacites_fevent.csv`, et les guides de
-  `progression_hypothese.csv` ne servent plus que de recoupement.
-  Manquent l'ordre des zones et le prérequis d'un trésor : aucun bloc ne
-  lit une capacité dans `FEvent`, ce test vit donc dans le code ARM
+- Les `access_rule` existent depuis le 7 août : une zone de rang `r`
+  exige les capacités octroyées avant elle, `data/ordre_zones.csv`.
+  **L'ordre vient d'un guide**, rangs 11 à 16 marqués faibles, et le
+  journal en jouant est ce qui les confirmera. Manque le prérequis d'un
+  trésor donné : aucun bloc ne lit de capacité dans `FEvent`, c'est ARM
 - 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
   Bouncer 4, Yoo Who Cannon 10 qui est octroyée d'un bloc et n'est donc
   pas une `location`. Absentes de `FEvent` et des scripts de combat, à

@@ -33,11 +33,13 @@ sys.path.insert(0, str(RACINE / "mlbis"))
 
 from bitfield import CHAMP_TAILLE, CHAMP_TRESORS, locations_du_champ  # noqa: E402
 from data import (  # noqa: E402
-    ATTACK_PIECES, BASE_ID, ITEM_DELIVERY, LOCATIONS, TREASURES, VANILLA_ITEMS,
+    ATTACK_PIECES, BASE_ID, CAPABILITIES, ITEM_DELIVERY, LOCATIONS, TREASURES,
+    VANILLA_ITEMS,
 )
 from delivery import (  # noqa: E402
-    BASE_CONSOMMABLES, CATEGORIES_ETABLIES, COMPTEUR_PIECES, ecriture_de_flag,
-    couverture, livraison_de, livraison_de_lot, seuils_de_lot,
+    BASE_CONSOMMABLES, BASE_FLAGS, CATEGORIES_ETABLIES, COMPTEUR_PIECES,
+    couverture, ecriture_de_flag, ecritures_capacites, livraison_de,
+    livraison_de_lot, seuils_de_lot,
 )
 
 LOCATION_TO_BIT = {nom: rang for rang, nom, _, _ in LOCATIONS}
@@ -143,6 +145,13 @@ for nom, (categorie, _) in sorted(ITEM_DELIVERY.items()):
         if len(lot) != 2 or any(e.operation != "bit" for e in lot):
             mauvaises.append(f"{nom} : lot mal forme, {lot}")
         continue
+    if categorie == "capability":
+        # Une capacite ne se livre pas non plus par livraison_de : son
+        # etat se recalcule en entier a chaque passage, pose ou retrait
+        # compris, donc c'est ecritures_capacites qui la traite.
+        if ecriture is not None:
+            mauvaises.append(f"{nom} : une capacite ne passe pas par livraison_de")
+        continue
     if categorie in CATEGORIES_ETABLIES:
         if ecriture is None:
             mauvaises.append(f"{nom} : categorie etablie mais aucune ecriture")
@@ -210,6 +219,41 @@ else:
     )
     print(f"plafonds : OK, {exemplaires_ok} exemplaires sur "
           f"{sum(VANILLA_ITEMS.values())} livrables aujourd'hui")
+
+# Les capacites : posees si recues, RETIREES sinon. C'est le retrait qui
+# les rend echangeables, et c'est lui qu'un test doit surveiller, parce
+# qu'une erreur de sens rendrait le jeu injouable au lieu de trop donner.
+capacites = {nom: var for nom, var, _ in CAPABILITIES}
+mauvaises = []
+if capacites:
+    ecrits = ecritures_capacites({"Hammer"}, ITEM_DELIVERY, capacites)
+    par_nom = {e.libelle: e for e in ecrits}
+    if len(ecrits) != len(capacites):
+        mauvaises.append(f"{len(ecrits)} ecritures pour {len(capacites)} capacites")
+    marteau = par_nom.get("Hammer")
+    # 0x2001 : octet 0 du champ, bit 1, donc masque 2 a 0x056038.
+    if marteau is None or marteau.operation != "bit" or \
+            marteau.adresse != BASE_FLAGS or marteau.valeur_operande != 2:
+        mauvaises.append(f"Hammer recu, ecriture inattendue : {marteau}")
+    elif marteau.valeur(0x00) != 0x02 or marteau.valeur(0xFF) != 0xFF:
+        mauvaises.append(f"Hammer recu ne pose pas son bit : {marteau.valeur(0)}")
+    for nom, e in par_nom.items():
+        if nom == "Hammer":
+            continue
+        if e.operation != "bit_off":
+            mauvaises.append(f"{nom} non recu devrait etre retire, pas {e.operation}")
+        elif e.valeur(0xFF) != 0xFF - e.valeur_operande or e.valeur(0x00) != 0x00:
+            mauvaises.append(f"{nom} : retrait mal calcule")
+    # Rejouer doit etre sans effet : meme entree, memes ecritures.
+    if ecritures_capacites({"Hammer"}, ITEM_DELIVERY, capacites) != ecrits:
+        mauvaises.append("ecritures_capacites n'est pas deterministe")
+
+if mauvaises:
+    print(f"ECHEC sur les capacites : {mauvaises[:5]}")
+    echecs += 1
+else:
+    print(f"capacites : OK, {len(capacites)} posees ou retirees selon les items "
+          f"recus, marteau conforme a la mesure du 7 aout")
 
 print()
 if echecs:
