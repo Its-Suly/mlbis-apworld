@@ -154,6 +154,76 @@ J'avais eu tort d'écarter les guides le 5 août, j'aurais eu tort de les
 prendre au mot aujourd'hui. Ils nomment le monde des frères, l'`access_rule`
 a besoin de celui qui déclenche.
 
+### Le test qui a décidé du projet, et il tenait en un bit
+
+En préparant les capacités comme `item`, un problème est apparu qui
+n'était dans aucune note : on ne patche pas la ROM, donc le jeu octroie
+le marteau au moment prévu, que le serveur l'ait envoyé ou non. Mettre le
+marteau dans la pool ne sert à rien s'il est donné gratuitement.
+
+La seule parade à notre portée est que le client **abaisse** les bits non
+reçus. Restait à savoir si le jeu supporte de perdre une capacité.
+
+`tools/basculer_capacite.lua`, deux minutes de manipulation : bit `0x2001`
+abaissé, le marteau disparaît de la commande de combat, bit remonté, il
+revient. **Vérifié.** Tout le reste de la séance découle de cette
+réponse ; si elle avait été non, la décision de faire des capacités des
+items serait tombée avec elle.
+
+### Trois hypothèses d'ordre, tombées en série
+
+L'ordre des zones ne se lit nulle part, et il a fallu trois essais pour
+en être sûr.
+
+Le tableau des 32 noms de zones est dans un ordre qui n'est pas celui du
+jeu, Peach's Castle en 1 et Dimble Wood en 2. Les index de carte se
+chevauchent d'une zone à l'autre. Et les 89 fichiers de la ROM ne portent
+aucune table de séquence.
+
+Le troisième essai était le plus tentant : si les drapeaux d'histoire
+étaient alloués dans l'ordre où l'histoire a été écrite, trier par numéro
+de variable donnerait l'ordre. Balayage fait, résultat absurde, Airway en
+premier et Cavi Cape en avant-dernier. Deux minutes pour l'écrire, deux
+minutes pour le tuer, et le fichier produit a été retiré du dépôt :
+`data/` ne doit contenir que ce qu'un script de `tools/` sait refaire.
+
+Conclusion assumée : **l'ordre vient d'un guide**, pas de la ROM.
+`data/ordre_zones.csv` le dit ligne par ligne, six rangs sur seize sont
+marqués faibles.
+
+### Le sens de l'erreur, choisi une fois pour toutes
+
+Première version du générateur : pour une capacité posée dans plusieurs
+zones, retenir la plus tardive. C'était l'erreur exactement à l'envers,
+et le marteau l'a montré, attribué à Dimble Wood au lieu du Trash Pit.
+
+Le raisonnement qui corrige. La règle dit qu'une zone de rang `r` exige
+les capacités octroyées avant elle. Situer un octroi trop tôt **ajoute**
+des exigences : le placement est plus contraint, le joueur ne l'est
+jamais. Le situer trop tard en **retire**, et là un item nécessaire peut
+atterrir derrière le mur qu'il ouvre. Une seule des deux erreurs bloque
+une partie.
+
+Corrigé en `min` au lieu de `max`, les neuf capacités retombent alors
+exactement là où les guides les placent. Six recoupements sur les six que
+les guides citent, dont Body Slam que le guide met à Blubble Lake et que
+le balayage met à Tower of Yikk, la tour du lac.
+
+Le même principe a tranché deux autres choix : Peach's Castle en fin de
+chaîne bien qu'elle soit aussi le prologue, et la victoire qui exige les
+neuf capacités alors que sa région n'en exige que huit.
+
+### Ce qui tourne maintenant
+
+Génération : six sphères de progression, le marteau seul accessible au
+départ, puis Spin Jump, Vacuum et Drill Bros dans les zones qu'il ouvre.
+C'est la première fois que le monde produit un vrai parcours.
+
+Le client abaisse ce qui n'a pas été reçu, mais seulement si la seed le
+dit : `fill_slot_data` porte `shuffle_abilities`, et le client suppose
+**non** en son absence. Une seed d'avant aujourd'hui reste donc jouable
+telle quelle, ce qui protège la partie en cours.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est **exactement à 220 lignes**, le plafond. Les deux acquis
