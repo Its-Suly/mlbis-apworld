@@ -1,0 +1,4 @@
+name: Compagnon
+description: monde de demonstration, sert de second joueur
+game: APQuest
+APQuest: {}
