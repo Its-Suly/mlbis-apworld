@@ -224,6 +224,48 @@ dit : `fill_slot_data` porte `shuffle_abilities`, et le client suppose
 **non** en son absence. Une seed d'avant aujourd'hui reste donc jouable
 telle quelle, ce qui protège la partie en cours.
 
+### Le retrait, vérifié une seconde fois et pour de bon
+
+Seed neuve avec la logique, `AP_02053695854357871005`, jouée sur la
+sauvegarde du jour. Prédiction écrite avant : 43 locations déjà cochées
+partent à la connexion, le Vacuum Block est reçu parce que sa location
+est déjà ramassée, les huit autres capacités sont reprises.
+
+Observé : **le marteau a disparu, y compris dans le menu de combat.**
+Le retrait ne marche donc pas seulement à la main dans un script Lua, il
+marche par le client, automatiquement, sur huit capacités d'un coup.
+
+La moitié positive, elle, n'a rien démontré : le joueur avait déjà le
+vacuum par le jeu, donc rien ne distingue une pose du client d'un octroi
+normal. Sans importance, la pose était acquise depuis le 5 août.
+
+Un détail vaut mieux que la moitié ratée : le joueur a toujours son
+souffle de feu. `0x2004` est justement la capacité qu'on a laissée hors
+de la pool ce matin, sens inversé et salle d'octroi ambiguë. Le client
+ne touche donc bien qu'aux neuf bits qu'il gère.
+
+### Le joueur ne veut pas finir le jeu avant l'APWorld
+
+Contrainte posée en fin de séance, et elle change la méthode : plus
+question de mesurer la progression en jouant, sous peine de spoiler la
+partie que l'APWorld est censé rendre intéressante.
+
+Ce qui perd sa route de mesure : l'ordre des zones, les 12 pièces
+d'attaque de Flab Zone et Energy Hold, et tout test au-delà de Dimble
+Wood. Ce qui reste possible sans rien découvrir : tout test dans les
+zones déjà traversées, ce qui a suffi pour celui d'aujourd'hui.
+
+Deux pistes explorées dans la foulée. Le graphe des salles existe,
+commande `0x011E` nommée par `bis_docs_commands.yml:649-652`, 1215
+changements de salle et 938 arêtes, mais il ne porte que les transitions
+de cinématique ; six liens inter-zones seulement en sortent, tous dans la
+partie tardive de la table d'ordre, celle qui était marquée faible. Et
+les 12 pièces ne sont pas dans la table des trésors : les 38 entrées
+inexploitables sont toutes des touffes d'herbe vides.
+
+Reste à chercher la table des sorties de carte, que ni Randoglobin ni
+BIS-docs ne documentent.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est **exactement à 220 lignes**, le plafond. Les deux acquis

@@ -156,10 +156,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
   `0x2019` levé à `0205603B` fait apparaître Fire Flower au menu, elle se
   joue en entier, démonstration comprise, sans sa cinématique
   d'apprentissage. Les dix `0x2010` à `0x201B` recoupent la ROM sur 10/10
-- **Retirer une capacité marche**, 7 août 2026 : le bit `0x2001` abaissé
-  fait disparaître le marteau de la commande de combat, et il revient
-  quand le bit remonte. C'est ce qui rend une capacité échangeable sans
-  patcher la ROM, le client abaissant ce que le serveur n'a pas envoyé
+- **Retirer une capacité marche**, 7 août 2026, à la main puis **par le
+  client en session réelle** : huit capacités non reçues reprises d'un
+  coup, marteau absent jusque dans le menu de combat. C'est ce qui rend
+  une capacité échangeable sans patcher la ROM
 - **Où une capacité est octroyée**, 7 août 2026 : un script `FEvent`,
   commande `0x0008` valeur 1, et **l'index de chunk est l'index de
   carte**, 681 des deux côtés. 29 capacités ont une salle unique. Le
