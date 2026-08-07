@@ -1531,26 +1531,28 @@ par les développeurs du jeu.
 pour désassembler, mode ARM et non Thumb. Installé dans le venv de la
 racine le 7 août 2026.
 
-### Le type d'un trésor n'est pas son prérequis, **non tranché**
+### Le type d'un trésor dit le côté du jeu, pas le prérequis, **Vérifié**
 
-Hypothèse tentante : un bloc brique se casse au marteau, un haricot se
-déterre, donc le type dirait la capacité exigée, et la logique passerait
-au grain du bloc sans lire d'ARM.
+Hypothèse tentante : un bloc brique se casse au marteau, donc le type
+dirait la capacité exigée, et la logique passerait au grain du bloc sans
+lire d'ARM.
 
-La distribution par zone ne tranche pas. Les 20 touffes d'herbe sont dans
-Dimble Wood et Bumpsy Plains, les 197 haricots sont absents de toutes les
-zones intérieures au corps de Bowser, Trash Pit, Pump Works, Flab Zone,
-Airway. Ça s'explique aussi bien par le décor que par une capacité : il
-n'y a pas de terre à creuser dans un estomac.
+Elle est fausse, et c'est le joueur qui l'a vue en une phrase : à Plack
+Beach, c'est **Bowser** qui se déplace, pas les frères. Le marteau est un
+outil des frères. La table confirme d'un coup :
 
-Le seul point de mesure est que le Trash Pit, seule zone d'avant toute
-capacité, ne porte **que** des blocs `?`, 11 sur 11. Compatible avec
-l'hypothèse, mais compatible aussi avec le hasard.
+| | bloc `?` | bloc brique | haricot | touffe d'herbe |
+|---|---|---|---|---|
+| dans Bowser | 133 | **0** | 25 | 0 |
+| monde extérieur | 148 | **144** | 172 | 20 |
 
-**Le test qui trancherait**, et il ne coûte rien maintenant qu'on sait
-retirer une capacité : abaisser le bit du marteau et essayer de casser un
-bloc brique dans une zone déjà visitée. S'il résiste, 144 locations
-gagnent un prérequis mesuré.
+Zéro bloc brique à l'intérieur du corps, 144 dehors. Le type encode donc
+de quel côté du jeu se trouve le trésor, ce que la zone disait déjà.
+Aucune information nouvelle pour la logique, et un test en jeu évité.
+
+À noter pour ne pas répéter une erreur écrite ici puis corrigée le même
+jour : les haricots **ne sont pas** absents de l'intérieur, il y en a 25,
+dans Energy Hold et Airway.
 
 ### Le marteau confirme un nom, **Vérifié**
 
