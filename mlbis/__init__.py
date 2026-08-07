@@ -16,13 +16,14 @@ Ce qui est provisoire, et pourquoi :
   - le prerequis d'un tresor particulier reste inconnu : la logique est
     au grain de la zone, jamais du bloc
 """
+from collections import Counter
 from typing import Any, Dict
 
 from BaseClasses import Tutorial
 from worlds.AutoWorld import WebWorld, World
 
 from .client import MLBISClient  # noqa: F401  enregistre le client BizHawk
-from .data import LOCATIONS
+from .data import LOCATIONS, VANILLA_ITEMS
 from .items import (
     MLBISItem,
     NOMS_CAPACITES,
@@ -100,6 +101,31 @@ class MLBISWorld(World):
                 )
             for i, nom in zip(sortants, sorted(NOMS_CAPACITES)):
                 pool[i] = nom
+
+        variete = int(self.options.filler_variety)
+        if variete:
+            # Le sac d'origine est desequilibre parce que le jeu l'est :
+            # 197 emplacements de haricot, donc 197 haricots sur 725
+            # items, dont 109 Heart Bean. Un item sur quatre recu en est
+            # un. On redistribue une part des exemplaires dupliques.
+            #
+            # Deux garde-fous. Le tirage passe par self.random, donc deux
+            # generations de la meme YAML donnent le meme sac. Et un nom
+            # n'est jamais reduit a zero : un item qui disparaitrait du
+            # pool disparaitrait aussi des seeds ou quelqu'un l'attend.
+            compte = Counter(pool)
+            candidats = [i for i, nom in enumerate(pool)
+                         if nom not in NOMS_CAPACITES and compte[nom] > 1]
+            self.random.shuffle(candidats)
+            noms_filler = sorted(n for n in VANILLA_ITEMS if n not in NOMS_CAPACITES)
+            for i in candidats[:len(candidats) * variete // 100]:
+                ancien = pool[i]
+                if compte[ancien] <= 1:
+                    continue
+                nouveau = self.random.choice(noms_filler)
+                compte[ancien] -= 1
+                compte[nouveau] += 1
+                pool[i] = nouveau
 
         for nom in pool:
             self.multiworld.itempool.append(self.create_item(nom))
