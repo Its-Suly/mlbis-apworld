@@ -1,5 +1,81 @@
 # Journal du projet APWorld BIS
 
+## 7 août 2026, le raccourci ne démarrait rien, et il l'affirmait
+
+Reprise deux jours après la boucle complète. Première utilisation réelle
+de `tools/jouer.cmd` : le client reste sur `Awaiting connection to BizHawk
+before authenticating`.
+
+### Un script écrit après le test qu'il était censé rejouer
+
+`jouer.cmd` a été committé le 5 août à 19h22, huit minutes après le test
+réussi de 19h14. Il n'avait donc jamais tourné en entier, et son message
+de commit, « One desktop shortcut starts a whole instrumented play
+session », affirmait précisément ce qui n'avait pas été vérifié.
+
+La différence avec le 5 août tient en un dossier. Ce jour-là le
+connecteur était ouvert à la main depuis `vendor\Archipelago\data\lua` ;
+le raccourci, lui, charge `tools\session_bizhawk.lua`, qui le `dofile`
+depuis ailleurs.
+
+### Le diagnostic avant la trace, et ce que la trace ajoute
+
+Symptôme utile : le journal des capacités écrivait normalement pendant
+que le client attendait. Deux moitiés du même script Lua, une vivante,
+une morte, donc l'échec était dans le chargement du connecteur et non
+dans BizHawk.
+
+Hypothèse posée avant de demander quoi que ce soit, en lisant
+`connector_bizhawk_generic.lua:288-290` et surtout `socket.lua:44-47`,
+qui construit le chemin de sa DLL avec `io.popen("cd")`, c'est-à-dire le
+répertoire courant. Quatre `require` et une DLL, tous relatifs.
+
+La trace demandée à l'utilisateur confirme, `module 'lua_5_3_compat' not
+found`, et apprend une chose que je n'avais pas : `package.path` est
+construit sur le dossier de BizHawk, plus l'entrée `.\`. C'est donc bien
+le répertoire courant qui décide, et lui seul.
+
+Ce que la trace ne dit pas, et que je n'ai pas tranché : si ce répertoire
+vient du script chargé ou du processus qui lance BizHawk. Les deux
+lectures expliquent l'erreur. Plutôt que de choisir au jugé, le correctif
+couvre les deux, une copie dans `data\lua` et un `/D` sur le même
+dossier.
+
+### Correctif, et un garde-fou qui parle
+
+`jouer.cmd` copie `tools\session_bizhawk.lua` dans `data\lua` à chaque
+lancement et démarre BizHawk là. La source reste dans `tools`, seul
+fichier suivi par git, `vendor/` étant ignoré ; recloner Archipelago ne
+casse rien.
+
+`session_bizhawk.lua` refuse maintenant de démarrer s'il n'ouvre pas un
+fichier témoin en relatif, et dit quoi faire en une ligne au lieu d'une
+trace NLua de quatorze. Commit `4b812d4`. **Non exercé** : la validation
+viendra au prochain lancement du raccourci, et cette fois elle sera faite
+avant d'écrire qu'il marche.
+
+La session en cours a été débloquée à chaud, sans rien relancer, par un
+`Ctrl+O` sur le connecteur depuis `data\lua`. La partie était déjà
+chargée et le journal déjà vivant.
+
+### Invalid Slot, réglé par deux lectures et non par des essais
+
+Quatre tentatives de nom refusées. Deux sources ont suffi : le serveur
+imprime le nom qu'il a reçu, `Test Bis`, `Test Bis2`, `TestBis`,
+`TESTBIS` ; et le `slot_info` du multidata, lu en dépliant
+`seeds/AP_14089154938208861744.zip`, donne `TestBIS`. La comparaison
+respecte la casse.
+
+Rien à corriger dans le projet, mais l'écart entre un nom choisi par un
+script et un nom retapé à la main est un piège gratuit. À voir si une
+prochaine seed ne mérite pas un nom insensible à la casse.
+
+### Ce qui tourne au moment d'écrire
+
+Connecteur, client, serveur et partie du 5 août, avec ses 22 items déjà
+reçus rechargés depuis l'`.apsave`. La mesure de progression commence,
+journal en marche.
+
 ## 5 août 2026, la question qui décidait de tout, et ce qu'elle a ouvert
 
 Séance ouverte sur une reprise, cinq dumps déjà pris par l'utilisateur
