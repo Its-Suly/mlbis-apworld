@@ -1395,7 +1395,7 @@ Les capacités qui décideront des `access_rule` :
 
 | variable | nom | salle | zone |
 |---|---|---|---|
-| `0x2000` | MINI_MARIO | 13 | Pump Works |
+| `0x2000` | MINI_MARIO | 13 | Pump Works, mais c'est un état, voir plus bas |
 | `0x2001` | HAMMER | 539 | Trash Pit |
 | `0x2002` | SPIN_JUMP | 104 | Flab Zone |
 | `0x2003` | DRILL_BROS | 229 | Energy Hold |
@@ -1459,13 +1459,22 @@ fois par heure de jeu : ce sont des états de terrain, ils ne doivent
 jamais devenir des `item`. Ceux qui ne redescendent jamais sont les
 capacités livrables.
 
-**Cas non tranché, `MINI_MARIO`.** Il monte puis retombe après 15
-trésors, remonte après 19 et reste. Un déblocage permanent ne ferait pas
-ça. Soit le bit dit « Mario est actuellement miniature » et la capacité
-se lit ailleurs, soit il est repris et rendu par une séquence
-d'histoire ; le balayage voit d'ailleurs un retrait au chunk 28, à Arm
-Center. Le trancher avant d'en faire un prérequis : deux dumps encadrant
-une transformation suffiraient.
+**`MINI_MARIO` est un état, pas un déblocage, Vérifié en jeu.** Le bit
+monte puis retombe après 15 trésors, remonte après 19. Témoignage du
+joueur le 7 août 2026 : la capacité est débloquée une fois pour toutes,
+puis **il active et désactive la forme miniature lui-même** pour
+progresser. `0x2000` dit donc « Mario est actuellement miniature ».
+
+Conséquence pour la logique, à ne pas rater : ce bit **ne peut pas
+servir de prérequis**. Une `access_rule` qui le lirait serait vraie ou
+fausse selon la forme de Mario à l'instant du test. Le déblocage se lit
+ailleurs, sans doute dans un drapeau d'histoire `0xE7xx`, et reste **à
+trouver**. Le chunk 13 de Pump Works, qui pose le bit la première fois,
+est le bon endroit où chercher le drapeau voisin.
+
+La même prudence vaut pour toute capacité dont le bit sert aussi d'état.
+Le journal en jouant est le seul moyen de les repérer : un balayage
+statique ne distingue pas un octroi d'un basculement.
 
 ### Le marteau confirme un nom, **Vérifié**
 
