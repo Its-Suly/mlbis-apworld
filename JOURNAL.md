@@ -42,6 +42,49 @@ Confirmation gratuite dans la deuxième ligne : `Brick 77` cassée par
 **Bowser**. Les blocs brique sont bien de son côté, ce que la table
 disait la veille et que personne n'avait vu faire.
 
+### La reconnexion, quatre exigences en un test
+
+Le joueur avait ouvert tous les coffres d'APQuest, donc plus aucun objet
+à nous n'y attendait. Contretemps devenu opportunité : la console du
+serveur sait créer un objet, `MultiServer.py:2400`, ce qui déclenche un
+cas qu'`adding games.md` exige de supporter et qu'on n'avait jamais
+provoqué, un item **sans location d'origine**.
+
+Protocole : client fermé, `/send TestBIS Super Mushroom` côté serveur,
+deux touffes coupées en jeu, puis reconnexion.
+
+Quatre résultats d'un coup. Les checks ramassés client fermé partent à la
+reconnexion, `Grass 650` et `Grass 655`, exigence dure jamais vérifiée.
+L'objet arrivé pendant l'absence est livré. L'objet créé par la console
+est géré. Et surtout **les pièces n'ont pas bougé** : l'index côté
+serveur ne rejoue rien.
+
+Ce qui reste défectueux est un cas distinct, et il ne faut pas les
+confondre : recharger un **savestate** ramène le jeu en arrière sans que
+le serveur le sache. La reconnexion, elle, tient.
+
+### Le sac était monotone, et le jeu en est la cause
+
+Remarque du joueur : il recevait un nombre anormal de haricots. Mesure :
+197 des 725 items en sont, soit 27 % du sac, dont 109 Heart Bean à eux
+seuls. Ce n'est pas un défaut de livraison, c'est le jeu, qui compte 197
+emplacements de haricot.
+
+D'où l'option `filler_variety`, de 0 à 100, qui redistribue cette part
+des exemplaires dupliqués sur tous les autres noms. À 80, les haricots
+tombent à 7 % et l'item le plus fréquent passe de 109 exemplaires à 23.
+Le sac reste à 725, aucun nom n'est réduit à zéro, et le tirage passe par
+le générateur de la seed. Défaut par défaut à 0 : changer ce qu'une seed
+contient se demande, ne s'impose pas.
+
+### Un plafond qui confisquait
+
+Trouvé en préparant le test, pas en jouant. La partie portait 1154
+pièces et notre plafond vaut 999, valeur de prudence et non maximum
+mesuré. Livrer 50 pièces calculait `min(1204, 999)` et aurait **retiré
+155 pièces** au joueur. Corrigé en `max(actuel, min(...))`, le plafond
+écrête sans confisquer, et le test le vérifie à 1154.
+
 ## 7 août 2026, le raccourci ne démarrait rien, et il l'affirmait
 
 Reprise deux jours après la boucle complète. Première utilisation réelle
