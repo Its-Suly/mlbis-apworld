@@ -199,10 +199,10 @@ l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
   Le but est donc « réunir les neuf capacités », lu dans `items_received`
   sans adresse mémoire. Le vrai but attend une lecture du code ARM, dont
   l'entrée est trouvée : pools littéraux, `capstone`, `formats-bis.md`
-- **Recevoir d'un autre monde est acquis**, 8 août 2026 : marteau placé
-  dans un coffre d'APQuest et arrivé en jeu. **Restent non testés** :
-  envoyer vers un autre monde, une partie randomisée dans la durée, et
-  la reconnexion, défaut écrit dans `client.py`
+- **Le multiworld est acquis dans les deux sens**, 8 août 2026 : marteau
+  reçu depuis un coffre d'APQuest, épée envoyée depuis une touffe de
+  Dimble Wood. **Restent non testés** : une partie randomisée dans la
+  durée, et la reconnexion, défaut écrit dans `client.py`
 - Les `access_rule` existent depuis le 7 août : une zone de rang `r`
   exige les capacités octroyées avant elle, `data/ordre_zones.csv`.
   **L'ordre vient d'un guide**, rangs 11 à 16 marqués faibles, et le

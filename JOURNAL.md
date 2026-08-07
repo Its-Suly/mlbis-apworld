@@ -20,11 +20,27 @@ complète tient, un objet trouvé dans un jeu, expédié par le serveur,
 écrit dans la mémoire d'un autre. Deux clients sur le même serveur, rien
 n'a bronché.
 
-Le sens inverse reste à faire, et il est contraint par une chose qu'on a
-apprise la veille : les six blocs porteurs d'un objet du Compagnon sont
-soit dans des zones non atteintes, soit des touffes d'herbe, et l'herbe
-n'existe que dans le monde de Bowser. Le test se fera donc avec Bowser,
-carte 46, l'entrée de Dimble Wood.
+Le sens inverse était contraint par une chose apprise la veille : les six
+blocs porteurs d'un objet du Compagnon sont soit dans des zones non
+atteintes, soit des touffes d'herbe, et l'herbe n'existe que dans le
+monde de Bowser. Aucun n'était accessible avec les frères.
+
+Fait avec Bowser dans Dimble Wood, et le journal du serveur donne les
+quatre lignes qui closent le sujet :
+
+```
+Compagnon sent Hammer to TestBIS (Bottom Left Chest)
+TestBIS sent Supersyrup Jar to TestBIS (Dimble Wood - Brick 77)
+TestBIS sent 100 Coins to TestBIS (Dimble Wood - Grass 70)
+TestBIS sent Sword to Compagnon (Dimble Wood - Grass 598)
+```
+
+Les trois routages possibles y sont : d'un autre monde vers nous, de nous
+vers nous, de nous vers un autre monde. **Le multiworld est acquis.**
+
+Confirmation gratuite dans la deuxième ligne : `Brick 77` cassée par
+**Bowser**. Les blocs brique sont bien de son côté, ce que la table
+disait la veille et que personne n'avait vu faire.
 
 ## 7 août 2026, le raccourci ne démarrait rien, et il l'affirmait
 
