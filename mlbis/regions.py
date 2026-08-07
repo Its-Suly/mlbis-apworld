@@ -41,7 +41,11 @@ from .items import MLBISItem, VICTORY
 from .locations import MLBISLocation, ZONE_DE_LOCATION, location_name_to_id
 
 MENU = "Menu"
-FIN = "Defeat Dark Bowser"
+# Le but n'est pas la fin de l'histoire, faute de savoir la detecter : le
+# drapeau de Dark Bowser vaincu n'est pas trouve, detail dans
+# client.py:signaler_victoire. Reunir les neuf capacites se lit, lui,
+# dans les items recus, sans aucune adresse memoire.
+FIN = "Gather All Nine Abilities"
 REGION_FIN = "Peach's Castle"
 
 

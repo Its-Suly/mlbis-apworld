@@ -193,12 +193,10 @@ l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
 
 ## Non résolu
 
-- **Le client ne signale jamais la victoire.** `StatusUpdate` avec
-  `CLIENT_GOAL` est une exigence dure d'Archipelago, `adding games.md`.
-  Modèle : `worlds/mlss/Client.py:243-244`. Il faut le drapeau `Exxx` de
-  Dark Bowser vaincu, cherchable dans `FEvent`, salle finale
-- **Manquent les deux docs exigées** pour entrer dans le cœur : un
-  `en_*.md` d'info de jeu et un guide d'installation, dans `mlbis/docs/`
+- **Le drapeau de fin d'histoire reste introuvable.** L'unique combat
+  marqué `final battle`, chunk 557, n'écrit que des variables génériques.
+  Le but est donc « réunir les neuf capacités », lu dans `items_received`
+  sans adresse mémoire. Le vrai but attend une lecture du code ARM
 - **Reconnexion** jamais testée : l'index des items livrés vit dans le
   `DataStorage` du serveur, donc recharger un savestate lui fera croire
   livrés des items que le jeu n'a plus. Défaut écrit dans `client.py`

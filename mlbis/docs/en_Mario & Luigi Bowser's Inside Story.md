@@ -21,7 +21,12 @@ patched copy to keep around.
 
 ## What is the goal?
 
-Finish the story: defeat Dark Bowser. Since the abilities are shuffled, the road there depends on where they landed.
+Gather all nine shuffled abilities. Since they are scattered across the multiworld, the road there depends on where
+they landed, and the last area of the game is only reachable in logic once you hold them all.
+
+The goal is not "defeat Dark Bowser", and that is a deliberate limitation rather than a design choice: the game does
+not appear to leave a usable flag when the final battle is won, so a client cannot tell that it happened. If that flag
+is ever found, finishing the story will be offered as a goal option.
 
 ## What items and locations get shuffled?
 

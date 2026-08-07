@@ -43,7 +43,7 @@ tresors ramasses », « Les 78 pieces dont on connait la variable » et
 « Adresses utiles, la primitive de livraison d'items ». Verifie par les
 dumps du 3 au 5 aout 2026.
 """
-from typing import TYPE_CHECKING, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, Dict, List, Set
 
 import worlds._bizhawk as bizhawk
 from NetUtils import ClientStatus
@@ -74,10 +74,6 @@ CODE_ATTENDU = b"CLJE"
 NOM_PAR_ID: Dict[int, str] = {i: nom for nom, i in item_name_to_id.items()}
 
 SEUILS = seuils_de_lot(ITEM_DELIVERY, VANILLA_ITEMS)
-
-# Variable Exxx qui marque Dark Bowser vaincu. None tant qu'elle n'est
-# pas mesuree ; voir signaler_victoire pour ce qui a deja ete cherche.
-VARIABLE_VICTOIRE: Optional[int] = None
 
 
 class MLBISClient(BizHawkClient):
@@ -159,35 +155,37 @@ class MLBISClient(BizHawkClient):
                 [{"cmd": "LocationChecks", "locations": sorted(a_envoyer)}]
             )
 
-        await self.signaler_victoire(ctx, lu[0])
+        await self.signaler_victoire(ctx)
         await self.livrer_capacites(ctx)
         await self.livrer_compteurs(ctx)
 
-    async def signaler_victoire(
-        self, ctx: "BizHawkClientContext", champ: bytes
-    ) -> None:
+    async def signaler_victoire(self, ctx: "BizHawkClientContext") -> None:
         """Annoncer au serveur que la partie est finie.
 
         Exigence dure d'Archipelago, `docs/adding games.md:33-34`.
         Modele : `worlds/mlss/Client.py:243-244`.
 
-        VARIABLE_VICTOIRE vaut None parce que le drapeau **n'est pas
-        trouve**, et non parce qu'on ne l'a pas cherche. Recherche du
-        7 aout 2026 : une seule commande `0x0195` de tout le jeu porte
-        la transition 03, « final battle », au chunk 557. Les variables
-        `Exxx` ecrites autour, `0xE855` a `0xE85B`, le sont dans les 681
-        chunks, et `0xEB0E`/`0xEB0F` dans une centaine : toutes
-        generiques, aucune ne marque cette victoire-la.
+        LE BUT N'EST PAS « BATTRE DARK BOWSER », ET C'EST ASSUME. Le
+        drapeau de la vraie fin n'est pas trouve : une seule commande
+        `0x0195` de tout le jeu porte la transition 03, « final battle »,
+        au chunk 557, et les variables `Exxx` ecrites autour sont
+        generiques, `0xE855` a `0xE85B` dans les 681 chunks et
+        `0xEB0E`/`0xEB0F` dans une centaine. Le declarer sur une adresse
+        devinee ferait gagner un multiworld au mauvais moment.
 
-        Une adresse plausible mais fausse ferait declarer la partie
-        gagnee au mauvais moment, ce qui casse un multiworld entier. On
-        ne signale donc rien tant que la mesure manque.
+        Le but est donc **reunir les neuf capacites**, qui se lit dans
+        `ctx.items_received` sans aucune adresse memoire. C'est la meme
+        condition que la logique impose deja a l'evenement de fin, donc
+        rien ne diverge entre ce que le placeur garantit et ce que le
+        client observe.
+
+        Sans melange des capacites il n'y a pas de but detectable, et le
+        client se tait plutot que d'en inventer un.
         """
-        if VARIABLE_VICTOIRE is None or ctx.finished_game:
+        if ctx.finished_game or not self.melange_capacites:
             return
-        # `champ` commence deja a CHAMP_TRESORS, l'index y est donc relatif.
-        rang = VARIABLE_VICTOIRE - 0xE000
-        if not champ[rang // 8] >> (rang % 8) & 1:
+        recues = {NOM_PAR_ID.get(item.item) for item in ctx.items_received}
+        if not set(VARIABLE_DE_CAPACITE).issubset(recues):
             return
         await ctx.send_msgs(
             [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
