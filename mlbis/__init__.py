@@ -18,6 +18,7 @@ Ce qui est provisoire, et pourquoi :
 """
 from typing import Any, Dict
 
+from BaseClasses import Tutorial
 from worlds.AutoWorld import WebWorld, World
 
 from .client import MLBISClient  # noqa: F401  enregistre le client BizHawk
@@ -36,6 +37,18 @@ from .regions import FIN, create_regions
 
 class MLBISWeb(WebWorld):
     theme = "grass"
+    # Les deux documents exiges par docs/adding games.md:104-105 d'un
+    # monde fusionne : une fiche de jeu nommee {langue}_{jeu}.md et un
+    # guide d'installation. Le second doit etre declare ici, sinon il
+    # n'apparait pas sur le site.
+    tutorials = [Tutorial(
+        tutorial_name="Setup Guide",
+        description="A guide to setting up Mario & Luigi: Bowser's Inside Story for Archipelago.",
+        language="English",
+        file_name="setup_en.md",
+        link="setup/en",
+        authors=["Sussuly"],
+    )]
 
 
 class MLBISWorld(World):
