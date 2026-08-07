@@ -100,8 +100,7 @@ Le mettre à jour sans attendre qu'on le demande, dès qu'un de ces
 Comment le faire :
 
 - Écrire dans la section qui convient, pas à la fin du fichier
-- Une ou deux lignes par acquis, avec son statut et sa source au niveau
-  du fichier et de la ligne
+- Une ou deux lignes par acquis, avec statut et source, fichier et ligne
 - Retirer ce que le nouvel acquis rend faux, ne pas empiler
 - Le signaler dans la réponse en montrant la ligne ajoutée
 
