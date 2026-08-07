@@ -175,8 +175,6 @@ enfin les discussions communautaires, à traiter comme des pistes.
   `BASE_ID = 0xB15000`, location d'un trésor = `BASE_ID + identifiant`,
   qui est aussi son rang de bit dans `Exxx`. `BASE_ID + 1024` et au-delà
   réservés aux locations hors `TreasureInfo.dat`
-- **Écarté** : `EObjSave/EObjSave.dat` ne contient que des palettes,
-  pas d'état de sauvegarde
 - **Zones** : 32 nommées dans `mfset_EMesPlace.dat`, table `0x44` pour
   l'anglais, dont **16 portent des trésors**. La chaîne trésor → carte →
   zone est établie, `tools/build_salles_zones.py`. Notre découpage en
@@ -188,10 +186,9 @@ Régénérables par le script de `tools/` qui porte le même thème, dans le
 venv `venv/` de la racine : `locations_bis.csv` les 685 entrées de
 trésor, `noms_zones.csv` les 32 zones, `bros_attacks.csv` les 10
 attaques, `pieces_attaque.csv` 78 pièces sur 100, `capacites_fevent.csv`
-les 48 variables `2xxx` avec leur salle et leur zone d'octroi.
-
-- `noms_items.csv` : 191 objets. L'identifiant indexe une table de
-  l'arm9 décompressé, pas la table de texte. Corrigé le 4 août 2026
+les 48 variables `2xxx` avec leur salle et leur zone d'octroi. Enfin
+`noms_items.csv`, 191 objets, dont l'identifiant indexe une table de
+l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
 
 ## Non résolu
 
