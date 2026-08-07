@@ -77,6 +77,36 @@ Le sac reste à 725, aucun nom n'est réduit à zéro, et le tirage passe par
 le générateur de la seed. Défaut par défaut à 0 : changer ce qu'une seed
 contient se demande, ne s'impose pas.
 
+### Les 12 pièces manquantes étaient cachées par notre propre filtre
+
+Parti pour lire l'ARM, j'ai commencé par le moins cher des trois
+chantiers, et il n'a pas demandé une ligne d'assembleur.
+
+Jump Helmet 8 et Super Bouncer 4 étaient portées depuis trois jours comme
+« absentes de `FEvent`, à mesurer en jeu ». Elles y étaient. Notre
+scanner exigeait un masque à un seul bit, en supposant qu'un masque
+multiple soit un octroi de cinématique. Un bloc peut simplement rendre
+quatre pièces d'un coup, et il porte alors son drapeau.
+
+Jump Helmet se lit d'un coup d'œil une fois le filtre levé : `0b00001`,
+`0b11110`, `0b01111`, `0b10000`, quatre blocs, quatre drapeaux, une
+partition exacte des dix pièces. Et `0xE780` et `0xE782` tombent
+précisément dans les trous relevés le 5 août.
+
+Deux filtres restaient nécessaires, tous deux appuyés sur une mesure déjà
+faite : écarter les chunks 0, 1 et 2, et écarter toute entrée qui
+**recouvre** des pièces déjà couvertes, ce qui élimine les cinématiques à
+masque 31 de Magic Window, Spin Pipe et Mighty Meteor. Le critère n'est
+pas la valeur du masque mais le recouvrement, puisqu'un vrai bloc
+partitionne.
+
+81 blocs pour 90 pièces, le monde passe à **728 locations**.
+
+Leçon à garder : un « à mesurer en jeu » vieux de trois jours mérite
+d'être rouvert avant d'aller chercher plus loin. Ce n'est pas la ROM qui
+cachait la donnée, c'est une hypothèse de notre outil, écrite dans son
+en-tête et jamais remise en cause.
+
 ### Un plafond qui confisquait
 
 Trouvé en préparant le test, pas en jouant. La partie portait 1154
