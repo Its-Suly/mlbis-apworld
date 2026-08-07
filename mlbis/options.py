@@ -43,7 +43,32 @@ class FillerVariety(Range):
     default = 0
 
 
+class SafeAbilityPlacement(Toggle):
+    """Keep the shuffled abilities in the part of the map order we trust.
+
+    The access logic works at the granularity of a named area, and the
+    order of those areas comes from a walkthrough rather than from the
+    game's data. Worse, this game sends you back through areas you have
+    already seen, so a treasure in a late corner of an early area looks
+    reachable long before it is.
+
+    That only endangers a run when an ability lands somewhere you cannot
+    actually get to. With this on, the nine abilities are confined to the
+    first five areas, 213 of the 725 locations. Those five are the part
+    of the order the walkthrough states outright, and a real save file
+    independently confirms them: every location reached in the opening
+    hours of a test playthrough sits in exactly those five.
+
+    Turn it off for a wider spread, and expect to lean on !hint and on
+    releasing items if a seed strands you.
+    """
+
+    display_name = "Safe ability placement"
+    default = 1
+
+
 @dataclass
 class MLBISOptions(PerGameCommonOptions):
     shuffle_abilities: ShuffleAbilities
+    safe_ability_placement: SafeAbilityPlacement
     filler_variety: FillerVariety

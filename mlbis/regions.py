@@ -47,10 +47,18 @@ reevaluee, ne se pose donc pas ici.
 from typing import Dict, List, Tuple
 
 from BaseClasses import ItemClassification, Region
+from worlds.generic.Rules import add_item_rule
 
 from .data import CAPABILITIES, ZONE_ORDER, ZONES
 from .items import MLBISItem, VICTORY
 from .locations import MLBISLocation, ZONE_DE_LOCATION, location_name_to_id
+
+# Rang au-dela duquel une capacite ne sera pas placee quand le garde-fou
+# est actif. Cinq parce que c'est la partie de l'ordre que le guide
+# enonce explicitement, et que les 43 locations mesurees comme atteintes
+# en debut de partie tombent toutes dans ces cinq zones, plus quatre du
+# prologue de Peach's Castle. 213 locations sur 725.
+RANG_SUR = 5
 
 MENU = "Menu"
 # Le but n'est pas la fin de l'histoire, faute de savoir la detecter : le
@@ -94,9 +102,24 @@ def create_regions(world) -> None:
         else:
             menu.connect(region)
 
+    # Garde-fou de placement. Une capacite posee dans une zone qu'on
+    # croit atteignable et qui ne l'est pas immobilise une partie ; un
+    # objet quelconque au meme endroit ne coute rien. On restreint donc
+    # les neuf capacites, et elles seules, aux zones dont le rang est le
+    # mieux etabli. Les items des autres joueurs ne sont pas touches :
+    # exclure la location entiere les priverait de place pour rien.
+    rang_de_zone = {zone: rang for rang, zone, _ in ZONE_ORDER}
+    sur = melange and bool(world.options.safe_ability_placement)
+    noms_capacites = {nom for nom, _, _ in CAPABILITIES}
+
     for nom, code in location_name_to_id.items():
-        region = regions[ZONE_DE_LOCATION[nom]]
-        region.locations.append(MLBISLocation(world.player, nom, code, region))
+        zone = ZONE_DE_LOCATION[nom]
+        region = regions[zone]
+        location = MLBISLocation(world.player, nom, code, region)
+        if sur and rang_de_zone.get(zone, 99) > RANG_SUR:
+            add_item_rule(location, lambda item, joueur=world.player:
+                          item.player != joueur or item.name not in noms_capacites)
+        region.locations.append(location)
 
     # Location d'evenement : pas d'identifiant, ne compte pas comme un
     # check. Elle porte l'item qui declare la partie gagnee.

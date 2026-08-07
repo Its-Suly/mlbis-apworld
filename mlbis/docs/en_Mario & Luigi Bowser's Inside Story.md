@@ -51,8 +51,16 @@ announced in game: the client window is where you read what arrived.
 ## Known limits of this version
 
 The access logic works at the granularity of a named area, never of an individual block, and the order of those areas
-comes from a walkthrough rather than from the game's data. Six of the sixteen areas carry a low-confidence rank. A seed
-is playable, but it is not yet guaranteed to be completable in every layout.
+comes from a walkthrough rather than from the game's data. Worse, this game sends you back through areas you have
+already cleared, so a treasure in a late corner of an early area looks reachable long before it is.
+
+That only strands a run when an ability lands somewhere you cannot yet get to, which is why **Safe ability placement**
+is on by default: the nine abilities stay in the first five areas, 213 of the 725 locations, the part of the order the
+walkthrough states outright and that a real save file independently confirms. Everything else is free to go anywhere,
+since an ordinary item found late costs nothing.
+
+With that option off, a seed is playable but not guaranteed. `!hint` and releasing items are the way out if one
+strands you.
 
 Reloading a savestate desynchronises the delivered-item index, which lives on the server. Abilities are immune to this
 by design, counters are not.
