@@ -1476,6 +1476,35 @@ La même prudence vaut pour toute capacité dont le bit sert aussi d'état.
 Le journal en jouant est le seul moyen de les repérer : un balayage
 statique ne distingue pas un octroi d'un basculement.
 
+### Le drapeau de fin d'histoire n'est dans aucun script, **Vérifié**
+
+8 août 2026, quatre sondes, toutes négatives. Ce n'est pas un abandon,
+c'est un résultat : la marque de fin de partie n'existe **dans aucun
+script du jeu**, ni de terrain ni de combat.
+
+- l'unique commande `Start Battle` à transition `03`, « final battle »,
+  est au chunk 557. Les `Exxx` écrites autour sont génériques, `0xE855`
+  à `0xE85B` dans les 681 chunks
+- les **scripts de combat** n'avaient jamais été balayés, la note du
+  4 août les listait comme non couverts. Faits : 268 161 commandes,
+  53 variables `Exxx` écrites en tout, et **le combat 4217 n'en écrit
+  aucune**, ses 364 commandes n'en touchent pas une
+- les 53 variables écrites par des combats le sont toutes par les mêmes
+  46 combats, donc par une bibliothèque partagée, pas par un combat
+  précis
+- le chunk 557 n'a **aucune** transition de salle scriptée, ni entrante
+  ni sortante, donc on ne peut pas suivre la cinématique qui suit
+
+Avec le balayage de `FEvent`, ce sont plus de 800 000 commandes de script
+qui ont été lues sans trouver de marque de victoire.
+
+**Ce qui trancherait** : un breakpoint d'écriture BizHawk au moment de la
+fin de partie, donc une partie menée jusqu'au bout. C'est la même parade
+que celle notée le 4 août pour les flags de trésor.
+
+**Sans importance immédiate** : le but du monde est « réunir les neuf
+capacités », qui se lit dans `items_received` sans aucune adresse.
+
 ### Les 12 pièces manquantes ne manquaient pas, **Vérifié**
 
 8 août 2026. Trois jours durant, Jump Helmet 8 et Super Bouncer 4

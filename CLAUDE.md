@@ -194,11 +194,11 @@ de l'arm9 décompressé et non la table de texte, corrigé le 4 août 2026.
 
 ## Non résolu
 
-- **Le drapeau de fin d'histoire reste introuvable.** L'unique combat
-  marqué `final battle`, chunk 557, n'écrit que des variables génériques.
-  Le but est donc « réunir les neuf capacités », lu dans `items_received`
-  sans adresse mémoire. Le vrai but attend une lecture du code ARM, dont
-  l'entrée est trouvée : pools littéraux, `capstone`, `formats-bis.md`
+- **Le drapeau de fin d'histoire n'est dans aucun script**, 8 août :
+  800 000 commandes lues, terrain et combat compris, le combat final
+  4217 n'écrit rien. Il faudra un breakpoint d'écriture en fin de
+  partie. Sans urgence, le but est « réunir les neuf capacités », lu
+  dans `items_received` sans adresse mémoire
 - **Multiworld et reconnexion acquis**, 8 août 2026 : reçu d'un autre
   monde, envoyé vers lui, checks ramassés client fermé envoyés à la
   reconnexion, rien de redonné. **Reste** : une partie jouée dans la
