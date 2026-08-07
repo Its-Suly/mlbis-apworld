@@ -1476,6 +1476,39 @@ La même prudence vaut pour toute capacité dont le bit sert aussi d'état.
 Le journal en jouant est le seul moyen de les repérer : un balayage
 statique ne distingue pas un octroi d'un basculement.
 
+### Les récompenses de quête, le gisement est petit, **Vérifié**
+
+8 août 2026. On espérait une centaine de locations neuves sans patcher
+la ROM. Mesure : **35 dons d'objets hors salles de développement**, pas
+105, la différence étant des dons de pièces. Ils tiennent dans **sept
+salles**, et la plupart ne sont pas des checks.
+
+| salle | zone | ce qu'elle donne |
+|---|---|---|
+| 120 | Bowser Path | 5 consommables par lots de 5 |
+| 277 | Blubble Lake | 5 consommables par lots de 5 |
+| 460 | Peach's Castle | 6 consommables par lots de 5 |
+| 647 | Plack Beach | haricots par lots de 10 puis de 1 |
+| 296 | Toad Town | Retry Clock, **Treasure Specs**, consommables |
+| 297 | Toad Town | **Small Shell** |
+| 653 | Dimble Wood | **Block Band, Block Fangs, Block Ring** |
+
+Les trois premières partagent les drapeaux `0xEBD6` et `0xEBF8`, donc un
+mécanisme commun et répétable : donner cinq exemplaires de cinq
+consommables n'est pas une récompense unique.
+
+**Le gisement exploitable est donc de six objets uniques**, pas d'une
+centaine. Et l'attribution reste le mur du 4 août : la salle 653 pose 22
+drapeaux propres pour 3 dons, la 297 en pose 15 pour un seul.
+
+Un seul cas est propre et il était déjà documenté : salle `0x028D`,
+sous-routine `0x12`, `0xEAB9` testé puis posé, puis `0x0044(0x4066)` qui
+donne Block Band.
+
+**Conclusion assumée** : six locations pour un travail d'attribution
+incertain, ce n'est pas rentable tant que le reste n'est pas fait. Le
+chantier est clos, pas oublié.
+
 ### Quatre pistes mortes vers l'ordre de progression, à ne pas refaire
 
 L'ordre des zones, et surtout le fait qu'une zone soit revisitée, ne se
