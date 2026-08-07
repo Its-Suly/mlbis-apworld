@@ -217,4 +217,6 @@ Restent ouverts, plus rien de bloquant :
 - Aucune `region` pour une pièce d'attaque : les sous-routines de bloc
   sont dupliquées dans 13 ou 18 chunks, la salle n'est pas exploitable.
   Le nom du lot, `Trash Pieces`, donne la zone du set
-- Trésors hors `TreasureInfo.dat` : restent boutiques et quêtes
+- Trésors hors `TreasureInfo.dat` : **un achat en boutique ne laisse
+  aucun drapeau**, mesuré le 7 août 2026, donc il ne peut pas être une
+  `location` sans patcher la ROM. Restent les quêtes

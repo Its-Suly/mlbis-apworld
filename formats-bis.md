@@ -1514,6 +1514,50 @@ locations hors table.
 Aucune de nos familles connues ne compte 80 éléments. **À tester**, en
 prenant deux dumps encadrant un achat en boutique.
 
+**Test fait le 7 août 2026, la piste boutique tombe.** `run53` avant tout
+achat, `run54` après un Picnic Wear à 30 pièces, `run55` après des
+Starched Socks à 250, sans bouger de la boutique ni ramasser quoi que ce
+soit. Les 80 bits sont déjà tous levés au `run53` et **aucun ne bouge**.
+
+Le compte des stocks achève l'hypothèse : `MData/MDataShopBuyList.dat`
+porte 8 boutiques, 64 articles en stock final et 435 entrées tous états
+confondus. Ni 80 ni rien qui s'en approche.
+
+Ce qu'on sait maintenant de la plage : elle est passée de 0 à 80 entre le
+`run51` et le `run52` du 5 août, c'est-à-dire pendant la séquence qui va
+du Green Shell au marteau, et elle n'a plus bougé depuis. Le voisinage
+s'est étoffé de son côté : au `run55`, la zone `0xEE20` à `0xEF30` porte
+95 bits levés, 15 épars en dessous de `0xEE60` plus le bloc contigu.
+Aucun n'est une pièce d'attaque, qui vont de `0xE700` à `0xE821`.
+
+Reste **non expliqué**, et le prochain test utile n'est plus la boutique
+mais une paire de dumps serrée autour d'un événement d'histoire.
+
+### Une boutique ne laisse aucun drapeau, **Vérifié**
+
+Même mesure, autre question, et le résultat est plus important que celui
+qu'on cherchait.
+
+Un achat change exactement deux choses dans l'état connu : le compteur de
+pièces, `1434` puis `1404` puis `1154`, soit les 30 et les 250 annoncés,
+et le compteur d'équipement de l'objet acheté, identifiant 2 pour Picnic
+Wear de 3 à 4, identifiant 24 pour Starched Socks de 2 à 3. **Aucun bit
+`Exxx`, aucun bit `2xxx`.**
+
+Tout le reste qui bouge entre les dumps se situe au-dessus de
+`0x0564B4`, hors du bloc d'inventaire, et porte des valeurs comme
+`0x03808178`, des adresses de Shared WRAM. C'est une zone de travail à
+pointeurs, pas de l'état de joueur.
+
+**Conséquence pour l'APWorld.** Un achat en boutique ne peut pas être
+une `location` détectée par un drapeau, puisqu'il n'en laisse aucun. Les
+deux voies restantes sont de surveiller le compteur de l'objet, fragile
+puisqu'un objet s'obtient aussi ailleurs et se consomme, ou de patcher la
+ROM. Randoglobin a choisi le patch, `main.py:899-909` parle d'un
+`shop_patch` et de trois options `rando_ishop`, `rando_gshop`,
+`rando_bshop` : il randomise **ce que la boutique vend** au lieu de faire
+de l'achat un check. C'est en GPL-3.0, donc à lire et non à recopier.
+
 ### Découpage `Exxx` selon mnllib
 
 `vendor/mnllib.py/mnllib/bis/consts.py:96-109` déclare douze plages,
