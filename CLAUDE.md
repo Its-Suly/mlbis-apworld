@@ -153,6 +153,10 @@ enfin les discussions communautaires, à traiter comme des pistes.
   `0x2019` levé à `0205603B` fait apparaître Fire Flower au menu, elle se
   joue en entier, démonstration comprise, sans sa cinématique
   d'apprentissage. Les dix `0x2010` à `0x201B` recoupent la ROM sur 10/10
+- **Où une capacité est octroyée**, 7 août 2026 : un script `FEvent`,
+  commande `0x0008` valeur 1, et **l'index de chunk est l'index de
+  carte**, 681 des deux côtés. 29 capacités ont une salle unique. Le
+  drapeau est posé là où est **Bowser**, pas où combattent les frères
 - **Écrire quand on veut** : en combat comme sur le terrain, l'écriture
   prend effet, s'affiche et survit, 4 août 2026. Cinématiques non testées
 - **Inventaire vivant** à `02056400` : pièces en `u32`, consommable `N`
@@ -186,6 +190,8 @@ Régénérables par `tools/extract_names.py` puis
   de déblocage, coût en SP, zone. `tools/extract_bros_attacks.py`
 - `pieces_attaque.csv` : **78 pièces d'attaque sur 100**, une variable
   `Exxx` chacune. `tools/pieces_attaque_fevent.py`
+- `capacites_fevent.csv` : les 48 variables `2xxx`, la salle et la zone
+  où chacune est posée ou retirée. `tools/capacites_fevent.py`
 
 ## Non résolu
 
@@ -199,11 +205,11 @@ Restent ouverts, plus rien de bloquant :
   **reconnexion** : l'index des items livrés vit dans le `DataStorage`
   du serveur, donc recharger un savestate lui fera croire livrés des
   items que le jeu n'a plus. Défaut connu, écrit dans `client.py`
-- Aucune `access_rule`. Vocabulaire des prérequis dans
-  `randoglobin/data_classes.py:11-35`, 11 capacités sur 12 ont un bit
-  `2xxx`, et `data/progression_hypothese.csv` dit où chacune s'obtient,
-  **hypothèse** tirée des guides. Manquent l'ordre des zones et le
-  prérequis d'un trésor donné. `tools/journal_capacites.lua` mesure
+- Aucune `access_rule` écrite, mais la zone d'octroi de chaque capacité
+  est mesurée, `data/capacites_fevent.csv`, et les guides de
+  `progression_hypothese.csv` ne servent plus que de recoupement.
+  Manquent l'ordre des zones et le prérequis d'un trésor : aucun bloc ne
+  lit une capacité dans `FEvent`, ce test vit donc dans le code ARM
 - 22 pièces d'attaque sans variable connue : Jump Helmet 8, Super
   Bouncer 4, Yoo Who Cannon 10 qui est octroyée d'un bloc et n'est donc
   pas une `location`. Absentes de `FEvent` et des scripts de combat, à

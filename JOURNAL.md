@@ -76,6 +76,92 @@ Connecteur, client, serveur et partie du 5 août, avec ses 22 items déjà
 reçus rechargés depuis l'`.apsave`. La mesure de progression commence,
 journal en marche.
 
+### Une question qui a recadré toute la suite
+
+« Ce que tu m'as demandé prend combien de temps ? » Réponse honnête :
+trente heures, puisque « joue et le journal mesurera la progression »
+veut dire finir le jeu. J'avais présenté une partie entière comme
+l'étape suivante sans jamais poser le chiffre.
+
+Ce que la question a débloqué : la même donnée est dans les scripts. Les
+capacités sont des variables `2xxx`, `FEvent` dit qui les pose et dans
+quelle salle, et `tools/pieces_attaque_fevent.py` savait déjà lire tout
+ça pour les `Exxx`. Trente heures de manette contre quelques secondes de
+balayage.
+
+Le journal ne devient pas inutile pour autant, il devient gratuit : il
+tourne pendant qu'on joue et sert de contre-épreuve.
+
+### Le balayage, en deux explorations avant l'outil
+
+Rien n'a été supposé de la forme des données. Première exploration :
+quelles commandes touchent un `2xxx`. Réponse nette, une seule, `0x0008`,
+avec un entier, sur 534 548 commandes. L'outil final s'arrête si une
+autre apparaît, plutôt que de l'ignorer.
+
+Deuxième exploration, sur un détail qui clochait : les premières
+écritures du marteau tombaient dans les chunks 1 et 2, ce qui ne
+ressemble pas à une salle. Les chunks 0, 1 et 2 posent 20, 27 et 46
+variables. Des initialisations, écartées et affichées à part.
+
+Sans ces deux détours, l'outil aurait produit un tableau où le marteau
+s'obtient au chunk 1, et rien n'aurait signalé l'erreur.
+
+`tools/capacites_fevent.py`, sortie `data/capacites_fevent.csv` :
+38 variables sur 48 ont une salle d'octroi, 29 une seule. La chaîne
+carte vers zone de `build_salles_zones.py` a été reprise sans son filtre
+sur les trésors, parce que les salles de cinématique n'en portent aucun
+et que ce sont justement celles-là qui octroient.
+
+### Le témoin, et la discordance qui n'en était pas
+
+`bros_attacks.csv` vient de l'overlay 123 et donne la zone du lot de
+pièces de chaque attaque, sans rien savoir des scripts. Trois attaques
+sur quatre tombent dans la zone de leur lot. La quatrième, Mighty Meteor,
+donne Toad Town pour un lot `Clinic Pieces` : la clinique de Toadley est
+dans Toad Town, ce sont deux zones nommées séparément.
+
+C'est ce témoin qui autorise à dire que l'index de chunk `FEvent` est
+l'index de carte. Le compte égal, 681 et 681, n'aurait pas suffi.
+
+### Deux coïncidences que rien n'a arrangées
+
+La partie jouée entre-temps a servi de contre-épreuve, et elle est
+tombée juste deux fois.
+
+Le journal note `0x202E` levé et `0x2030` retombé au même instant, après
+12 trésors. Le balayage désigne un seul chunk qui fait exactement cette
+paire, le 507. Au passage, `0x2030`, que mnllib ne nomme pas, est donc un
+drapeau d'avant le menu étoile.
+
+Le journal note `SHOP_UPGRADE_1` et `COUNTERATTACK_SHELL` acquis
+ensemble après 22 trésors ; le balayage les pose dans les chunks 57 et
+53, deux salles voisines.
+
+Et la prédiction du 5 août sur `FIRE_BREATH_DISABLED` est confirmée par
+la mesure : le bit **retombe** en jouant. C'est la seule capacité qu'il
+faudra livrer en abaissant un bit.
+
+### Ce que les guides avaient dit à moitié
+
+Quatre divergences entre le balayage et `progression_hypothese.csv`, dont
+trois s'expliquent d'un coup : le drapeau est posé dans la salle où se
+trouve **Bowser**, pas dans celle où les frères combattent à l'intérieur
+de lui. Sliding Haymaker au Nerve Cluster pour le guide, à Dimble Wood
+pour le script. Les deux disent vrai sur des moitiés différentes.
+
+J'avais eu tort d'écarter les guides le 5 août, j'aurais eu tort de les
+prendre au mot aujourd'hui. Ils nomment le monde des frères, l'`access_rule`
+a besoin de celui qui déclenche.
+
+### Tenue des fichiers
+
+`CLAUDE.md` est **exactement à 220 lignes**, le plafond. Les deux acquis
+du jour y tiennent en quatre lignes parce que le détail est parti dans
+`formats-bis.md`, deux sections neuves. Le prochain ajout devra sortir
+quelque chose ; le meilleur candidat reste la liste des tables de
+`data/`, qui se lit aussi bien en ouvrant le dossier.
+
 ## 5 août 2026, la question qui décidait de tout, et ce qu'elle a ouvert
 
 Séance ouverte sur une reprise, cinq dumps déjà pris par l'utilisateur

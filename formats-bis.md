@@ -1358,6 +1358,115 @@ ramassés. Une partie jouée produit l'ordre réel d'acquisition, ce qui
 confirme ou casse la table ci-dessus au lieu de la remplacer.
 `tools/etat_capacites.py --journal` met les noms dessus.
 
+### Où chaque capacité est octroyée, lu dans les scripts, **Vérifié**
+
+7 août 2026, `tools/capacites_fevent.py`, sortie
+`data/capacites_fevent.csv`. Ce que la partie jouée aurait donné en
+trente heures, les scripts le donnent en quelques secondes.
+
+**Forme unique.** Les 48 variables `0x2000` à `0x2030` sont écrites par
+une seule commande, `0x0008`, avec un argument entier, sur les 534 548
+commandes de `FEvent`. Le script s'arrête s'il rencontre une autre
+commande sur ces variables plutôt que de l'ignorer : c'est cette
+hypothèse-là qui porte tout le reste.
+
+**L'index de chunk `FEvent` est l'index de carte.** `FEvent` porte 681
+chunks, la ROM `0x2A9` = 681 cartes. Le compte seul ne prouverait rien,
+d'où le témoin : `data/bros_attacks.csv` vient de l'overlay 123 et donne
+le lot de pièces de chaque attaque, donc sa zone, sans rien savoir des
+scripts. Trois attaques sur quatre tombent dans la zone de leur lot, Spin
+Pipe dans Plack Beach, Snack Basket dans Dimble Wood, Magic Window dans
+Bowser's Castle. La quatrième, Mighty Meteor, est donnée à Toad Town pour
+un lot `Clinic Pieces` : la clinique de Toadley **est** dans Toad Town,
+ce sont deux zones nommées séparément, pas une contradiction.
+
+**Trois chunks fourre-tout, écartés.** Les chunks 0, 1 et 2 posent 20, 27
+et 46 variables. Aucune salle ne donne vingt capacités, ce sont des
+initialisations ou du debug. Ils sont exclus du résultat et affichés à
+part plutôt que passés sous silence.
+
+**Résultat.** 38 variables sur 48 ont au moins une salle d'octroi, 29
+n'en ont qu'une seule. Les 10 sans script sont les attaques débloquées
+par le compte de pièces, Green Shell, Fire Flower, Jump Helmet, Super
+Bouncer, Falling Star et Yoo Who Cannon comprises : leur déblocage vit
+dans le code de l'overlay 123, pas dans un script.
+
+Les capacités qui décideront des `access_rule` :
+
+| variable | nom | salle | zone |
+|---|---|---|---|
+| `0x2000` | MINI_MARIO | 13 | Pump Works |
+| `0x2001` | HAMMER | 539 | Trash Pit |
+| `0x2002` | SPIN_JUMP | 104 | Flab Zone |
+| `0x2003` | DRILL_BROS | 229 | Energy Hold |
+| `0x2005` | SLIDING_HAYMAKER | 50 | Dimble Wood |
+| `0x2006` | BODY_SLAM | 324 | Tower of Yikk |
+| `0x2007` | SPIKE_BALL | 414 | Peach's Castle |
+| `0x200C` | BADGES | 184 | Flab Zone |
+| `0x200E` | VACUUM | 61 | Plack Beach |
+| `0x2025` | BLUE_SHELL_BLOCKS | 207 | Toad Town |
+| `0x202D` | AIR_VENTS | 298 | Toad Town |
+
+`MINI_MARIO` et `HAMMER` sont aussi reposés dans les chunks 51 et 73 de
+Dimble Wood, tous deux ensemble. Une restitution après une séquence qui
+les retire, **hypothèse**, à ne pas confondre avec l'octroi initial.
+
+**Deux mondes, deux zones pour un même moment, hypothèse.** Le balayage
+et les guides divergent sur quatre lignes, et trois s'expliquent de la
+même façon : le drapeau est posé dans la salle où se trouve **Bowser**,
+pas dans celle où les frères combattent à l'intérieur de lui. Le guide
+place Sliding Haymaker au Nerve Cluster, le script le pose à Dimble Wood ;
+Body Slam à Joint Tower contre Tower of Yikk. Les deux disent vrai sur
+des moitiés différentes. Pour une `access_rule`, c'est la salle du script
+qui compte, puisque c'est elle qui déclenche.
+
+La quatrième divergence n'en est pas une : Spike Ball est donné dans
+Peach's Castle, et le guide dit lui-même que le forage part du jardin du
+château vers Lumbar Nook.
+
+**Ce que le balayage ne donne pas.** 32 des 48 variables ne sont jamais
+lues par un script. `HAMMER` et `SPIN_JUMP` sont lus zéro fois : aucun
+bloc ne teste une capacité dans `FEvent`, donc le prérequis d'un trésor
+vit dans le code ARM. Les plus lues sont des états de terrain, pas des
+capacités : `ENERGY_HOLD_BOO_RAY` dans 36 salles, `AIRWAY_FROZEN` 24,
+`PUMP_WORKS_FLOODED` 22. Deux exceptions utiles, `AIR_VENTS` lu dans 15
+salles et `BLUE_SHELL_BLOCKS` dans 11, sont des prérequis de passage
+lisibles directement.
+
+### Le balayage et la partie jouée tombent d'accord, **Vérifié**
+
+Le 7 août 2026, une partie jouée avec `journal_capacites.lua` a produit
+des acquisitions réelles. Deux coïncidences que rien n'a arrangées :
+
+- le journal note `0x202E` levé **et** `0x2030` retombé au même instant,
+  après 12 trésors. Le balayage désigne un seul chunk qui fait
+  exactement cette paire, le 507, à Cavi Cape
+- le journal note `SHOP_UPGRADE_1` et `COUNTERATTACK_SHELL` acquis
+  ensemble après 22 trésors. Le balayage les pose dans les chunks 57 et
+  53, deux salles voisines
+
+`0x2030`, que mnllib ne nomme pas, est donc un drapeau d'avant le menu
+étoile de Bowser, retiré au moment où ce menu apparaît.
+
+Le journal a aussi confirmé l'inversion annoncée : `FIRE_BREATH_DISABLED`
+**retombe** en cours de partie, après 22 trésors. Ce n'est pas une
+capacité qu'on livre en levant un bit, c'est la seule qu'il faudra livrer
+en l'abaissant.
+
+Enfin, il sépare deux familles que le nom seul ne distinguait pas.
+`PUMP_WORKS_FLOODED` et `BLOOPERS_WET` montent et redescendent plusieurs
+fois par heure de jeu : ce sont des états de terrain, ils ne doivent
+jamais devenir des `item`. Ceux qui ne redescendent jamais sont les
+capacités livrables.
+
+**Cas non tranché, `MINI_MARIO`.** Il monte puis retombe après 15
+trésors, remonte après 19 et reste. Un déblocage permanent ne ferait pas
+ça. Soit le bit dit « Mario est actuellement miniature » et la capacité
+se lit ailleurs, soit il est repris et rendu par une séquence
+d'histoire ; le balayage voit d'ailleurs un retrait au chunk 28, à Arm
+Center. Le trancher avant d'en faire un prérequis : deux dumps encadrant
+une transformation suffiraient.
+
 ### Le marteau confirme un nom, **Vérifié**
 
 Au `run51`, les onze prérequis lisaient zéro. Cohérent avec un début de

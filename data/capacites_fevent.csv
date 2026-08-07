@@ -1,0 +1,49 @@
+variable,nom,nb_salles_octroi,salles_octroi,zones_octroi,salles_retrait,zones_retrait,nb_ecritures_total,nb_salles_qui_la_lisent
+0x2000,MINI_MARIO,4,13 28 51 73,Arm Center | Dimble Wood | Pump Works,28,Arm Center,23,0
+0x2001,HAMMER,3,51 73 539,Dimble Wood | Trash Pit,,,23,0
+0x2002,SPIN_JUMP,1,104,Flab Zone,,,20,0
+0x2003,DRILL_BROS,1,229,Energy Hold,,,23,1
+0x2004,FIRE_BREATH_DISABLED,8,17 30 84 85 238 240 522 536,Bumpsy Plains | Cavi Cape | Peach's Castle | Plack Beach | Toad Town,17 26 30 84 85 127 238 240 536,Bumpsy Plains | Dimble Wood | Peach's Castle | Plack Beach | Toad Town,43,0
+0x2005,SLIDING_HAYMAKER,2,45 50,Bowser Castle | Dimble Wood,,,24,2
+0x2006,BODY_SLAM,1,324,Tower of Yikk,,,16,0
+0x2007,SPIKE_BALL,1,414,Peach's Castle,,,17,2
+0x2008,PUMP_WORKS_FLOODED,1,26,Plack Beach,26 66,Flab Zone | Plack Beach,7,22
+0x2009,ENERGY_HOLD_BOO_RAY,2,183 324,Tower of Yikk,183 324,Tower of Yikk,10,36
+0x200A,AIRWAY_FROZEN,2,335 473,---- | Peach's Castle,335 473,---- | Peach's Castle,6,24
+0x200B,BROS_ATTACKS,1,532,Trash Pit,,,19,0
+0x200C,BADGES,1,184,Flab Zone,,,30,0
+0x200D,BRAWL_ATTACKS,1,72,Dimble Wood,,,17,0
+0x200E,VACUUM,1,61,Plack Beach,,,13,0
+0x2010,BROS_ATTACK_GREEN_SHELL,0,,,,,19,0
+0x2011,BROS_ATTACK_SPIN_PIPE,1,647,Plack Beach,,,5,7
+0x2012,BROS_ATTACK_YOO_WHO_CANNON,0,,,,,7,2
+0x2013,BROS_ATTACK_FALLING_STAR,0,,,,,2,0
+0x2014,sans nom dans mnllib,0,,,,,2,0
+0x2015,sans nom dans mnllib,0,,,,,2,0
+0x2016,BROS_ATTACK_JUMP_HELMET,0,,,,,5,1
+0x2017,BROS_ATTACK_SUPER_BOUNCER,0,,,,,3,1
+0x2018,BROS_ATTACK_MIGHTY_METEOR,1,242,Toad Town,,,3,2
+0x2019,BROS_ATTACK_FIRE_FLOWER,0,,,,,9,0
+0x201A,BROS_ATTACK_SNACK_BASKET,3,395 399 412,Dimble Wood,,,9,1
+0x201B,BROS_ATTACK_MAGIC_WINDOW,1,655,Bowser Castle,,,4,2
+0x201C,BRAWL_ATTACK_GOOMBA_STORM,1,72,Dimble Wood,,,22,0
+0x201D,BRAWL_ATTACK_BOB_OMB_BLITZ,1,148,Bowser Castle,,,8,0
+0x201E,BRAWL_ATTACK_SHY_GUY_SQUAD,1,109,Bowser Path,,,11,0
+0x201F,BRAWL_ATTACK_KOOPA_CORPS,1,249,Blubble Lake,,,6,0
+0x2020,sans nom dans mnllib,0,,,,,2,0
+0x2021,BRAWL_ATTACK_MAGIKOOPA_MOB,1,419,Peach's Castle,,,6,0
+0x2022,BRAWL_ATTACK_BROGGY_BONKER,1,653,Dimble Wood,,,3,8
+0x2023,sans nom dans mnllib,0,,,,,2,0
+0x2024,COUNTERATTACK_SHELL,1,53,Plack Beach,,,10,0
+0x2025,BLUE_SHELL_BLOCKS,1,207,Toad Town,,,14,11
+0x2026,SHOP_UPGRADE_1,1,57,Flame Pipe,,,9,0
+0x2027,SHOP_UPGRADE_2,1,80,Dimble Wood,,,9,0
+0x2028,SHOP_UPGRADE_3,1,79,Flab Zone,,,7,0
+0x2029,SHOP_UPGRADE_4,1,201,Blubble Lake,,,4,0
+0x202A,SHOP_UPGRADE_5,1,272,Energy Hold,,,3,0
+0x202B,SHOP_UPGRADE_6,1,368,Plack Beach,,,2,0
+0x202C,SHOP_UPGRADE_7,1,527,Peach's Castle,,,2,0
+0x202D,AIR_VENTS,1,298,Toad Town,,,5,15
+0x202E,STAR_MENU_BOWSER,1,507,Cavi Cape,,,3,0
+0x202F,BLOOPERS_WET,11,6 7 8 12 15 20 22 23 29 33 34,Pump Works,6 7 8 12 15 20 22 23 29 33 34,Pump Works,30,0
+0x2030,sans nom dans mnllib,2,261 536,Blubble Lake | Peach's Castle,261 507,Blubble Lake | Cavi Cape,4,0
