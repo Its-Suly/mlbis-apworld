@@ -22,6 +22,18 @@ d'octroi la plus precoce d'une capacite, Peach's Castle en fin de chaine
 parce qu'elle est visitee au prologue ET a la fin, et la victoire qui
 exige les neuf capacites, y compris celle que personne n'exige.
 
+CE QUE CES EXIGENCES SONT, ET CE QU'ELLES NE SONT PAS. Ce sont des
+jalons de progression, pas des besoins physiques. Le jeu alterne deux
+mondes : les freres a l'interieur de Bowser, Bowser dehors. Exiger le
+marteau des freres pour entrer a Cavi Cape, ou Bowser se promene seul,
+a l'air d'une erreur et n'en est pas une : dans la partie d'origine on
+n'arrive a Cavi Cape qu'apres le Trash Pit, ou le marteau est donne.
+
+Cette regle-la se lit donc « la partie a progresse jusque-la », et non
+« il faut cet outil ici ». Retirer ces exigences au motif que Bowser ne
+se sert pas d'un marteau **casserait la logique** : c'est la direction
+qui bloque un joueur, celle qui ouvre une zone trop tot.
+
 CE QUE CETTE LOGIQUE N'EST PAS. Une carte du jeu. Le rang des zones vient
 d'un guide, `data/ordre_zones.csv` porte la confiance ligne par ligne, et
 les rangs 11 a 16 sont marques faibles. Le journal de capacites, produit
