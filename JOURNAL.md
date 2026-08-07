@@ -266,6 +266,59 @@ inexploitables sont toutes des touffes d'herbe vides.
 Reste à chercher la table des sorties de carte, que ni Randoglobin ni
 BIS-docs ne documentent.
 
+### Deux documents, et une candidature qui n'aura pas lieu
+
+L'utilisateur voulait savoir comment présenter le projet à Archipelago,
+puis a décidé de le garder solo. Les deux documents exigés par
+`adding games.md:104-105` ont été écrits quand même, parce qu'un guide
+d'installation sert au projet avant de servir à une candidature. Il
+contient d'ailleurs le piège du connecteur qui nous a coûté une heure ce
+matin : ouvrir le script **depuis son dossier**.
+
+En lisant leur doc, deux manques réels sont apparus, dont un dur.
+
+### Le but du jeu, cherché puis redéfini
+
+`adding games.md:33-34` exige que le client annonce la fin de partie. Le
+nôtre ne l'a jamais fait, et la recherche du drapeau a échoué proprement.
+
+Une seule commande `0x0195` de tout le jeu porte la transition `03`,
+« final battle », au chunk 557. Belle piste, résultat négatif : les
+variables `Exxx` écrites autour sont génériques, `0xE855` à `0xE85B` dans
+les 681 chunks et `0xEB0E`/`0xEB0F` dans une centaine.
+
+Plutôt que de deviner une adresse, le but a été redéfini sur ce qui se
+mesure : **réunir les neuf capacités**, qui se lit dans `items_received`
+sans aucune adresse mémoire, et qui est déjà la condition que la logique
+impose à l'événement de fin. Rien ne peut diverger entre ce que le
+placeur garantit et ce que le client observe.
+
+C'est une limite assumée et écrite dans la doc du monde, pas un choix de
+design déguisé.
+
+### La table de révélation des cartes, fausse piste bien construite
+
+Randoglobin nomme `0x605C` comme le déblocage des cartes de Bowser, et le
+chunk 27 contient bien neuf sous-routines qui l'incrémentent de 2 à 10,
+chacune avec deux autres arguments. J'ai cru tenir l'ordre des zones.
+
+Ce qui l'a tuée : les valeurs du premier argument sont 30, 139, 134, 124,
+126, 201, 165, 77, 134, toutes sous 256. Ce sont des **positions à
+l'écran**, pas des numéros de carte. La traduction en zones que j'avais
+produite ne voulait rien dire, et elle avait l'air parfaitement crédible,
+avec Bowser Castle révélé en deuxième.
+
+Deuxième fois de la journée qu'une hypothèse d'ordre tombe sur un détail
+de format. L'ordre des zones vient toujours d'un guide.
+
+### La suite générale d'Archipelago passe
+
+206 tests sur onze modules, accessibilité, items, locations, identifiants,
+noms, remplissage, options, manifeste. Notre monde y est inclus et rien
+n'échoue. `tools/test_archipelago.py` rejoue l'ensemble, en réinstallant
+la copie d'abord, parce que tester la copie de la veille pendant qu'on
+modifie la source est un faux positif qui coûte cher.
+
 ### Tenue des fichiers
 
 `CLAUDE.md` est **exactement à 220 lignes**, le plafond. Les deux acquis

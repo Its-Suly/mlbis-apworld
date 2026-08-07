@@ -5,8 +5,9 @@ Centre de Bowser, version NDS de 2009. **La boucle complète tourne**,
 validée en jeu le 5 août 2026 : 21 checks remontés, 21 items renvoyés,
 vus à l'écran. Le monde vit dans `mlbis/` : **725 `location`**, 647
 trésors et 78 pièces d'attaque, 16 `region`, et depuis le 7 août une
-**logique**, neuf capacités en items de progression. Tests
-`tools/test_generation.py` et `test_client.py`.
+**logique**, neuf capacités en items de progression. Trois suites de
+tests, `tools/test_generation.py`, `test_client.py`, et
+`test_archipelago.py` qui passe les 206 tests généraux d'Archipelago.
 
 ## Version de ROM, figée
 
