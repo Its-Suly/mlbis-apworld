@@ -1,133 +1,133 @@
 # Archipelago APWorld for Mario & Luigi: Bowser's Inside Story
 
-Research toward an [Archipelago](https://archipelago.gg) world for
-*Mario & Luigi: Bowser's Inside Story* (Nintendo DS, 2009). No such
-world exists yet for this game.
+An [Archipelago](https://archipelago.gg) world for *Mario & Luigi:
+Bowser's Inside Story* (Nintendo DS, 2009). None existed before this
+one.
 
 *[Version française](README.fr.md)*
 
-## Status: feasibility, and it is now established
+## Status: it works, and it has been played
 
-**A skeleton world now exists in `mlbis/`.** Archipelago 0.6.8 loads it
-and generates a seed with 647 locations across 16 real regions — the
-game's own named areas — and 86 items. No logic, no client, no ROM
-patching yet. Reproduce with
-`venv\Scripts\python.exe tools\test_generation.py`.
+The full loop runs, verified in game rather than argued from code:
+checks are detected and sent, items come back and are written into the
+running game, and a second player's item crossed from another world into
+this one and back out again.
 
-Everything else here is research, extracted data tables, and the tools
-that produce them.
+- **728 locations** — 647 treasure entries and 81 attack-piece blocks
+- **Nine abilities as items**, the hammer among them, shuffled into the
+  multiworld pool
+- **The ROM is never modified.** Everything happens in memory while you
+  play, so there is no patching step and no patched copy to keep
+- Packaged as `dist/mlbis.apworld`, which generates a seed on its own
+- Passes Archipelago's own 206 general tests, plus two suites of ours
 
-The question that blocked the whole project was simple to state and had
-no answer in any available source: **how does the game record that a
-treasure has already been collected?** Without that, there is no way to
-mark an Archipelago `location` as checked, and no world can be built.
+What is *not* settled is the access logic, and the section on limits
+below says exactly how far to trust it.
 
-That question is now answered.
+## Playing it
 
-### The treasure bitfield
+You need BizHawk **2.10 exactly** and your own copy of the game. Only
+the machine that generates the seed needs the apworld; players of other
+games need nothing from here.
 
-Collected treasures are tracked by bits in the NDS main RAM:
+Full instructions live in
+[`mlbis/docs/setup_en.md`](mlbis/docs/setup_en.md). The short version:
+drop `mlbis.apworld` into your Archipelago `custom_worlds`, generate,
+open `connector_bizhawk_generic.lua` **from its own folder** in
+BizHawk's Lua console, then start the BizHawk client.
+
+### Options
+
+| Option | What it decides |
+|---|---|
+| `shuffle_abilities` | the nine abilities become items to find |
+| `safe_ability_placement` | keeps them where the logic is trustworthy |
+| `goal` | `abilities` ends the run by itself, `manual` hands you `/bis_goal` |
+| `filler_variety` | thins out the beans, which are 27% of the vanilla pool |
+
+## How it works
+
+Three measured facts carry the whole world.
+
+**A treasure's identifier is its bit rank.** Collected treasures are
+tracked in the `Exxx` global script-variable bitfield at `020560C8`:
 
 ```
 treasure with identifier N  ->  byte 020560C8 + N/8, bit N%8   (LSB first)
 ```
 
-That address is not a treasure-specific structure. It is the `Exxx`
-global script-variable bitfield, 4096 elements, `0x200` bytes, named in
-[8y8x's MLBIS manual](https://inf.gg/mlbis/manual). Treasures occupy its
-low indices — identifiers 0 to 757 fit in the first 95 bytes. The array
-sits in the ARM9 BSS, so the address is fixed for the whole session,
-outside the overlays and the heaps.
+That identifier lives in bytes 4-5 of each `Treasure/TreasureInfo.dat`
+entry, so an Archipelago location id is `BASE_ID + bit rank` with **no
+lookup table at all**. Attack pieces use the same array at higher
+indices and need no special case. The bit is set on a block's *first*
+hit, not when it is exhausted, so a location fires as soon as the player
+sees anything.
 
-The bit rank is the identifier stored in bytes 4-5 of each
-`Treasure/TreasureInfo.dat` entry — a field the existing randomizer
-never reads.
+**Items are delivered by writing memory.** Coins at `02056400`,
+consumables at `02056406 + index`, gear at `02056427 + id - 1`, all
+verified in game. A value written is adopted, displayed, saved, and the
+game recomputes its own checksum.
 
-Verified against the four blocks of one room, identifiers 544 to 547,
-all packed into byte `0x05610C`, across five successive RAM dumps:
+**An ability can be taken away.** Clearing its bit in the `2xxx` field
+removes it: the hammer vanishes from the battle command and comes back
+when the bit returns. That is what makes abilities tradeable without
+patching the ROM — the game still hands you the hammer on schedule, and
+the client takes it straight back until the multiworld sends it.
 
-| Dump | Byte | Bits set | Identifiers |
-|---|---|---|---|
-| 1 | `0x00` | — | none |
-| 2 | `0x01` | 0 | 544 |
-| 3 | `0x03` | 0, 1 | 544, 545 |
-| 4 | `0x0B` | 0, 1, 3 | 544, 545, 547 |
-| 5 | `0x0F` | 0, 1, 2, 3 | 544, 545, 546, 547 |
+Every structure, with the measurement that established it, is in
+[`formats-bis.md`](formats-bis.md).
 
-The last two blocks were hit in reverse order, so bit 3 was set before
-bit 2. The bits follow the table identifiers, not the order of the
-player's actions — which rules out the competing explanation of a
-sequential pickup counter.
+## Limits, stated plainly
 
-### When the flag is set
+**The access logic works at the granularity of a named area, and the
+order of those areas comes from a walkthrough, not from the game.** Four
+separate attempts to derive it from the ROM failed, each killed by a
+measurement and each written up so nobody repeats them. Worse, this game
+sends you back through areas you have already cleared, so a treasure in
+a late corner of an early area looks reachable long before it is.
 
-A block can hold several hits — identifier 546 gives one coin per jump,
-ten times. Measured across five more dumps from a clean savestate:
+That endangers a run only when an ability lands somewhere unreachable,
+which is why `safe_ability_placement` is on by default: the nine
+abilities stay in the first five areas, the part of the order a
+walkthrough states outright and that a real save file independently
+confirms. Ordinary items are free to go anywhere, since finding one late
+costs nothing.
 
-| Dump | Byte `0x05610C` | Block state |
-|---|---|---|
-| `run06` | `0x00` | before anything |
-| `run07` | `0x00` | block struck, emulator paused at once |
-| `run08` | `0x04` | first coin taken, nine still available |
-| `run09` | `0x04` | next-to-last coin |
-| `run10` | `0x04` | block exhausted |
+**The goal is not "defeat Dark Bowser".** Over 800,000 script commands
+were read, field and battle alike, and the ending leaves no mark a
+client could recognise. Rather than guess at an address, the run either
+ends when the nine abilities are gathered, or when the player types
+`/bis_goal`.
 
-**The bit is set on the first coin, not on exhaustion**, so a `location`
-is validated on the first hit. `run07` adds a detail worth knowing: the
-bit is not set at the instant of the hit but a few frames later. It
-follows the item being *awarded*, not the block being struck.
-
-### Where the flags live in the save file
-
-The same array is written into the save at `slot + 0x01B4`, alongside
-the four other global register arrays, at offsets that a decompiled
-listing of the save routine (overlay 129) predicted and that a live save
-then confirmed byte for byte. The backup copy at `slot + 0x7EC` carries
-an identical image.
-
-One byte does not match: the save sets a bit at `Exxx + 0x167` that the
-RAM never shows. **The save is not a faithful copy of RAM**, so writing
-one into the other would clear that bit — a trap for later, alongside
-the checksum and the backup copy.
-
-### Writing back to the running game
-
-Detection is only half of an Archipelago world: it also has to deliver
-items into the game. The live coin counter sits at `02056400` in main
-RAM, and writing to it works end to end — 999 written while walking in
-the field showed up on screen, then in the save file and its backup
-copy, with a checksum the game computed itself. Nothing else moved:
-the treasure bitfield came through untouched.
-
-So the game adopts a written value rather than merely tolerating it.
-What is not established yet: delivering an *item* rather than coins —
-the 26 item counters of the live inventory are not mapped — and whether
-writing is safe outside the overworld.
+**Never played to completion.** The loop, the multiworld and
+reconnection are all measured, but no seed has been played through to
+the end. That is the next thing that will happen, and it will also
+supply the two missing measurements.
 
 ## What is in here
 
 | Path | Contents |
 |---|---|
-| `data/locations_bis.csv` | 685 decoded treasure entries: identifier, type, named item, amount, room, coordinates |
-| `data/noms_items.csv` | 191 item names extracted from the ROM |
-| `data/noms_zones.csv` | The game's 32 named zones |
-| `tools/` | ROM extraction, RAM dumping, diff analysis |
-| `formats-bis.md` | Every confirmed structure, with file and line references |
-| `reference-mlss.md` | Study of the Superstar Saga world that ships with Archipelago |
-| `CLAUDE.md` | Project memory: fixed decisions, constraints, open questions |
-| `JOURNAL.md` | Dated log, including the dead ends and the bugs |
+| `mlbis/` | the world itself: locations, items, regions, options, client |
+| `data/` | tables extracted from the ROM, all regenerable |
+| `tools/` | extraction, RAM dumping, diff analysis, the three test suites |
+| `formats-bis.md` | every confirmed structure, with file and line references |
+| `reference-mlss.md` | study of the Superstar Saga world bundled with Archipelago |
+| `CLAUDE.md` | project memory: fixed decisions, constraints, open questions |
+| `JOURNAL.md` | dated log, including the dead ends and the bugs |
 
-### Scale
+Three test suites, all runnable from the repository root:
 
-647 usable treasure entries: 281 `?` blocks, 197 beans, 149 brick
-blocks, 20 grass tufts, spread over 272 rooms and 32 named zones. For
-comparison, the Superstar Saga world declares 634 locations, so the two
-games are the same size.
+```
+venv\Scripts\python.exe tools\test_generation.py    a seed generates
+venv\Scripts\python.exe tools\test_client.py        bits, addresses, delivery
+venv\Scripts\python.exe tools\test_archipelago.py   Archipelago's own 206 tests
+```
 
 ## Evidence conventions
 
-Every claim in this repository carries one of three labels, and the
-rule is enforced throughout:
+Every claim in this repository carries one of three labels, and the rule
+is enforced throughout:
 
 - **Vérifié / Verified** — read in source code or measured, cited with
   file and line
@@ -136,9 +136,10 @@ rule is enforced throughout:
 - **À tester / To test** — nothing settles it either way
 
 Anything without a file-and-line source is a hypothesis, not a fact. A
-plausible but wrong memory address costs hours of debugging.
+plausible but wrong memory address costs hours of debugging, and this
+repository has the dead ends to prove it.
 
-## Reproducing the results
+## Reproducing the tables
 
 You need your own legally obtained ROM. The static analysis targets one
 exact revision:
@@ -148,35 +149,24 @@ exact revision:
 
 ```
 py -3.13 -m venv venv
-venv\Scripts\python.exe -m pip install ndspy .\vendor\mnllib.py
+venv\Scripts\python.exe -m pip install ndspy capstone .\vendor\mnllib.py
 venv\Scripts\python.exe tools\extract_names.py
 venv\Scripts\python.exe tools\build_location_table.py
+venv\Scripts\python.exe tools\build_apworld_data.py
 ```
-
-For the live measurement, open `tools/dump_ram.lua` in the Lua console
-of BizHawk **2.10 exactly** — the Archipelago Lua connector refuses
-anything older than 2.7.0 and warns above 2.10 — then compare dumps
-with `tools/cherche_champ_bits.py`.
-
-Two tools help read what comes out. `tools/treasure_bit.py` turns a
-treasure identifier into an address and bit rank, and back.
-`tools/compare_block.py` looks for the RAM array inside a save dump. The
-95 bytes carrying the flags, across all ten dumps, are published in
-`data/preuve_champ_bits.txt` — the 4 MB dumps themselves are not, but
-that file is enough to check the result.
 
 ## About the ROM
 
 **No ROM is included in this repository, and none will be provided.**
 The `.gitignore` excludes `.nds`, `.7z`, `.zip` and save files. Every
-table under `data/` is regenerated from a local ROM you supply
-yourself; nothing was entered by hand.
+table under `data/` is regenerated from a local ROM you supply yourself;
+nothing was entered by hand.
 
 ## Credits and sources
 
-This work stands entirely on prior community research. **[SOURCES.md](SOURCES.md)
-lists every source with its URL, the exact commit consulted, its
-licence, and what was taken from it.**
+This work stands entirely on prior community research.
+**[SOURCES.md](SOURCES.md) lists every source with its URL, the exact
+commit consulted, its licence, and what was taken from it.**
 
 - The [MnL-Modding](https://github.com/MnL-Modding) community and its
   [Discord](https://discord.gg/rhJ6HGyymJ) — Randoglobin for the
@@ -184,8 +174,7 @@ licence, and what was taken from it.**
   `mnllib` for the internal formats, BIS-docs for the script commands
 - [8y8x's MLBIS manual](https://inf.gg/mlbis/manual), CC0 — named the
   `Exxx` bitfield we had located by measurement, along with the global
-  register block and the ARM9 memory map, and independently confirms the
-  ROM revision targeted here
+  register block and the ARM9 memory map
 - [Archipelago](https://github.com/ArchipelagoMW/Archipelago), and in
   particular its bundled `worlds/mlss`, the Superstar Saga world, which
   had already solved this class of problem for the first game in the
@@ -202,8 +191,9 @@ a fact learned from it, open an issue and it will be removed.
 
 ## Licence
 
-[MIT](LICENSE) for the original work here — the tools, the documentation
-and the tables they generate. It cannot cover the underlying game: the
-names and identifiers under `data/` are extracted from a commercial ROM
-and remain the property of their rights holders. Third-party projects
-keep their own licences, listed in [SOURCES.md](SOURCES.md).
+[MIT](LICENSE) for the original work here — the world, the tools, the
+documentation and the tables they generate. It cannot cover the
+underlying game: the names and identifiers under `data/` are extracted
+from a commercial ROM and remain the property of their rights holders.
+Third-party projects keep their own licences, listed in
+[SOURCES.md](SOURCES.md).
