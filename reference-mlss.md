@@ -62,14 +62,14 @@ au même endroit dans BIS.
 - ROM patchée plus client BizHawk. `Client.py` ligne 21 hérite de
   `BizHawkClient`, `patch_suffix = ".apmlss"`
 - Le monde s'appuie sur `worlds/_bizhawk`, le même connecteur
-  générique dont `CLAUDE.md` fixe la contrainte de version d'émulateur
+  générique dont `MEMOIRE.md` fixe la contrainte de version d'émulateur
 - **Réception d'un item** : le client écrit l'identifiant de l'objet à
   l'adresse EWRAM `0x3057`, du code ASM injecté le lit en boucle,
   donne l'objet, puis remet l'adresse à zéro. Le client utilise
   `guarded_write` en vérifiant que l'adresse vaut bien `0x0` avant
   d'écrire, sinon il réessaie plus tard. `Client.py` lignes 134 à 162
 - Ce motif de poignée de main évite d'écrire pendant que le jeu n'est
-  pas prêt. C'est la réponse concrète à la contrainte de `CLAUDE.md`
+  pas prêt. C'est la réponse concrète à la contrainte de `MEMOIRE.md`
   sur les écritures en combat ou en cinématique
 - **Garde-fou d'identité** : le client relit une signature `MLSSAP` à
   l'adresse `0x3060` et abandonne le tour si elle ne correspond pas
@@ -96,7 +96,7 @@ C'est le motif à reprendre pour les capacités de duo de BIS.
 
 ## Le piège des conditions indirectes est réel
 
-`CLAUDE.md` avertit sur `register_indirect_condition`. MLSS l'appelle
+`MEMOIRE.md` avertit sur `register_indirect_condition`. MLSS l'appelle
 **onze fois** dans `Regions.py`, lignes 150, 174 à 177, 191 à 193, 203,
 204 et 218, toutes sur des régions de type « Flag » qui conditionnent
 l'accès à des boutiques. Ce n'est pas un piège théorique et on a ici un

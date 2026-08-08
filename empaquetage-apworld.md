@@ -1,9 +1,9 @@
 # Contraintes d'empaquetage APWorld
 
-Sorti de `CLAUDE.md` le 2 août 2026 pour le maintenir sous son seuil de
+Sorti de `MEMOIRE.md` le 2 août 2026 pour le maintenir sous son seuil de
 220 lignes. Ce contenu ne servira qu'au moment où le monde sera
 réellement écrit et empaqueté, donc il n'a pas à occuper la mémoire
-chargée à chaque session. `CLAUDE.md` pointe vers ce fichier.
+chargée à chaque session. `MEMOIRE.md` pointe vers ce fichier.
 
 Erreurs classiques dont le message ne pointe pas vers la vraie cause.
 

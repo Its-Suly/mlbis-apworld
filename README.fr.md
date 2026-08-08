@@ -115,7 +115,7 @@ manquantes.
 | `tools/` | extraction, dumps de RAM, analyse d'écarts, les trois suites de tests |
 | `formats-bis.md` | chaque structure confirmée, avec fichier et ligne |
 | `reference-mlss.md` | étude du monde Superstar Saga livré avec Archipelago |
-| `CLAUDE.md` | mémoire du projet : décisions figées, contraintes, points ouverts |
+| `MEMOIRE.md` | mémoire du projet : décisions figées, contraintes, points ouverts |
 | `JOURNAL.md` | journal daté, y compris les impasses et les bugs |
 
 Trois suites de tests, depuis la racine du dépôt :

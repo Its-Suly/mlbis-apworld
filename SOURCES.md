@@ -196,7 +196,7 @@ Randoglobin and Cheatoglobin are GPL-3.0-or-later. They were read to
 understand how the game stores its data. **Facts — offsets, file
 formats, field layouts — were taken; no source code was.** Copying
 their code would impose the GPL on any resulting APWorld, which is a
-deliberate design constraint of this project, recorded in `CLAUDE.md`.
+deliberate design constraint of this project, recorded in `MEMOIRE.md`.
 
 If you believe any part of this repository reproduces your code rather
 than restating a fact learned from it, open an issue and it will be

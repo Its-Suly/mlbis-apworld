@@ -32,18 +32,18 @@ coûte des heures de debug qui ne pointent pas vers leur cause.
 # Phase 1, rangement du dossier
 
 Le dossier de travail, noté `%RACINE%` dans tout ce fichier, est celui
-qui contient la ROM, `CLAUDE.md` et les sous-dossiers `tools/` et
+qui contient la ROM, `MEMOIRE.md` et les sous-dossiers `tools/` et
 `mlbis/`. Aucun chemin absolu n'est écrit ici : les scripts déduisent
 tous le leur de leur propre emplacement.
 
-Actuellement les fichiers `CLAUDE.md` et `installation-apworld-bis.md`
+Actuellement les fichiers `MEMOIRE.md` et `installation-apworld-bis.md`
 sont dans le sous-dossier de la ROM, ce qui empêche le chargement
-automatique de `CLAUDE.md`. Il doit être à la racine du dossier de
+automatique de `MEMOIRE.md`. Il doit être à la racine du dossier de
 travail.
 
 À faire :
 
-- Remonter `CLAUDE.md` et `installation-apworld-bis.md` à la racine de
+- Remonter `MEMOIRE.md` et `installation-apworld-bis.md` à la racine de
   `Projet BIS`
 - Laisser le fichier `.nds` où il est, dans son sous-dossier
 

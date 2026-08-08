@@ -4,7 +4,7 @@ rem ---------------------------------------------------------------------
 rem  Lance tout ce qu'il faut pour une session de jeu instrumentee.
 rem
 rem  Quatre choses, dans cet ordre :
-rem    1. le raccourci Claude Code du projet
+rem    1. un eventuel script local, tools\local.cmd, non versionne
 rem    2. le serveur Archipelago, sur la seed la plus recente
 rem    3. BizHawk avec la ROM et la session Lua, journal + connecteur
 rem    4. le client BizHawk d'Archipelago
@@ -27,7 +27,6 @@ set "ROM=%RACINE%\4171 - Mario & Luigi - Bowser's Inside Story (US)(M3)(XenoPhob
 set "SESSION=%RACINE%\tools\session_bizhawk.lua"
 set "LUA_AP=%AP%\data\lua"
 set "SESSION_LANCEE=%LUA_AP%\session_bizhawk.lua"
-set "CLAUDE=%USERPROFILE%\Desktop\Claude Code - Projet BIS.lnk"
 
 rem La seed la plus recente, plutot qu'un nom en dur : regenerer une seed
 rem ne doit pas casser le raccourci.
@@ -58,11 +57,10 @@ echo seed    : %SEED%
 echo journal : %RACINE%\journal_capacites.txt
 echo.
 
-if exist "%CLAUDE%" (
-    start "" "%CLAUDE%"
-) else (
-    echo Raccourci Claude Code introuvable, on continue sans.
-)
+rem Point d'accroche local. Ce fichier n'est pas versionne : il sert a
+rem lancer ce qu'on veut au demarrage d'une session sans que ca regarde
+rem le depot. Son absence n'est pas une erreur.
+if exist "%RACINE%\tools\local.cmd" call "%RACINE%\tools\local.cmd"
 
 rem Le repertoire de travail passe par /D plutot que par un cd enchaine :
 rem imbriquer des guillemets dans un cmd /k est le genre de detail qui

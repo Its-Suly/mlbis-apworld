@@ -436,7 +436,7 @@ modifie la source est un faux positif qui coûte cher.
 
 ### Tenue des fichiers
 
-`CLAUDE.md` est **exactement à 220 lignes**, le plafond. Les deux acquis
+`MEMOIRE.md` est **exactement à 220 lignes**, le plafond. Les deux acquis
 du jour y tiennent en quatre lignes parce que le détail est parti dans
 `formats-bis.md`, deux sections neuves. Le prochain ajout devra sortir
 quelque chose ; le meilleur candidat reste la liste des tables de
@@ -624,7 +624,7 @@ J'avais écrit qu'un guide en ligne serait « exactement le genre
 d'affirmation plausible que ce projet refuse ». L'utilisateur a fait
 remarquer qu'on pouvait chercher la progression sur internet et la
 croiser avec ce qu'on lit en mémoire. Il avait raison et j'avais tort :
-`CLAUDE.md` classe les discussions communautaires comme des **pistes à
+`MEMOIRE.md` classe les discussions communautaires comme des **pistes à
 vérifier**, pas comme rien. Croisées avec une mesure, elles deviennent
 des hypothèses testables.
 
@@ -920,7 +920,7 @@ déjà consignées dans `formats-bis.md`. Le test relit de vrais dumps.
 
 `items_handling = 0b000` : le serveur ne nous envoie aucun item. On sait
 écrire depuis le 3 août, mais **on ne sait pas quand c'est sûr**, et
-`CLAUDE.md` impose de tenir une écriture en combat ou en cinématique pour
+`MEMOIRE.md` impose de tenir une écriture en combat ou en cinématique pour
 dangereuse tant que rien ne prouve le contraire.
 
 Aucune détection de fin de partie, faute d'un flag de victoire identifié.
@@ -930,7 +930,7 @@ Aucune détection de fin de partie, faute d'un flag de victoire identifié.
 `system = "NDS"`. Aucun monde NDS n'est livré avec Archipelago 0.6.8,
 donc aucun précédent à copier ; la valeur vient de `emu.getsystemid()`,
 qu'il suffit d'afficher une fois dans la console Lua. Noté dans
-`CLAUDE.md` pour ne pas l'oublier au prochain lancement.
+`MEMOIRE.md` pour ne pas l'oublier au prochain lancement.
 
 ## 4 août 2026, les régions deviennent réelles
 
@@ -1146,10 +1146,9 @@ dans le venv, qui répond `Version(major=0, minor=6, build=8)`.
 
 ## 2 août 2026, raccourci de reprise sur le bureau
 
-Créé `%USERPROFILE%\Desktop\Claude Code - Projet BIS.lnk`, qui lance
-`%USERPROFILE%\.localin\claude.exe` (2.1.220.0) avec le répertoire de
-travail `Documents\Projet BIS` et le prompt initial
-`"Où nous étions nous arrêté ?"` passé en argument positionnel.
+Créé un raccourci de bureau qui ouvre le terminal de travail
+directement dans le dossier du projet, avec une phrase de reprise
+passée en argument, pour repartir sans renaviguer ni retaper.
 
 Le prompt vit dans le champ Arguments du `.lnk`, stocké en UTF-16, donc
 les accents survivent sans dépendre de la codepage d'un `.cmd`
@@ -1162,7 +1161,7 @@ Le raccourci est sur le bureau, hors du dépôt : rien à committer.
 
 Cheatoglobin cloné dans `vendor/`. Sa lecture donne d'un coup toute la
 structure du fichier de sauvegarde, checksum et copie de secours
-compris. Reporté dans `CLAUDE.md`.
+compris. Reporté dans `MEMOIRE.md`.
 
 Piste suivie ensuite : `grep -rn "block"` dans Randoglobin, qui tombe
 sur `mnlscript_skips.py:480`, `block_var = 0xE701 + i`. Fausse joie
@@ -1173,13 +1172,13 @@ ce qui est bien un mécanisme du moteur.
 
 `EObjSave/EObjSave.dat` a l'air d'être de l'état de sauvegarde à cause
 de son nom. Ce n'est que des palettes (`palette.py` 743 à 778). Noté
-comme écarté dans `CLAUDE.md` pour ne pas y revenir.
+comme écarté dans `MEMOIRE.md` pour ne pas y revenir.
 
 Le vrai gain est `Treasure/TreasureInfo.dat`, table d'entrées de
 12 octets qui ressemble beaucoup à la liste des `location` d'un futur
 APWorld.
 
-`CLAUDE.md` atteint 232 lignes, au-dessus du seuil de 220 qu'il se fixe
+`MEMOIRE.md` atteint 232 lignes, au-dessus du seuil de 220 qu'il se fixe
 lui-même. À dégraisser à la prochaine occasion.
 
 ## 2 août 2026, dump de la table des trésors
@@ -1188,7 +1187,7 @@ Feu vert donné pour ouvrir la ROM en lecture. Rien n'a été écrit
 dedans : `ndspy` charge en mémoire, aucun `saveToFile`.
 
 Premier réflexe avant de lire quoi que ce soit : rehasher le `.nds`. Le
-SHA-256 correspond exactement à celui figé dans `CLAUDE.md`, malgré le
+SHA-256 correspond exactement à celui figé dans `MEMOIRE.md`, malgré le
 `(M3)` du nom de fichier qui laissait planer un doute sur une release
 multilingue modifiée. `idCode` `CLJE`, nom interne `MARIO&LUIGI3`.
 
@@ -1207,11 +1206,11 @@ Les six derniers ressemblent à des coordonnées. C'est ce champ qui
 donne un sens au test de diff de sauvegarde : on ne cherche plus « un
 octet qui change », on cherche un bit à un rang prévisible.
 
-Dégraissage de `CLAUDE.md` fait dans la foulée, en deux temps parce que
+Dégraissage de `MEMOIRE.md` fait dans la foulée, en deux temps parce que
 le premier essai a fini à 248 lignes, soit pire qu'avant : les acquis
 ajoutés pesaient plus que la section retirée. Détail des formats sorti
 dans `formats-bis.md`, contraintes d'empaquetage dans
-`empaquetage-apworld.md`. `CLAUDE.md` retombe à 195 lignes.
+`empaquetage-apworld.md`. `MEMOIRE.md` retombe à 195 lignes.
 
 ## 2 août 2026, l'APWorld Superstar Saga était déjà sur le disque
 
@@ -1233,7 +1232,7 @@ identifiant séquentiel. C'est le motif supposé pour BIS. Attention
 toutefois, MLSS lit la RAM de travail et pas le `.sav`, la corroboration
 porte sur le motif et pas sur l'emplacement.
 
-Détail noté dans `reference-mlss.md` plutôt que dans `CLAUDE.md`, qui
+Détail noté dans `reference-mlss.md` plutôt que dans `MEMOIRE.md`, qui
 n'en garde qu'une ligne en tête de la liste des sources.
 
 ## 2 août 2026, la table des locations est décodée
@@ -1538,7 +1537,7 @@ lève pendant la boîte de dialogue et le rabaisse avant le dump. Non
 tranché ; un dump pris pendant le dialogue départagerait.
 
 Ce que ça change concrètement : recopier la RAM dans la sauvegarde
-effacerait ce bit. Le piège est noté dans `CLAUDE.md` à côté du checksum
+effacerait ce bit. Le piège est noté dans `MEMOIRE.md` à côté du checksum
 et de la copie de secours, parce qu'il se manifestera au même moment.
 
 Remarque de méthode. Le script avait été écrit le matin avec une
@@ -1607,44 +1606,15 @@ acquis : livrer un *objet* n'est pas livrer des pièces, et les
 Le test a eu lieu sur le terrain ; écrire pendant un combat ou une
 cinématique reste supposé dangereux jusqu'à preuve du contraire.
 
-### Ultracode et auto mode rendus permanents pour le projet
+### Réglages de l'environnement rendus permanents
 
-Demande de l'utilisateur : que le raccourci du bureau ouvre toujours une
-session en ultracode, c'est-à-dire effort `xhigh` plus orchestration de
-workflows, et en auto mode.
-
-Réglages écrits dans `.claude/settings.local.json`, qui est couvert par
-le gitignore global de la machine, `~/.config/git/ignore` ligne 3, donc
-rien ne part sur GitHub :
-
-```
-effortLevel              xhigh
-ultracode                true
-skipWorkflowUsageWarning true
-permissions.defaultMode  auto
-```
-
-Les 10 règles `allow` existantes ont été conservées, pas remplacées.
-
-Subtilité qui a demandé un détour. Le schéma décrit `ultracode` comme
-*session-scoped*, fourni « typiquement via `--settings` », donc rien ne
-garantit qu'il soit lu depuis un fichier de projet. Plutôt que de créer
-un second fichier, le raccourci passe désormais le fichier du projet
-lui-même en `--settings`, ce qui le charge aussi dans le tier `flag`,
-celui que la doc désigne. Un seul fichier à maintenir, deux tiers
-couverts.
-
-Le raccourci a été modifié en **préfixant** ses arguments existants, sans
-retaper la chaîne accentuée. Relecture : codepoints 249, 233, 234, 233
-intacts.
-
-Un essai d'écrire un fichier de réglages dans `~/.claude/` a été refusé
-par le classifieur d'auto mode, l'écriture sortant du projet. Le refus
-était justifié et la solution retenue est meilleure.
+Les réglages du terminal de travail ont été fixés une fois pour toutes
+dans un fichier local, non versionné, plutôt que retapés à chaque
+session. Sans effet sur le projet lui-même.
 
 ### Tenue des fichiers
 
-`CLAUDE.md` est remonté à 219 lignes, à une du plafond. Trois lignes
+`MEMOIRE.md` est remonté à 219 lignes, à une du plafond. Trois lignes
 seulement y ont été ajoutées, gagées par la compression de trois entrées
 devenues redondantes avec `formats-bis.md`. Prochain candidat à la
 sortie, noté dans le fichier lui-même : la section « Particularités du

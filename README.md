@@ -113,7 +113,7 @@ supply the two missing measurements.
 | `tools/` | extraction, RAM dumping, diff analysis, the three test suites |
 | `formats-bis.md` | every confirmed structure, with file and line references |
 | `reference-mlss.md` | study of the Superstar Saga world bundled with Archipelago |
-| `CLAUDE.md` | project memory: fixed decisions, constraints, open questions |
+| `MEMOIRE.md` | project memory: fixed decisions, constraints, open questions |
 | `JOURNAL.md` | dated log, including the dead ends and the bugs |
 
 Three test suites, all runnable from the repository root:

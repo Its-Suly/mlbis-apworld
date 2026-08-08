@@ -41,7 +41,7 @@ en jouant, est ce qui les confirmera ou les cassera.
 
 PAS DE CONDITION INDIRECTE. Chaque region pend au Menu avec une regle qui
 ne lit que des items, jamais l'accessibilite d'une autre region. Le piege
-decrit dans CLAUDE.md, une transition evaluee trop tot et jamais
+decrit dans MEMOIRE.md, une transition evaluee trop tot et jamais
 reevaluee, ne se pose donc pas ici.
 """
 from typing import Dict, List, Tuple

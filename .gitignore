@@ -33,3 +33,6 @@ journal_capacites.txt
 
 # Paquet construit, regenerable par tools/build_apworld.py
 dist/
+
+# Accroche locale de jouer.cmd, propre a chaque machine
+tools/local.cmd

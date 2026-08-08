@@ -1,11 +1,11 @@
 # Formats internes de BIS
 
-Détail des structures confirmées. Sorti de `CLAUDE.md` le 2 août 2026
-pour le garder sous son seuil de 220 lignes. `CLAUDE.md` n'en conserve
+Détail des structures confirmées. Sorti de `MEMOIRE.md` le 2 août 2026
+pour le garder sous son seuil de 220 lignes. `MEMOIRE.md` n'en conserve
 que le résumé et pointe ici. Toute nouvelle structure confirmée vient
-dans ce fichier ; seule la conséquence pratique remonte dans `CLAUDE.md`.
+dans ce fichier ; seule la conséquence pratique remonte dans `MEMOIRE.md`.
 
-Étiquettes de statut identiques à celles de `CLAUDE.md` : **Vérifié**
+Étiquettes de statut identiques à celles de `MEMOIRE.md` : **Vérifié**
 avec fichier et ligne, **Hypothèse**, **À tester**.
 
 Les adresses tirées de `inf.gg/mlbis/manual` valent pour la release NA
@@ -230,7 +230,7 @@ Ce que ça n'établit pas :
   vivant ne le sont pas encore
 - La **sûreté selon l'état du jeu**. Le test a eu lieu sur le terrain.
   Rien ne dit qu'écrire pendant un combat ou une cinématique soit sans
-  risque, et `CLAUDE.md` impose de le supposer dangereux
+  risque, et `MEMOIRE.md` impose de le supposer dangereux
 
 ### Comportement pendant un combat, **Vérifié**
 
@@ -403,7 +403,7 @@ hauteur.
 
 ## Commandes de script
 
-Sorti de `CLAUDE.md` le 3 août 2026 pour le maintenir sous son seuil de
+Sorti de `MEMOIRE.md` le 3 août 2026 pour le maintenir sous son seuil de
 220 lignes. Rien de tout ceci ne sert avant qu'on touche aux scripts.
 
 **Vérifié** :
@@ -1317,7 +1317,7 @@ sources de code ne le porte.
 
 ### Où chaque capacité s'obtient, **Hypothèse**
 
-Un guide en ligne n'est pas une source de code, mais `CLAUDE.md` classe
+Un guide en ligne n'est pas une source de code, mais `MEMOIRE.md` classe
 les discussions communautaires comme des **pistes à vérifier**, pas comme
 rien. Croisées avec ce qu'on lit en mémoire, elles deviennent des
 hypothèses testables. Table dans `data/progression_hypothese.csv`, une
