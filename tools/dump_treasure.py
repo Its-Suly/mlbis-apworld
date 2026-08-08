@@ -4,12 +4,14 @@ N'ecrit JAMAIS dans la ROM : ndspy charge en memoire, on ne fait pas .saveToFile
 Decodage du bitfield d'apres Randoglobin/randoglobin/data_classes.py lignes 38 a 43.
 """
 import struct
+from pathlib import Path
 import sys
 from collections import Counter
 
 import ndspy.rom
 
-ROM = r"C:\Users\sulyv\Documents\Projet BIS\4171 - Mario & Luigi - Bowser's Inside Story (US)(M3)(XenoPhobia).nds"
+RACINE = Path(__file__).resolve().parent.parent
+ROM = RACINE / "4171 - Mario & Luigi - Bowser's Inside Story (US)(M3)(XenoPhobia).nds"
 
 rom = ndspy.rom.NintendoDSRom.fromFile(ROM)
 print(f"nom interne ROM : {rom.name!r}   idCode : {rom.idCode!r}")

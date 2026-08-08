@@ -31,7 +31,10 @@ coûte des heures de debug qui ne pointent pas vers leur cause.
 
 # Phase 1, rangement du dossier
 
-Le dossier de travail est `C:\Users\sulyv\Documents\Projet BIS`.
+Le dossier de travail, noté `%RACINE%` dans tout ce fichier, est celui
+qui contient la ROM, `CLAUDE.md` et les sous-dossiers `tools/` et
+`mlbis/`. Aucun chemin absolu n'est écrit ici : les scripts déduisent
+tous le leur de leur propre emplacement.
 
 Actuellement les fichiers `CLAUDE.md` et `installation-apworld-bis.md`
 sont dans le sous-dossier de la ROM, ce qui empêche le chargement
@@ -47,7 +50,7 @@ travail.
 Vérification :
 
 ```powershell
-cd "C:\Users\sulyv\Documents\Projet BIS"
+cd "%RACINE%"
 Get-ChildItem
 ```
 
@@ -139,7 +142,7 @@ bizhawk-*/
 ## Initialiser et vérifier
 
 ```powershell
-cd "C:\Users\sulyv\Documents\Projet BIS"
+cd "%RACINE%"
 git init
 git status
 ```
@@ -185,7 +188,7 @@ Ces clones servent à lire et comprendre. Ils vont dans `vendor/`, qui
 est ignoré par Git, pour éviter des dépôts imbriqués.
 
 ```powershell
-cd "C:\Users\sulyv\Documents\Projet BIS"
+cd "%RACINE%"
 mkdir vendor
 cd vendor
 git clone https://github.com/ArchipelagoMW/Archipelago.git
@@ -255,7 +258,7 @@ faits à la main par l'utilisateur.
 À faire seulement après validation des phases 1 à 6.
 
 ```powershell
-cd "C:\Users\sulyv\Documents\Projet BIS\vendor\Archipelago"
+cd "%RACINE%\vendor\Archipelago"
 py -3.13 -m venv venv
 .\venv\Scripts\Activate.ps1
 python ModuleUpdate.py
@@ -297,7 +300,7 @@ suspension de compte, dépôt privé ou non.
 Trois contrôles, dans cet ordre, avant toute création de dépôt.
 
 ```powershell
-cd "C:\Users\sulyv\Documents\Projet BIS"
+cd "%RACINE%"
 git ls-files
 git count-objects -vH
 ```

@@ -1097,7 +1097,7 @@ seule passe à la demande de l'utilisateur. Phase 1 déjà faite, phase 8
 
 ### Dépôt local
 
-Piège rencontré : `C:\Users\sulyv` est lui-même un dépôt Git, donc
+Piège rencontré : `%USERPROFILE%` est lui-même un dépôt Git, donc
 avant `git init` le dossier de travail appartenait à un dépôt couvrant
 tout le profil utilisateur. Vérifié avant d'agir que ce dépôt parent ne
 suivait aucun fichier sous `Documents\Projet BIS` et aucun `.nds` ni
@@ -1146,8 +1146,8 @@ dans le venv, qui répond `Version(major=0, minor=6, build=8)`.
 
 ## 2 août 2026, raccourci de reprise sur le bureau
 
-Créé `C:\Users\sulyv\Desktop\Claude Code - Projet BIS.lnk`, qui lance
-`C:\Users\sulyv\.local\bin\claude.exe` (2.1.220.0) avec le répertoire de
+Créé `%USERPROFILE%\Desktop\Claude Code - Projet BIS.lnk`, qui lance
+`%USERPROFILE%\.localin\claude.exe` (2.1.220.0) avec le répertoire de
 travail `Documents\Projet BIS` et le prompt initial
 `"Où nous étions nous arrêté ?"` passé en argument positionnel.
 

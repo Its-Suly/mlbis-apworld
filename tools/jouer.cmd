@@ -14,7 +14,12 @@ rem  cmd /k : quand quelque chose casse, le message reste lisible au lieu
 rem  de disparaitre avec la fenetre.
 rem ---------------------------------------------------------------------
 
-set "RACINE=C:\Users\sulyv\Documents\Projet BIS"
+rem La racine se deduit de l'emplacement de ce fichier, qui vit dans
+rem tools\ : aucun chemin en dur, donc rien qui depende d'un nom
+rem d'utilisateur ni d'un dossier d'installation.
+pushd "%~dp0.."
+set "RACINE=%CD%"
+popd
 set "AP=%RACINE%\vendor\Archipelago"
 set "PYAP=%AP%\venv\Scripts\python.exe"
 set "BIZHAWK=%RACINE%\bizhawk-2.10\EmuHawk.exe"
@@ -22,7 +27,7 @@ set "ROM=%RACINE%\4171 - Mario & Luigi - Bowser's Inside Story (US)(M3)(XenoPhob
 set "SESSION=%RACINE%\tools\session_bizhawk.lua"
 set "LUA_AP=%AP%\data\lua"
 set "SESSION_LANCEE=%LUA_AP%\session_bizhawk.lua"
-set "CLAUDE=C:\Users\sulyv\Desktop\Claude Code - Projet BIS.lnk"
+set "CLAUDE=%USERPROFILE%\Desktop\Claude Code - Projet BIS.lnk"
 
 rem La seed la plus recente, plutot qu'un nom en dur : regenerer une seed
 rem ne doit pas casser le raccourci.

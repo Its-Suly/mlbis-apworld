@@ -27,8 +27,25 @@
 -- A la main : Tools > Lua Console, Ctrl+O sur la copie, celle qui est
 -- dans vendor\Archipelago\data\lua.
 
-local RACINE = "C:\\Users\\sulyv\\Documents\\Projet BIS"
-local AP = RACINE .. "\\vendor\\Archipelago"
+-- Les chemins se deduisent de l'emplacement de ce fichier, pour qu'aucun
+-- nom d'utilisateur ni dossier d'installation ne soit ecrit en dur.
+-- Copie par jouer.cmd dans vendor\Archipelago\data\lua, ce fichier est
+-- donc a quatre niveaux sous la racine du projet.
+local function parent(chemin)
+    return chemin:match("^(.*)[/\\][^/\\]*$")
+end
+
+local ok, source = pcall(function()
+    return debug.getinfo(1, "S").source
+end)
+local LUA = ok and source and parent(source:sub(2))   -- ...\data\lua
+local AP = LUA and parent(parent(LUA))                -- ...\vendor\Archipelago
+local RACINE = AP and parent(parent(AP))              -- la racine du projet
+if not RACINE then
+    console.log("ARRET : impossible de deduire les chemins depuis "
+                .. "l'emplacement de ce script.")
+    return
+end
 
 -- Garde-fou. Un fichier temoin ouvert en relatif repond a la seule
 -- question qui compte, et remplace une trace NLua de quatorze lignes

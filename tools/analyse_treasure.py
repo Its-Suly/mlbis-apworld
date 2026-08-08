@@ -4,11 +4,13 @@ Hypothese a tester : octets 4-5 = identifiant unique du tresor,
 octets 6-7 / 8-9 / 10-11 = coordonnees X / Y / Z.
 """
 import struct
+from pathlib import Path
 from collections import Counter
 
 import ndspy.rom
 
-ROM = r"C:\Users\sulyv\Documents\Projet BIS\4171 - Mario & Luigi - Bowser's Inside Story (US)(M3)(XenoPhobia).nds"
+RACINE = Path(__file__).resolve().parent.parent
+ROM = RACINE / "4171 - Mario & Luigi - Bowser's Inside Story (US)(M3)(XenoPhobia).nds"
 rom = ndspy.rom.NintendoDSRom.fromFile(ROM)
 data = rom.getFileByName('Treasure/TreasureInfo.dat')
 

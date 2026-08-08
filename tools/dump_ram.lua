@@ -16,7 +16,22 @@
 -- de 0 sur le coeur NDS, pas de 1. La version precedente sautait la premiere
 -- entree, qui est justement Main RAM. On balaie donc de 0 a #liste inclus.
 
-local DOSSIER = [[C:\Users\sulyv\Documents\Projet BIS\dumps\]]
+-- Deduit de l'emplacement de ce fichier, qui vit dans tools\ : aucun
+-- chemin en dur, donc rien qui depende d'un nom d'utilisateur.
+-- Echouer bruyamment plutot qu'ecrire les dumps quelque part au hasard :
+-- si le bac a sable de BizHawk ne fournissait pas `debug`, un chemin
+-- silencieusement faux se paierait en dumps introuvables.
+local ok, source = pcall(function()
+    return debug.getinfo(1, "S").source
+end)
+local TOOLS = ok and source and source:sub(2):match("^(.*)[/\\][^/\\]*$")
+local RACINE = TOOLS and TOOLS:match("^(.*)[/\\][^/\\]*$")
+if not RACINE then
+    console.log("ARRET : impossible de deduire la racine du projet depuis "
+                .. "l'emplacement de ce script.")
+    return
+end
+local DOSSIER = RACINE .. "\\dumps\\"
 local CHUNK = 4096
 -- SRAM fait 8192 octets, or la sauvegarde decrite par Cheatoglobin s'etend
 -- jusqu'a 0x0FE8 + 0x7EC + 0x5F4 = 8136 octets. C'est tres probablement le
